@@ -18,12 +18,20 @@ module ActionController
       # a key suitable for use in reading, writing, or expiring a
       # cached fragment. All keys are prefixed with <tt>views/</tt> and uses
       # ActiveSupport::Cache.expand_cache_key for the expansion.
+      #
+      # @param [Hash, #cache_key, Array, #to_a, #to_param] key
+      # @return [String]
       def fragment_cache_key(key)
         ActiveSupport::Cache.expand_cache_key(key.is_a?(Hash) ? url_for(key).split("://").last : key, :views)
       end
 
       # Writes +content+ to the location signified by
       # +key+ (see +expire_fragment+ for acceptable formats).
+      #
+      # @param [Hash, #cache_key, Array, #to_a, #to_param] key
+      # @param [#to_str] content
+      # @param [Hash, nil] options
+      # @return [String]
       def write_fragment(key, content, options = nil)
         return content unless cache_configured?
 
@@ -37,6 +45,10 @@ module ActionController
 
       # Reads a cached fragment from the location signified by +key+
       # (see +expire_fragment+ for acceptable formats).
+      #
+      # @param [Hash, #cache_key, Array, #to_a, #to_param] key
+      # @param [Hash, nil] options
+      # @return [String, nil]
       def read_fragment(key, options = nil)
         return unless cache_configured?
 
@@ -49,6 +61,10 @@ module ActionController
 
       # Check if a cached fragment from the location signified by
       # +key+ exists (see +expire_fragment+ for acceptable formats).
+      #
+      # @param [Hash, #cache_key, Array, #to_a, #to_param] key
+      # @param [Hash, nil] options
+      # @return [Boolean]
       def fragment_exist?(key, options = nil)
         return unless cache_configured?
         key = fragment_cache_key(key)
@@ -76,6 +92,10 @@ module ActionController
       #
       # +options+ is passed through to the cache store's +delete+
       # method (or <tt>delete_matched</tt>, for Regexp keys).
+      #
+      # @param [Hash, #cache_key, Array, #to_a, #to_param] key
+      # @param [Hash, nil] options
+      # @return [void]
       def expire_fragment(key, options = nil)
         return unless cache_configured?
         key = fragment_cache_key(key) unless key.is_a?(Regexp)
@@ -89,6 +109,9 @@ module ActionController
         end
       end
 
+      # @param [#to_s] name
+      # @param [Hash, #cache_key, Array, #to_a, #to_param] key
+      # @return [void]
       def instrument_fragment_cache(name, key) # :nodoc:
         ActiveSupport::Notifications.instrument("#{name}.action_controller", :key => key){ yield }
       end
