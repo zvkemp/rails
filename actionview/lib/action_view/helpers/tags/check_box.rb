@@ -56,7 +56,7 @@ module ActionView
         end
 
         def hidden_field_for_checkbox(options)
-          @unchecked_value ? tag("input", options.slice("name", "disabled", "form").merge!(StringPool::TYPE => "hidden", StringPool::VALUE => @unchecked_value)) : StringPool::EMPTY.html_safe
+          @unchecked_value ? tag("input", options.slice(StringPool::NAME, "disabled", "form").merge!(StringPool::TYPE => "hidden", StringPool::VALUE => @unchecked_value)) : StringPool::EMPTY.html_safe
         end
       end
     end

@@ -73,14 +73,14 @@ module ActionView
 
         def add_default_name_and_id(options)
           if options.has_key?("index")
-            options["name"] ||= options.fetch("name"){ tag_name_with_index(options["index"], options["multiple"]) }
+            options[StringPool::NAME] ||= options.fetch(StringPool::NAME){ tag_name_with_index(options["index"], options["multiple"]) }
             options[StringPool::ID] = options.fetch(StringPool::ID){ tag_id_with_index(options["index"]) }
             options.delete("index")
           elsif defined?(@auto_index)
-            options["name"] ||= options.fetch("name"){ tag_name_with_index(@auto_index, options["multiple"]) }
+            options[StringPool::NAME] ||= options.fetch(StringPool::NAME){ tag_name_with_index(@auto_index, options["multiple"]) }
             options[StringPool::ID] = options.fetch(StringPool::ID){ tag_id_with_index(@auto_index) }
           else
-            options["name"] ||= options.fetch("name"){ tag_name(options["multiple"]) }
+            options[StringPool::NAME] ||= options.fetch(StringPool::NAME){ tag_name(options["multiple"]) }
             options[StringPool::ID] = options.fetch(StringPool::ID){ tag_id }
           end
 
@@ -123,7 +123,7 @@ module ActionView
           select = content_tag("select", add_options(option_tags, options, value), html_options)
 
           if html_options["multiple"] && options.fetch(:include_hidden, true)
-            tag("input", :disabled => html_options["disabled"], :name => html_options["name"], :type => "hidden", :value => StringPool::EMPTY) + select
+            tag("input", :disabled => html_options["disabled"], :name => html_options[StringPool::NAME], :type => "hidden", :value => StringPool::EMPTY) + select
           else
             select
           end

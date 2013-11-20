@@ -5,6 +5,7 @@ module ActionView
     SLASH   = '/'.freeze
 
     ID    = 'id'.freeze
+    NAME  = 'name'.freeze
     TYPE  = 'type'.freeze
     VALUE = 'value'.freeze
   end
