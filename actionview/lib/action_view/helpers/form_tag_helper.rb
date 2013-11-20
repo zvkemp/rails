@@ -134,7 +134,7 @@ module ActionView
           option_tags = content_tag(:option, prompt, :value => StringPool::EMPTY).safe_concat(option_tags)
         end
 
-        content_tag :select, option_tags, { "name" => html_name, "id" => sanitize_to_id(name) }.update(options.stringify_keys)
+        content_tag :select, option_tags, { "name" => html_name, StringPool::ID => sanitize_to_id(name) }.update(options.stringify_keys)
       end
 
       # Creates a standard text field; use these text fields to input smaller chunks of text like a username
@@ -172,7 +172,7 @@ module ActionView
       #   text_field_tag 'ip', '0.0.0.0', maxlength: 15, size: 20, class: "ip-input"
       #   # => <input class="ip-input" id="ip" maxlength="15" name="ip" size="20" type="text" value="0.0.0.0" />
       def text_field_tag(name, value = nil, options = {})
-        tag :input, { StringPool::TYPE => "text", "name" => name, "id" => sanitize_to_id(name), "value" => value }.update(options.stringify_keys)
+        tag :input, { StringPool::TYPE => "text", "name" => name, StringPool::ID => sanitize_to_id(name), "value" => value }.update(options.stringify_keys)
       end
 
       # Creates a label element. Accepts a block.
@@ -331,7 +331,7 @@ module ActionView
         escape = options.delete("escape") { true }
         content = ERB::Util.html_escape(content) if escape
 
-        content_tag :textarea, content.to_s.html_safe, { "name" => name, "id" => sanitize_to_id(name) }.update(options)
+        content_tag :textarea, content.to_s.html_safe, { "name" => name, StringPool::ID => sanitize_to_id(name) }.update(options)
       end
 
       # Creates a check box form input tag.
@@ -356,7 +356,7 @@ module ActionView
       #   check_box_tag 'eula', 'accepted', false, disabled: true
       #   # => <input disabled="disabled" id="eula" name="eula" type="checkbox" value="accepted" />
       def check_box_tag(name, value = "1", checked = false, options = {})
-        html_options = { StringPool::TYPE => "checkbox", "name" => name, "id" => sanitize_to_id(name), "value" => value }.update(options.stringify_keys)
+        html_options = { StringPool::TYPE => "checkbox", "name" => name, StringPool::ID => sanitize_to_id(name), "value" => value }.update(options.stringify_keys)
         html_options["checked"] = "checked" if checked
         tag :input, html_options
       end
@@ -381,7 +381,7 @@ module ActionView
       #   radio_button_tag 'color', "green", true, class: "color_input"
       #   # => <input checked="checked" class="color_input" id="color_green" name="color" type="radio" value="green" />
       def radio_button_tag(name, value, checked = false, options = {})
-        html_options = { StringPool::TYPE => "radio", "name" => name, "id" => "#{sanitize_to_id(name)}_#{sanitize_to_id(value)}", "value" => value }.update(options.stringify_keys)
+        html_options = { StringPool::TYPE => "radio", "name" => name, StringPool::ID => "#{sanitize_to_id(name)}_#{sanitize_to_id(value)}", "value" => value }.update(options.stringify_keys)
         html_options["checked"] = "checked" if checked
         tag :input, html_options
       end

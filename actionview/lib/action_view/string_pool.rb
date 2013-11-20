@@ -4,6 +4,7 @@ module ActionView
     NEWLINE = "\n".freeze
     SLASH   = '/'.freeze
 
+    ID   = 'id'.freeze
     TYPE = 'type'.freeze
   end
 end

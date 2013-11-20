@@ -62,11 +62,11 @@ module ActionView
           if tag_value.nil?
             add_default_name_and_id(options)
           else
-            specified_id = options["id"]
+            specified_id = options[StringPool::ID]
             add_default_name_and_id(options)
 
-            if specified_id.blank? && options["id"].present?
-              options["id"] += "_#{sanitized_value(tag_value)}"
+            if specified_id.blank? && options[StringPool::ID].present?
+              options[StringPool::ID] += "_#{sanitized_value(tag_value)}"
             end
           end
         end
@@ -74,17 +74,17 @@ module ActionView
         def add_default_name_and_id(options)
           if options.has_key?("index")
             options["name"] ||= options.fetch("name"){ tag_name_with_index(options["index"], options["multiple"]) }
-            options["id"] = options.fetch("id"){ tag_id_with_index(options["index"]) }
+            options[StringPool::ID] = options.fetch(StringPool::ID){ tag_id_with_index(options["index"]) }
             options.delete("index")
           elsif defined?(@auto_index)
             options["name"] ||= options.fetch("name"){ tag_name_with_index(@auto_index, options["multiple"]) }
-            options["id"] = options.fetch("id"){ tag_id_with_index(@auto_index) }
+            options[StringPool::ID] = options.fetch(StringPool::ID){ tag_id_with_index(@auto_index) }
           else
             options["name"] ||= options.fetch("name"){ tag_name(options["multiple"]) }
-            options["id"] = options.fetch("id"){ tag_id }
+            options[StringPool::ID] = options.fetch(StringPool::ID){ tag_id }
           end
 
-          options["id"] = [options.delete('namespace'), options["id"]].compact.join("_").presence
+          options[StringPool::ID] = [options.delete('namespace'), options[StringPool::ID]].compact.join("_").presence
         end
 
         def tag_name(multiple = false)
