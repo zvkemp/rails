@@ -1227,7 +1227,7 @@ module ActionView
       end
 
       def self._to_partial_path
-        @_to_partial_path ||= name.demodulize.underscore.sub!(/_builder$/, '')
+        @_to_partial_path ||= name.demodulize.underscore.sub!(/_builder$/, StringPool::EMPTY_STRING)
       end
 
       def to_partial_path
@@ -1525,7 +1525,7 @@ module ActionView
         index = if options.has_key?(:index)
           options[:index]
         elsif defined?(@auto_index)
-          self.object_name = @object_name.to_s.sub(/\[\]$/,"")
+          self.object_name = @object_name.to_s.sub(/\[\]$/,StringPool::EMPTY_STRING)
           @auto_index
         end
 

@@ -11,7 +11,7 @@ module ActionView
           @object_name, @method_name = object_name.to_s.dup, method_name.to_s.dup
           @template_object = template_object
 
-          @object_name.sub!(/\[\]$/,"") || @object_name.sub!(/\[\]\]$/,"]")
+          @object_name.sub!(/\[\]$/,StringPool::EMPTY_STRING) || @object_name.sub!(/\[\]\]$/,"]")
           @object = retrieve_object(options.delete(:object))
           @options = options
           @auto_index = retrieve_autoindex(Regexp.last_match.pre_match) if Regexp.last_match
@@ -104,15 +104,15 @@ module ActionView
         end
 
         def sanitized_object_name
-          @sanitized_object_name ||= @object_name.gsub(/\]\[|[^-a-zA-Z0-9:.]/, "_").sub(/_$/, "")
+          @sanitized_object_name ||= @object_name.gsub(/\]\[|[^-a-zA-Z0-9:.]/, "_").sub(/_$/, StringPool::EMPTY_STRING)
         end
 
         def sanitized_method_name
-          @sanitized_method_name ||= @method_name.sub(/\?$/,"")
+          @sanitized_method_name ||= @method_name.sub(/\?$/,StringPool::EMPTY_STRING)
         end
 
         def sanitized_value(value)
-          value.to_s.gsub(/\s/, "_").gsub(/[^-\w]/, "").downcase
+          value.to_s.gsub(/\s/, "_").gsub(/[^-\w]/, StringPool::EMPTY_STRING).downcase
         end
 
         def select_content_tag(option_tags, options, html_options)
@@ -123,7 +123,7 @@ module ActionView
           select = content_tag("select", add_options(option_tags, options, value), html_options)
 
           if html_options["multiple"] && options.fetch(:include_hidden, true)
-            tag("input", :disabled => html_options["disabled"], :name => html_options["name"], :type => "hidden", :value => "") + select
+            tag("input", :disabled => html_options["disabled"], :name => html_options["name"], :type => "hidden", :value => StringPool::EMPTY_STRING) + select
           else
             select
           end
@@ -135,10 +135,10 @@ module ActionView
 
         def add_options(option_tags, options, value = nil)
           if options[:include_blank]
-            option_tags = content_tag_string('option', options[:include_blank].kind_of?(String) ? options[:include_blank] : nil, :value => '') + "\n" + option_tags
+            option_tags = content_tag_string('option', options[:include_blank].kind_of?(String) ? options[:include_blank] : nil, :value => StringPool::EMPTY_STRING) + "\n" + option_tags
           end
           if value.blank? && options[:prompt]
-            option_tags = content_tag_string('option', prompt_text(options[:prompt]), :value => '') + "\n" + option_tags
+            option_tags = content_tag_string('option', prompt_text(options[:prompt]), :value => StringPool::EMPTY_STRING) + "\n" + option_tags
           end
           option_tags
         end

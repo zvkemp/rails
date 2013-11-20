@@ -123,15 +123,15 @@ module ActionView
       #   # => <select id="credit_card" name="credit_card"><option>VISA</option>
       #   #    <option selected="selected">MasterCard</option></select>
       def select_tag(name, option_tags = nil, options = {})
-        option_tags ||= ""
+        option_tags ||= StringPool::EMPTY_STRING
         html_name = (options[:multiple] == true && !name.to_s.ends_with?("[]")) ? "#{name}[]" : name
 
         if options.delete(:include_blank)
-          option_tags = content_tag(:option, '', :value => '').safe_concat(option_tags)
+          option_tags = content_tag(:option, StringPool::EMPTY_STRING, :value => StringPool::EMPTY_STRING).safe_concat(option_tags)
         end
 
         if prompt = options.delete(:prompt)
-          option_tags = content_tag(:option, prompt, :value => '').safe_concat(option_tags)
+          option_tags = content_tag(:option, prompt, :value => StringPool::EMPTY_STRING).safe_concat(option_tags)
         end
 
         content_tag :select, option_tags, { "name" => html_name, "id" => sanitize_to_id(name) }.update(options.stringify_keys)
@@ -711,8 +711,8 @@ module ActionView
           method_tag = case method
             when /^get$/i # must be case-insensitive, but can't use downcase as might be nil
               html_options["method"] = "get"
-              ''
-            when /^post$/i, "", nil
+              StringPool::EMPTY_STRING
+            when /^post$/i, StringPool::EMPTY_STRING, nil
               html_options["method"] = "post"
               token_tag(authenticity_token)
             else
@@ -721,7 +721,7 @@ module ActionView
           end
 
           enforce_utf8 = html_options.delete("enforce_utf8") { true }
-          tags = (enforce_utf8 ? utf8_enforcer_tag : ''.html_safe) << method_tag
+          tags = (enforce_utf8 ? utf8_enforcer_tag : StringPool::EMPTY_STRING.html_safe) << method_tag
           content_tag(:div, tags, :style => 'margin:0;padding:0;display:inline')
         end
 

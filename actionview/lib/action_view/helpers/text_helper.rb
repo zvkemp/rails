@@ -150,7 +150,7 @@ module ActionView
       def excerpt(text, phrase, options = {})
         return unless text && phrase
 
-        separator = options[:separator] || ''
+        separator = options[:separator] || StringPool::EMPTY_STRING
         phrase    = Regexp.escape(phrase)
         regex     = /#{phrase}/i
 
@@ -422,14 +422,14 @@ module ActionView
         end
 
         def cut_excerpt_part(part_position, part, separator, options)
-          return "", "" unless part
+          return StringPool::EMPTY_STRING, StringPool::EMPTY_STRING unless part
 
           radius   = options.fetch(:radius, 100)
           omission = options.fetch(:omission, "...")
 
           part = part.split(separator)
-          part.delete("")
-          affix = part.size > radius ? omission : ""
+          part.delete(StringPool::EMPTY_STRING)
+          affix = part.size > radius ? omission : StringPool::EMPTY_STRING
 
           part = if part_position == :first
             drop_index = [part.length - radius, 0].max

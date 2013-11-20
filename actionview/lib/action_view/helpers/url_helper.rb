@@ -292,7 +292,7 @@ module ActionView
         params = html_options.delete('params')
 
         method     = html_options.delete('method').to_s
-        method_tag = BUTTON_TAG_METHOD_VERBS.include?(method) ? method_tag(method) : ''.html_safe
+        method_tag = BUTTON_TAG_METHOD_VERBS.include?(method) ? method_tag(method) : StringPool::EMPTY_STRING.html_safe
 
         form_method  = method == 'get' ? 'get' : 'post'
         form_options = html_options.delete('form') || {}
@@ -300,7 +300,7 @@ module ActionView
         form_options.merge!(method: form_method, action: url)
         form_options.merge!("data-remote" => "true") if remote
 
-        request_token_tag = form_method == 'post' ? token_tag : ''
+        request_token_tag = form_method == 'post' ? token_tag : StringPool::EMPTY_STRING
 
         html_options = convert_options_to_data_attributes(options, html_options)
         html_options['type'] = 'submit'
@@ -466,7 +466,7 @@ module ActionView
           option = html_options.delete(item) || next
           "#{item}=#{Rack::Utils.escape_path(option)}"
         }.compact
-        extras = extras.empty? ? '' : '?' + ERB::Util.html_escape(extras.join('&'))
+        extras = extras.empty? ? StringPool::EMPTY_STRING : '?' + ERB::Util.html_escape(extras.join('&'))
 
         html_options["href"] = "mailto:#{email_address}#{extras}".html_safe
 
@@ -613,7 +613,7 @@ module ActionView
             token ||= form_authenticity_token
             tag(:input, type: "hidden", name: request_forgery_protection_token.to_s, value: token)
           else
-            ''
+            StringPool::EMPTY_STRING
           end
         end
 

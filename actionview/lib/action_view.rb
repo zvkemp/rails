@@ -28,6 +28,7 @@ module ActionView
   extend ActiveSupport::Autoload
 
   eager_autoload do
+    autoload :StringPool
     autoload :Base
     autoload :Context
     autoload :CompiledTemplates, "action_view/context"

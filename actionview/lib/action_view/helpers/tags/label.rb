@@ -42,10 +42,10 @@ module ActionView
 
                         if object.respond_to?(:to_model)
                           key = object.class.model_name.i18n_key
-                          i18n_default = ["#{key}.#{method_and_value}".to_sym, ""]
+                          i18n_default = ["#{key}.#{method_and_value}".to_sym, StringPool::EMPTY_STRING]
                         end
 
-                        i18n_default ||= ""
+                        i18n_default ||= StringPool::EMPTY_STRING
                         I18n.t("#{@object_name}.#{method_and_value}", :default => i18n_default, :scope => "helpers.label").presence
                       else
                         @content.to_s

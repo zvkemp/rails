@@ -473,7 +473,7 @@ module ActionView
 
     def retrieve_variable(path, as)
       variable = as || begin
-        base = path[-1] == "/" ? "" : File.basename(path)
+        base = path[-1] == "/" ? StringPool::EMPTY_STRING : File.basename(path)
         raise_invalid_identifier(path) unless base =~ /\A_?([a-z]\w*)(\.\w+)*\z/
         $1.to_sym
       end

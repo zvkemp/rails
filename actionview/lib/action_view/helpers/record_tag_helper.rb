@@ -100,7 +100,7 @@ module ActionView
           if block_given?
             content_tag(tag_name, capture(record, &block), options)
           else
-            content_tag(tag_name, "", options)
+            content_tag(tag_name, StringPool::EMPTY_STRING, options)
           end
         end
     end
