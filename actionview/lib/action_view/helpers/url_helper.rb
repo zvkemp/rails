@@ -303,7 +303,7 @@ module ActionView
         request_token_tag = form_method == 'post' ? token_tag : StringPool::EMPTY
 
         html_options = convert_options_to_data_attributes(options, html_options)
-        html_options['type'] = 'submit'
+        html_options[StringPool::TYPE] = 'submit'
 
         button = if block_given?
           content_tag('button', html_options, &block)

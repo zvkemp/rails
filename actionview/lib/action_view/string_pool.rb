@@ -3,5 +3,7 @@ module ActionView
     EMPTY   = ''.freeze
     NEWLINE = "\n".freeze
     SLASH   = '/'.freeze
+
+    TYPE = 'type'.freeze
   end
 end

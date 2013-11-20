@@ -42,7 +42,7 @@ module ActionView
       end
 
       def tag_generate_errors?(options)
-        options['type'] != 'hidden'
+        options[StringPool::TYPE] != 'hidden'
       end
     end
   end

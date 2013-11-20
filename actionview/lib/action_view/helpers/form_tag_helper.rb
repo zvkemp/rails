@@ -172,7 +172,7 @@ module ActionView
       #   text_field_tag 'ip', '0.0.0.0', maxlength: 15, size: 20, class: "ip-input"
       #   # => <input class="ip-input" id="ip" maxlength="15" name="ip" size="20" type="text" value="0.0.0.0" />
       def text_field_tag(name, value = nil, options = {})
-        tag :input, { "type" => "text", "name" => name, "id" => sanitize_to_id(name), "value" => value }.update(options.stringify_keys)
+        tag :input, { StringPool::TYPE => "text", "name" => name, "id" => sanitize_to_id(name), "value" => value }.update(options.stringify_keys)
       end
 
       # Creates a label element. Accepts a block.
@@ -217,7 +217,7 @@ module ActionView
       #   # => <input id="collected_input" name="collected_input" onchange="alert('Input collected!')"
       #   #    type="hidden" value="" />
       def hidden_field_tag(name, value = nil, options = {})
-        text_field_tag(name, value, options.stringify_keys.update("type" => "hidden"))
+        text_field_tag(name, value, options.stringify_keys.update(StringPool::TYPE => "hidden"))
       end
 
       # Creates a file upload field. If you are using file uploads then you will also need
@@ -256,7 +256,7 @@ module ActionView
       #   file_field_tag 'file', accept: 'text/html', class: 'upload', value: 'index.html'
       #   # => <input accept="text/html" class="upload" id="file" name="file" type="file" value="index.html" />
       def file_field_tag(name, options = {})
-        text_field_tag(name, nil, options.update("type" => "file"))
+        text_field_tag(name, nil, options.update(StringPool::TYPE => "file"))
       end
 
       # Creates a password field, a masked text field that will hide the users input behind a mask character.
@@ -289,7 +289,7 @@ module ActionView
       #   password_field_tag 'pin', '1234', maxlength: 4, size: 6, class: "pin_input"
       #   # => <input class="pin_input" id="pin" maxlength="4" name="pin" size="6" type="password" value="1234" />
       def password_field_tag(name = "password", value = nil, options = {})
-        text_field_tag(name, value, options.update("type" => "password"))
+        text_field_tag(name, value, options.update(StringPool::TYPE => "password"))
       end
 
       # Creates a text input area; use a textarea for longer text inputs such as blog posts or descriptions.
@@ -356,7 +356,7 @@ module ActionView
       #   check_box_tag 'eula', 'accepted', false, disabled: true
       #   # => <input disabled="disabled" id="eula" name="eula" type="checkbox" value="accepted" />
       def check_box_tag(name, value = "1", checked = false, options = {})
-        html_options = { "type" => "checkbox", "name" => name, "id" => sanitize_to_id(name), "value" => value }.update(options.stringify_keys)
+        html_options = { StringPool::TYPE => "checkbox", "name" => name, "id" => sanitize_to_id(name), "value" => value }.update(options.stringify_keys)
         html_options["checked"] = "checked" if checked
         tag :input, html_options
       end
@@ -381,7 +381,7 @@ module ActionView
       #   radio_button_tag 'color', "green", true, class: "color_input"
       #   # => <input checked="checked" class="color_input" id="color_green" name="color" type="radio" value="green" />
       def radio_button_tag(name, value, checked = false, options = {})
-        html_options = { "type" => "radio", "name" => name, "id" => "#{sanitize_to_id(name)}_#{sanitize_to_id(value)}", "value" => value }.update(options.stringify_keys)
+        html_options = { StringPool::TYPE => "radio", "name" => name, "id" => "#{sanitize_to_id(name)}_#{sanitize_to_id(value)}", "value" => value }.update(options.stringify_keys)
         html_options["checked"] = "checked" if checked
         tag :input, html_options
       end
@@ -427,7 +427,7 @@ module ActionView
       def submit_tag(value = "Save changes", options = {})
         options = options.stringify_keys
 
-        tag :input, { "type" => "submit", "name" => "commit", "value" => value }.update(options)
+        tag :input, { StringPool::TYPE => "submit", "name" => "commit", "value" => value }.update(options)
       end
 
       # Creates a button element that defines a <tt>submit</tt> button,
@@ -473,7 +473,7 @@ module ActionView
         options ||= {}
         options = options.stringify_keys
 
-        options.reverse_merge! 'name' => 'button', 'type' => 'submit'
+        options.reverse_merge! 'name' => 'button', StringPool::TYPE => 'submit'
 
         content_tag :button, content_or_options || 'Button', options, &block
       end
@@ -510,7 +510,7 @@ module ActionView
       #   # => <input alt="Save" src="/images/save.png" data-confirm="Are you sure?" type="image" />
       def image_submit_tag(source, options = {})
         options = options.stringify_keys
-        tag :input, { "alt" => image_alt(source), "type" => "image", "src" => path_to_image(source) }.update(options)
+        tag :input, { "alt" => image_alt(source), StringPool::TYPE => "image", "src" => path_to_image(source) }.update(options)
       end
 
       # Creates a field set for grouping HTML form elements.
@@ -545,7 +545,7 @@ module ActionView
       # ==== Options
       # * Accepts the same options as text_field_tag.
       def color_field_tag(name, value = nil, options = {})
-        text_field_tag(name, value, options.stringify_keys.update("type" => "color"))
+        text_field_tag(name, value, options.stringify_keys.update(StringPool::TYPE => "color"))
       end
 
       # Creates a text field of type "search".
@@ -553,7 +553,7 @@ module ActionView
       # ==== Options
       # * Accepts the same options as text_field_tag.
       def search_field_tag(name, value = nil, options = {})
-        text_field_tag(name, value, options.stringify_keys.update("type" => "search"))
+        text_field_tag(name, value, options.stringify_keys.update(StringPool::TYPE => "search"))
       end
 
       # Creates a text field of type "tel".
@@ -561,7 +561,7 @@ module ActionView
       # ==== Options
       # * Accepts the same options as text_field_tag.
       def telephone_field_tag(name, value = nil, options = {})
-        text_field_tag(name, value, options.stringify_keys.update("type" => "tel"))
+        text_field_tag(name, value, options.stringify_keys.update(StringPool::TYPE => "tel"))
       end
       alias phone_field_tag telephone_field_tag
 
@@ -570,7 +570,7 @@ module ActionView
       # ==== Options
       # * Accepts the same options as text_field_tag.
       def date_field_tag(name, value = nil, options = {})
-        text_field_tag(name, value, options.stringify_keys.update("type" => "date"))
+        text_field_tag(name, value, options.stringify_keys.update(StringPool::TYPE => "date"))
       end
 
       # Creates a text field of type "time".
@@ -581,7 +581,7 @@ module ActionView
       # * <tt>:step</tt> - The acceptable value granularity.
       # * Otherwise accepts the same options as text_field_tag.
       def time_field_tag(name, value = nil, options = {})
-        text_field_tag(name, value, options.stringify_keys.update("type" => "time"))
+        text_field_tag(name, value, options.stringify_keys.update(StringPool::TYPE => "time"))
       end
 
       # Creates a text field of type "datetime".
@@ -592,7 +592,7 @@ module ActionView
       # * <tt>:step</tt> - The acceptable value granularity.
       # * Otherwise accepts the same options as text_field_tag.
       def datetime_field_tag(name, value = nil, options = {})
-        text_field_tag(name, value, options.stringify_keys.update("type" => "datetime"))
+        text_field_tag(name, value, options.stringify_keys.update(StringPool::TYPE => "datetime"))
       end
 
       # Creates a text field of type "datetime-local".
@@ -603,7 +603,7 @@ module ActionView
       # * <tt>:step</tt> - The acceptable value granularity.
       # * Otherwise accepts the same options as text_field_tag.
       def datetime_local_field_tag(name, value = nil, options = {})
-        text_field_tag(name, value, options.stringify_keys.update("type" => "datetime-local"))
+        text_field_tag(name, value, options.stringify_keys.update(StringPool::TYPE => "datetime-local"))
       end
 
       # Creates a text field of type "month".
@@ -614,7 +614,7 @@ module ActionView
       # * <tt>:step</tt> - The acceptable value granularity.
       # * Otherwise accepts the same options as text_field_tag.
       def month_field_tag(name, value = nil, options = {})
-        text_field_tag(name, value, options.stringify_keys.update("type" => "month"))
+        text_field_tag(name, value, options.stringify_keys.update(StringPool::TYPE => "month"))
       end
 
       # Creates a text field of type "week".
@@ -625,7 +625,7 @@ module ActionView
       # * <tt>:step</tt> - The acceptable value granularity.
       # * Otherwise accepts the same options as text_field_tag.
       def week_field_tag(name, value = nil, options = {})
-        text_field_tag(name, value, options.stringify_keys.update("type" => "week"))
+        text_field_tag(name, value, options.stringify_keys.update(StringPool::TYPE => "week"))
       end
 
       # Creates a text field of type "url".
@@ -633,7 +633,7 @@ module ActionView
       # ==== Options
       # * Accepts the same options as text_field_tag.
       def url_field_tag(name, value = nil, options = {})
-        text_field_tag(name, value, options.stringify_keys.update("type" => "url"))
+        text_field_tag(name, value, options.stringify_keys.update(StringPool::TYPE => "url"))
       end
 
       # Creates a text field of type "email".
@@ -641,7 +641,7 @@ module ActionView
       # ==== Options
       # * Accepts the same options as text_field_tag.
       def email_field_tag(name, value = nil, options = {})
-        text_field_tag(name, value, options.stringify_keys.update("type" => "email"))
+        text_field_tag(name, value, options.stringify_keys.update(StringPool::TYPE => "email"))
       end
 
       # Creates a number field.
@@ -659,7 +659,7 @@ module ActionView
       #   # => <input id="quantity" name="quantity" min="1" max="9" type="number" />
       def number_field_tag(name, value = nil, options = {})
         options = options.stringify_keys
-        options["type"] ||= "number"
+        options[StringPool::TYPE] ||= "number"
         if range = options.delete("in") || options.delete("within")
           options.update("min" => range.min, "max" => range.max)
         end
@@ -671,7 +671,7 @@ module ActionView
       # ==== Options
       # * Accepts the same options as number_field_tag.
       def range_field_tag(name, value = nil, options = {})
-        number_field_tag(name, value, options.stringify_keys.update("type" => "range"))
+        number_field_tag(name, value, options.stringify_keys.update(StringPool::TYPE => "range"))
       end
 
       # Creates the hidden UTF8 enforcer tag. Override this method in a helper
