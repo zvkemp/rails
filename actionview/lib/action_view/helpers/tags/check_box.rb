@@ -15,7 +15,7 @@ module ActionView
         def render
           options = @options.stringify_keys
           options[StringPool::TYPE]     = "checkbox"
-          options["value"]    = @checked_value
+          options[StringPool::VALUE]    = @checked_value
           options["checked"] = "checked" if input_checked?(object, options)
 
           if options["multiple"]
@@ -56,7 +56,7 @@ module ActionView
         end
 
         def hidden_field_for_checkbox(options)
-          @unchecked_value ? tag("input", options.slice("name", "disabled", "form").merge!(StringPool::TYPE => "hidden", "value" => @unchecked_value)) : StringPool::EMPTY.html_safe
+          @unchecked_value ? tag("input", options.slice("name", "disabled", "form").merge!(StringPool::TYPE => "hidden", StringPool::VALUE => @unchecked_value)) : StringPool::EMPTY.html_safe
         end
       end
     end

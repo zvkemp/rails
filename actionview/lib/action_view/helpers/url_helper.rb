@@ -308,7 +308,7 @@ module ActionView
         button = if block_given?
           content_tag('button', html_options, &block)
         else
-          html_options['value'] = name || url
+          html_options[StringPool::VALUE] = name || url
           tag('input', html_options)
         end
 

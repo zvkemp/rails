@@ -4,7 +4,7 @@ module ActionView
       class ColorField < TextField # :nodoc:
         def render
           options = @options.stringify_keys
-          options["value"] ||= validate_color_string(value(object))
+          options[StringPool::VALUE] ||= validate_color_string(value(object))
           @options = options
           super
         end

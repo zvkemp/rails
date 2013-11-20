@@ -18,7 +18,7 @@ module ActionView
 
         def render(&block)
           options = @options.stringify_keys
-          tag_value = options.delete("value")
+          tag_value = options.delete(StringPool::VALUE)
           name_and_id = options.dup
 
           if name_and_id["for"]

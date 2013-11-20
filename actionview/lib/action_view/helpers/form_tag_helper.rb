@@ -172,7 +172,7 @@ module ActionView
       #   text_field_tag 'ip', '0.0.0.0', maxlength: 15, size: 20, class: "ip-input"
       #   # => <input class="ip-input" id="ip" maxlength="15" name="ip" size="20" type="text" value="0.0.0.0" />
       def text_field_tag(name, value = nil, options = {})
-        tag :input, { StringPool::TYPE => "text", "name" => name, StringPool::ID => sanitize_to_id(name), "value" => value }.update(options.stringify_keys)
+        tag :input, { StringPool::TYPE => "text", "name" => name, StringPool::ID => sanitize_to_id(name), StringPool::VALUE => value }.update(options.stringify_keys)
       end
 
       # Creates a label element. Accepts a block.
@@ -356,7 +356,7 @@ module ActionView
       #   check_box_tag 'eula', 'accepted', false, disabled: true
       #   # => <input disabled="disabled" id="eula" name="eula" type="checkbox" value="accepted" />
       def check_box_tag(name, value = "1", checked = false, options = {})
-        html_options = { StringPool::TYPE => "checkbox", "name" => name, StringPool::ID => sanitize_to_id(name), "value" => value }.update(options.stringify_keys)
+        html_options = { StringPool::TYPE => "checkbox", "name" => name, StringPool::ID => sanitize_to_id(name), StringPool::VALUE => value }.update(options.stringify_keys)
         html_options["checked"] = "checked" if checked
         tag :input, html_options
       end
@@ -381,7 +381,7 @@ module ActionView
       #   radio_button_tag 'color', "green", true, class: "color_input"
       #   # => <input checked="checked" class="color_input" id="color_green" name="color" type="radio" value="green" />
       def radio_button_tag(name, value, checked = false, options = {})
-        html_options = { StringPool::TYPE => "radio", "name" => name, StringPool::ID => "#{sanitize_to_id(name)}_#{sanitize_to_id(value)}", "value" => value }.update(options.stringify_keys)
+        html_options = { StringPool::TYPE => "radio", "name" => name, StringPool::ID => "#{sanitize_to_id(name)}_#{sanitize_to_id(value)}", StringPool::VALUE => value }.update(options.stringify_keys)
         html_options["checked"] = "checked" if checked
         tag :input, html_options
       end
@@ -427,7 +427,7 @@ module ActionView
       def submit_tag(value = "Save changes", options = {})
         options = options.stringify_keys
 
-        tag :input, { StringPool::TYPE => "submit", "name" => "commit", "value" => value }.update(options)
+        tag :input, { StringPool::TYPE => "submit", "name" => "commit", StringPool::VALUE => value }.update(options)
       end
 
       # Creates a button element that defines a <tt>submit</tt> button,
