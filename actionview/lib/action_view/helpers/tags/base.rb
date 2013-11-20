@@ -84,7 +84,7 @@ module ActionView
             options[StringPool::ID] = options.fetch(StringPool::ID){ tag_id }
           end
 
-          options[StringPool::ID] = [options.delete('namespace'), options[StringPool::ID]].compact.join("_").presence
+          options[StringPool::ID] = [options.delete('namespace'), options[StringPool::ID]].compact.join(StringPool::UNDERSCORE).presence
         end
 
         def tag_name(multiple = false)
@@ -104,7 +104,7 @@ module ActionView
         end
 
         def sanitized_object_name
-          @sanitized_object_name ||= @object_name.gsub(/\]\[|[^-a-zA-Z0-9:.]/, "_").sub(/_$/, StringPool::EMPTY)
+          @sanitized_object_name ||= @object_name.gsub(/\]\[|[^-a-zA-Z0-9:.]/, StringPool::UNDERSCORE).sub(/_$/, StringPool::EMPTY)
         end
 
         def sanitized_method_name
@@ -112,7 +112,7 @@ module ActionView
         end
 
         def sanitized_value(value)
-          value.to_s.gsub(/\s/, "_").gsub(/[^-\w]/, StringPool::EMPTY).downcase
+          value.to_s.gsub(/\s/, StringPool::UNDERSCORE).gsub(/[^-\w]/, StringPool::EMPTY).downcase
         end
 
         def select_content_tag(option_tags, options, html_options)

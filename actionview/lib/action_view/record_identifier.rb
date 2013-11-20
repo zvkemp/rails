@@ -31,7 +31,7 @@ module ActionView
 
     include ModelNaming
 
-    JOIN = '_'.freeze
+    JOIN = StringPool::UNDERSCORE
     NEW = 'new'.freeze
 
     # The DOM class convention is to use the singular form of an object or class.
@@ -78,7 +78,7 @@ module ActionView
     # make sure yourself that your dom ids are valid, in case you overwrite this method.
     def record_key_for_dom_id(record)
       key = convert_to_model(record).to_key
-      key ? key.join('_') : key
+      key ? key.join(StringPool::UNDERSCORE) : key
     end
   end
 end

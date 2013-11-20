@@ -1001,8 +1001,8 @@ module ActionView
         # Returns the id attribute for the input tag.
         #  => "post_written_on_1i"
         def input_id_from_type(type)
-          id = input_name_from_type(type).gsub(/([\[\(])|(\]\[)/, '_').gsub(/[\]\)]/, StringPool::EMPTY)
-          id = @options[:namespace] + '_' + id if @options[:namespace]
+          id = input_name_from_type(type).gsub(/([\[\(])|(\]\[)/, StringPool::UNDERSCORE).gsub(/[\]\)]/, StringPool::EMPTY)
+          id = @options[:namespace] + StringPool::UNDERSCORE + id if @options[:namespace]
 
           id
         end

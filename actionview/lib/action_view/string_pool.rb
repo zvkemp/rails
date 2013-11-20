@@ -1,8 +1,9 @@
 module ActionView
   module StringPool
-    EMPTY   = ''.freeze
-    NEWLINE = "\n".freeze
-    SLASH   = '/'.freeze
+    EMPTY      = ''.freeze
+    NEWLINE    = "\n".freeze
+    SLASH      = '/'.freeze
+    UNDERSCORE = '_'.freeze
 
     ID    = 'id'.freeze
     NAME  = 'name'.freeze
