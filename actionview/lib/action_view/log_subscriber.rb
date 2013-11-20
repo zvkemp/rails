@@ -28,7 +28,7 @@ module ActionView
 
   protected
 
-    EMPTY = StringPool::EMPTY_STRING
+    EMPTY = StringPool::EMPTY
     def from_rails_root(string)
       string = string.sub(rails_root, EMPTY)
       string.sub!(VIEWS_PATTERN, EMPTY)

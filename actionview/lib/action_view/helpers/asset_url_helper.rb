@@ -119,10 +119,10 @@ module ActionView
       #   asset_path "http://www.example.com/js/xmlhr.js" # => http://www.example.com/js/xmlhr.js
       def asset_path(source, options = {})
         source = source.to_s
-        return StringPool::EMPTY_STRING unless source.present?
+        return StringPool::EMPTY unless source.present?
         return source if source =~ URI_REGEXP
 
-        tail, source = source[/([\?#].+)$/], source.sub(/([\?#].+)$/, StringPool::EMPTY_STRING)
+        tail, source = source[/([\?#].+)$/], source.sub(/([\?#].+)$/, StringPool::EMPTY)
 
         if extname = compute_asset_extname(source, options)
           source = "#{source}#{extname}"
@@ -180,7 +180,7 @@ module ActionView
       # extensions can override this method to point to custom assets
       # or generate digested paths or query strings.
       def compute_asset_path(source, options = {})
-        dir = ASSET_PUBLIC_DIRECTORIES[options[:type]] || StringPool::EMPTY_STRING
+        dir = ASSET_PUBLIC_DIRECTORIES[options[:type]] || StringPool::EMPTY
         File.join(dir, source)
       end
 
@@ -189,7 +189,7 @@ module ActionView
       # numbers 0-3 if it contains <tt>%d</tt> (the number is the source hash mod 4),
       # or the value returned from invoking call on an object responding to call
       # (proc or otherwise).
-      def compute_asset_host(source = StringPool::EMPTY_STRING, options = {})
+      def compute_asset_host(source = StringPool::EMPTY, options = {})
         request = self.request if respond_to?(:request)
         host = config.asset_host if defined? config.asset_host
         host ||= request.base_url if request && options[:protocol] == :request

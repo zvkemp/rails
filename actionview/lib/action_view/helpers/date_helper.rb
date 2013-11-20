@@ -945,7 +945,7 @@ module ActionView
           select_options[:class] = type if @options[:with_css_classes]
 
           select_html = "\n"
-          select_html << content_tag(:option, StringPool::EMPTY_STRING, :value => StringPool::EMPTY_STRING) + StringPool::NEWLINE if @options[:include_blank]
+          select_html << content_tag(:option, StringPool::EMPTY, :value => StringPool::EMPTY) + StringPool::NEWLINE if @options[:include_blank]
           select_html << prompt_option_tag(type, @options[:prompt]) + StringPool::NEWLINE if @options[:prompt]
           select_html << select_options_as_html
 
@@ -966,7 +966,7 @@ module ActionView
               I18n.translate(:"datetime.prompts.#{type}", :locale => @options[:locale])
           end
 
-          prompt ? content_tag(:option, prompt, :value => StringPool::EMPTY_STRING) : StringPool::EMPTY_STRING
+          prompt ? content_tag(:option, prompt, :value => StringPool::EMPTY) : StringPool::EMPTY
         end
 
         # Builds hidden input tag for date part and value.
@@ -1001,7 +1001,7 @@ module ActionView
         # Returns the id attribute for the input tag.
         #  => "post_written_on_1i"
         def input_id_from_type(type)
-          id = input_name_from_type(type).gsub(/([\[\(])|(\]\[)/, '_').gsub(/[\]\)]/, StringPool::EMPTY_STRING)
+          id = input_name_from_type(type).gsub(/([\[\(])|(\]\[)/, '_').gsub(/[\]\)]/, StringPool::EMPTY)
           id = @options[:namespace] + '_' + id if @options[:namespace]
 
           id
@@ -1021,15 +1021,15 @@ module ActionView
 
         # Returns the separator for a given datetime component.
         def separator(type)
-          return StringPool::EMPTY_STRING if @options[:use_hidden]
+          return StringPool::EMPTY if @options[:use_hidden]
 
           case type
             when :year, :month, :day
-              @options[:"discard_#{type}"] ? StringPool::EMPTY_STRING : @options[:date_separator]
+              @options[:"discard_#{type}"] ? StringPool::EMPTY : @options[:date_separator]
             when :hour
-              (@options[:discard_year] && @options[:discard_day]) ? StringPool::EMPTY_STRING : @options[:datetime_separator]
+              (@options[:discard_year] && @options[:discard_day]) ? StringPool::EMPTY : @options[:datetime_separator]
             when :minute, :second
-              @options[:"discard_#{type}"] ? StringPool::EMPTY_STRING : @options[:time_separator]
+              @options[:"discard_#{type}"] ? StringPool::EMPTY : @options[:time_separator]
           end
         end
     end

@@ -74,7 +74,7 @@ module ActionView
           "Trace of template inclusion: " +
           @sub_templates.collect { |template| template.inspect }.join(", ")
         else
-          StringPool::EMPTY_STRING
+          StringPool::EMPTY
         end
       end
 
@@ -125,7 +125,7 @@ module ActionView
           source_code.inject(start_value) do |result, line|
             line_counter += 1
             if output == :html
-              result.update(line_counter.to_s => "%#{indent}s %s\n" % [StringPool::EMPTY_STRING, line])
+              result.update(line_counter.to_s => "%#{indent}s %s\n" % [StringPool::EMPTY, line])
             else
               result << "%#{indent}s: %s\n" % [line_counter, line]
             end

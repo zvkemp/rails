@@ -303,7 +303,7 @@ module ActionView
             define_method :_layout_from_proc, &_layout
             protected :_layout_from_proc
             <<-RUBY
-              result = _layout_from_proc(#{_layout.arity == 0 ? StringPool::EMPTY_STRING : 'self'})
+              result = _layout_from_proc(#{_layout.arity == 0 ? StringPool::EMPTY : 'self'})
               return #{default_behavior} if result.nil?
               result
             RUBY

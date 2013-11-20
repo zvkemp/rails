@@ -527,10 +527,10 @@ module ActionView
         prompt  = options[:prompt]
         divider = options[:divider]
 
-        body = StringPool::EMPTY_STRING.html_safe
+        body = StringPool::EMPTY.html_safe
 
         if prompt
-          body.safe_concat content_tag(:option, prompt_text(prompt), value: StringPool::EMPTY_STRING)
+          body.safe_concat content_tag(:option, prompt_text(prompt), value: StringPool::EMPTY)
         end
 
         grouped_options.each do |container|
@@ -568,7 +568,7 @@ module ActionView
       # NOTE: Only the option tags are returned, you have to wrap this call in
       # a regular HTML select tag.
       def time_zone_options_for_select(selected = nil, priority_zones = nil, model = ::ActiveSupport::TimeZone)
-        zone_options = StringPool::EMPTY_STRING.html_safe
+        zone_options = StringPool::EMPTY.html_safe
 
         zones = model.all
         convert_zones = lambda { |list| list.map { |z| [ z.to_s, z.name ] } }
@@ -579,7 +579,7 @@ module ActionView
           end
 
           zone_options.safe_concat options_for_select(convert_zones[priority_zones], selected)
-          zone_options.safe_concat content_tag(:option, '-------------', value: StringPool::EMPTY_STRING, disabled: true)
+          zone_options.safe_concat content_tag(:option, '-------------', value: StringPool::EMPTY, disabled: true)
           zone_options.safe_concat StringPool::NEWLINE
 
           zones = zones - priority_zones

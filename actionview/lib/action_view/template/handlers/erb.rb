@@ -108,7 +108,7 @@ module ActionView
           # expression
           template_source = template.source.dup.force_encoding(Encoding::ASCII_8BIT)
 
-          erb = template_source.gsub(ENCODING_TAG, StringPool::EMPTY_STRING)
+          erb = template_source.gsub(ENCODING_TAG, StringPool::EMPTY)
           encoding = $2
 
           erb.force_encoding valid_encoding(template.source.dup, encoding)

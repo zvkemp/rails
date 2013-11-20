@@ -162,7 +162,7 @@ module ActionView
         parts.shift if parts.first.empty?
         name     = parts.pop
 
-        return name, prefixes || [StringPool::EMPTY_STRING] if parts.empty?
+        return name, prefixes || [StringPool::EMPTY] if parts.empty?
 
         parts    = parts.join(StringPool::SLASH)
         prefixes = prefixes ? prefixes.map { |p| "#{p}/#{parts}" } : [parts]

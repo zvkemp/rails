@@ -60,7 +60,7 @@ module ActionView
           tag_options = {
             "src" => path_to_javascript(source, path_options)
           }.merge!(options)
-          content_tag(:script, StringPool::EMPTY_STRING, tag_options)
+          content_tag(:script, StringPool::EMPTY, tag_options)
         }.join(StringPool::NEWLINE).html_safe
       end
 
@@ -233,7 +233,7 @@ module ActionView
       #   image_alt('underscored_file_name.png')
       #   # => Underscored file name
       def image_alt(src)
-        File.basename(src, '.*').sub(/-[[:xdigit:]]{32}\z/, StringPool::EMPTY_STRING).tr('-_', ' ').capitalize
+        File.basename(src, '.*').sub(/-[[:xdigit:]]{32}\z/, StringPool::EMPTY).tr('-_', ' ').capitalize
       end
 
       # Returns an html video tag for the +sources+. If +sources+ is a string,

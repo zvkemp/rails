@@ -80,7 +80,7 @@ module ActionView
             collect { |name| name.include?(StringPool::SLASH) ? name : "#{directory}/#{name}" }.
 
             # replace quotes from string renders
-            collect { |name| name.gsub(/["']/, StringPool::EMPTY_STRING) }
+            collect { |name| name.gsub(/["']/, StringPool::EMPTY) }
         end
 
         def explicit_dependencies

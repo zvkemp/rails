@@ -163,14 +163,14 @@ module ActionView
       lookup  = view.lookup_context
       pieces  = @virtual_path.split(StringPool::SLASH)
       name    = pieces.pop
-      partial = !!name.sub!(/^_/, StringPool::EMPTY_STRING)
+      partial = !!name.sub!(/^_/, StringPool::EMPTY)
       lookup.disable_cache do
         lookup.find_template(name, [ pieces.join(StringPool::SLASH) ], partial, @locals)
       end
     end
 
     def inspect
-      @inspect ||= defined?(Rails.root) ? identifier.sub("#{Rails.root}/", StringPool::EMPTY_STRING) : identifier
+      @inspect ||= defined?(Rails.root) ? identifier.sub("#{Rails.root}/", StringPool::EMPTY) : identifier
     end
 
     # This method is responsible for properly setting the encoding of the
@@ -189,7 +189,7 @@ module ActionView
       # Look for # encoding: *. If we find one, we'll encode the
       # String in that encoding, otherwise, we'll use the
       # default external encoding.
-      if source.sub!(/\A#{ENCODING_FLAG}/, StringPool::EMPTY_STRING)
+      if source.sub!(/\A#{ENCODING_FLAG}/, StringPool::EMPTY)
         encoding = magic_encoding = $1
       else
         encoding = Encoding.default_external

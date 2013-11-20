@@ -203,7 +203,7 @@ module ActionView
     def build_query(path, details)
       query = @pattern.dup
 
-      prefix = path.prefix.empty? ? StringPool::EMPTY_STRING : "#{escape_entry(path.prefix)}\\1"
+      prefix = path.prefix.empty? ? StringPool::EMPTY : "#{escape_entry(path.prefix)}\\1"
       query.gsub!(/\:prefix(\/)?/, prefix)
 
       partial = escape_entry(path.partial? ? "_#{path.name}" : path.name)
@@ -316,7 +316,7 @@ module ActionView
   # a virtual path since it is invalid for such resolvers.
   class FallbackFileSystemResolver < FileSystemResolver #:nodoc:
     def self.instances
-      [new(StringPool::EMPTY_STRING), new(StringPool::SLASH)]
+      [new(StringPool::EMPTY), new(StringPool::SLASH)]
     end
 
     def decorate(*)

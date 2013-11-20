@@ -16,7 +16,7 @@ module ActionView
 
         class << self
           def select_type
-            @select_type ||= self.name.split("::").last.sub("Select", StringPool::EMPTY_STRING).downcase
+            @select_type ||= self.name.split("::").last.sub("Select", StringPool::EMPTY).downcase
           end
         end
 
