@@ -217,7 +217,7 @@ module ActionView
       #   # => <input id="collected_input" name="collected_input" onchange="alert('Input collected!')"
       #   #    type="hidden" value="" />
       def hidden_field_tag(name, value = nil, options = {})
-        text_field_tag(name, value, options.stringify_keys.update(StringPool::TYPE => "hidden"))
+        text_field_tag(name, value, options.stringify_keys.update(StringPool::TYPE => StringPool::HIDDEN))
       end
 
       # Creates a file upload field. If you are using file uploads then you will also need
@@ -677,7 +677,7 @@ module ActionView
       # Creates the hidden UTF8 enforcer tag. Override this method in a helper
       # to customize the tag.
       def utf8_enforcer_tag
-        tag(:input, :type => "hidden", :name => "utf8", :value => "&#x2713;".html_safe)
+        tag(:input, :type => StringPool::HIDDEN, :name => "utf8", :value => "&#x2713;".html_safe)
       end
 
       private

@@ -123,7 +123,7 @@ module ActionView
           select = content_tag("select", add_options(option_tags, options, value), html_options)
 
           if html_options["multiple"] && options.fetch(:include_hidden, true)
-            tag("input", :disabled => html_options["disabled"], :name => html_options[StringPool::NAME], :type => "hidden", :value => StringPool::EMPTY) + select
+            tag("input", :disabled => html_options["disabled"], :name => html_options[StringPool::NAME], :type => StringPool::HIDDEN, :value => StringPool::EMPTY) + select
           else
             select
           end

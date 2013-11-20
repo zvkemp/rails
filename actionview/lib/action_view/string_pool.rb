@@ -6,6 +6,7 @@ module ActionView
     UNDERSCORE = '_'.freeze
 
     CHECKED = 'checked'.freeze
+    HIDDEN  = 'hidden'.freeze
     ID      = 'id'.freeze
     NAME    = 'name'.freeze
     TYPE    = 'type'.freeze

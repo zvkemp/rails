@@ -974,7 +974,7 @@ module ActionView
         #  => "<input id="post_written_on_1i" name="post[written_on(1i)]" type="hidden" value="2008" />"
         def build_hidden(type, value)
           select_options = {
-            :type => "hidden",
+            :type => StringPool::HIDDEN,
             :id => input_id_from_type(type),
             :name => input_name_from_type(type),
             :value => value

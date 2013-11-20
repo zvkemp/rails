@@ -315,7 +315,7 @@ module ActionView
         inner_tags = method_tag.safe_concat(button).safe_concat(request_token_tag)
         if params
           params.each do |param_name, value|
-            inner_tags.safe_concat tag(:input, type: "hidden", name: param_name, value: value.to_param)
+            inner_tags.safe_concat tag(:input, type: StringPool::HIDDEN, name: param_name, value: value.to_param)
           end
         end
         content_tag('form', content_tag('div', inner_tags), form_options)
@@ -611,14 +611,14 @@ module ActionView
         def token_tag(token=nil)
           if token != false && protect_against_forgery?
             token ||= form_authenticity_token
-            tag(:input, type: "hidden", name: request_forgery_protection_token.to_s, value: token)
+            tag(:input, type: StringPool::HIDDEN, name: request_forgery_protection_token.to_s, value: token)
           else
             StringPool::EMPTY
           end
         end
 
         def method_tag(method)
-          tag('input', type: 'hidden', name: '_method', value: method.to_s)
+          tag('input', type: StringPool::HIDDEN, name: '_method', value: method.to_s)
         end
     end
   end
