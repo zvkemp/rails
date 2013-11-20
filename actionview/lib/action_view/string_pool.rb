@@ -5,9 +5,10 @@ module ActionView
     SLASH      = '/'.freeze
     UNDERSCORE = '_'.freeze
 
-    ID    = 'id'.freeze
-    NAME  = 'name'.freeze
-    TYPE  = 'type'.freeze
-    VALUE = 'value'.freeze
+    CHECKED = 'checked'.freeze
+    ID      = 'id'.freeze
+    NAME    = 'name'.freeze
+    TYPE    = 'type'.freeze
+    VALUE   = 'value'.freeze
   end
 end

@@ -16,7 +16,7 @@ module ActionView
           options = @options.stringify_keys
           options[StringPool::TYPE]     = "checkbox"
           options[StringPool::VALUE]    = @checked_value
-          options["checked"] = "checked" if input_checked?(object, options)
+          options[StringPool::CHECKED] = StringPool::CHECKED if input_checked?(object, options)
 
           if options["multiple"]
             add_default_name_and_id_for_value(@checked_value, options)

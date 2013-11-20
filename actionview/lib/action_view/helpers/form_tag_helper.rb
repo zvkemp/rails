@@ -357,7 +357,7 @@ module ActionView
       #   # => <input disabled="disabled" id="eula" name="eula" type="checkbox" value="accepted" />
       def check_box_tag(name, value = "1", checked = false, options = {})
         html_options = { StringPool::TYPE => "checkbox", StringPool::NAME => name, StringPool::ID => sanitize_to_id(name), StringPool::VALUE => value }.update(options.stringify_keys)
-        html_options["checked"] = "checked" if checked
+        html_options[StringPool::CHECKED] = StringPool::CHECKED if checked
         tag :input, html_options
       end
 
@@ -382,7 +382,7 @@ module ActionView
       #   # => <input checked="checked" class="color_input" id="color_green" name="color" type="radio" value="green" />
       def radio_button_tag(name, value, checked = false, options = {})
         html_options = { StringPool::TYPE => "radio", StringPool::NAME => name, StringPool::ID => "#{sanitize_to_id(name)}_#{sanitize_to_id(value)}", StringPool::VALUE => value }.update(options.stringify_keys)
-        html_options["checked"] = "checked" if checked
+        html_options[StringPool::CHECKED] = StringPool::CHECKED if checked
         tag :input, html_options
       end
 

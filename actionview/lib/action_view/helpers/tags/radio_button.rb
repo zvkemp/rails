@@ -15,7 +15,7 @@ module ActionView
           options = @options.stringify_keys
           options[StringPool::TYPE]     = "radio"
           options[StringPool::VALUE]    = @tag_value
-          options["checked"] = "checked" if input_checked?(object, options)
+          options[StringPool::CHECKED] = StringPool::CHECKED if input_checked?(object, options)
           add_default_name_and_id_for_value(@tag_value, options)
           tag("input", options)
         end
