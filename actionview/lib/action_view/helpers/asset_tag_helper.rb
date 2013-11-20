@@ -61,7 +61,7 @@ module ActionView
             "src" => path_to_javascript(source, path_options)
           }.merge!(options)
           content_tag(:script, StringPool::EMPTY_STRING, tag_options)
-        }.join("\n").html_safe
+        }.join(StringPool::NEWLINE).html_safe
       end
 
       # Returns a stylesheet link tag for the sources specified as arguments. If
@@ -100,7 +100,7 @@ module ActionView
             "href" => path_to_stylesheet(source, path_options)
           }.merge!(options)
           tag(:link, tag_options)
-        }.join("\n").html_safe
+        }.join(StringPool::NEWLINE).html_safe
       end
 
       # Returns a link tag that browsers and news readers can use to auto-detect

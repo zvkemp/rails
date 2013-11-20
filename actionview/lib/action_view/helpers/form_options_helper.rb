@@ -365,7 +365,7 @@ module ActionView
           html_attributes[:value] = value
 
           content_tag_string(:option, text, html_attributes)
-        end.join("\n").html_safe
+        end.join(StringPool::NEWLINE).html_safe
       end
 
       # Returns a string of option tags that have been compiled by iterating over the +collection+ and assigning
@@ -580,7 +580,7 @@ module ActionView
 
           zone_options.safe_concat options_for_select(convert_zones[priority_zones], selected)
           zone_options.safe_concat content_tag(:option, '-------------', value: StringPool::EMPTY_STRING, disabled: true)
-          zone_options.safe_concat "\n"
+          zone_options.safe_concat StringPool::NEWLINE
 
           zones = zones - priority_zones
         end

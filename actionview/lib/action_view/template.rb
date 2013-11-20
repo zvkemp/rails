@@ -298,7 +298,7 @@ module ActionView
           if logger = (view && view.logger)
             logger.debug "ERROR: compiling #{method_name} RAISED #{e}"
             logger.debug "Function body: #{source}"
-            logger.debug "Backtrace: #{e.backtrace.join("\n")}"
+            logger.debug "Backtrace: #{e.backtrace.join(StringPool::NEWLINE)}"
           end
 
           raise ActionView::Template::Error.new(self, e)

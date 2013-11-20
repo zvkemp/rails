@@ -218,9 +218,9 @@ module ActionView
       def word_wrap(text, options = {})
         line_width = options.fetch(:line_width, 80)
 
-        text.split("\n").collect! do |line|
+        text.split(StringPool::NEWLINE).collect! do |line|
           line.length > line_width ? line.gsub(/(.{1,#{line_width}})(\s+|$)/, "\\1\n").strip : line
-        end * "\n"
+        end * StringPool::NEWLINE
       end
 
       # Returns +text+ transformed into HTML using simple formatting rules.
@@ -416,7 +416,7 @@ module ActionView
         def split_paragraphs(text)
           return [] if text.blank?
 
-          text.to_str.gsub(/\r\n?/, "\n").split(/\n\n+/).map! do |t|
+          text.to_str.gsub(/\r\n?/, StringPool::NEWLINE).split(/\n\n+/).map! do |t|
             t.gsub!(/([^\n]\n)(?=[^\n])/, '\1<br />') || t
           end
         end

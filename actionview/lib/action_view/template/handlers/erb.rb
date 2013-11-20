@@ -12,11 +12,11 @@ module ActionView
         def add_text(src, text)
           return if text.empty?
 
-          if text == "\n"
+          if text == StringPool::NEWLINE
             @newline_pending += 1
           else
             src << "@output_buffer.safe_append='"
-            src << "\n" * @newline_pending if @newline_pending > 0
+            src << StringPool::NEWLINE * @newline_pending if @newline_pending > 0
             src << escape_text(text)
             src << "';"
 
@@ -67,7 +67,7 @@ module ActionView
 
         def flush_newline_if_pending(src)
           if @newline_pending > 0
-            src << "@output_buffer.safe_append='#{"\n" * @newline_pending}';"
+            src << "@output_buffer.safe_append='#{StringPool::NEWLINE * @newline_pending}';"
             @newline_pending = 0
           end
         end

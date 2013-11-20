@@ -135,10 +135,10 @@ module ActionView
 
         def add_options(option_tags, options, value = nil)
           if options[:include_blank]
-            option_tags = content_tag_string('option', options[:include_blank].kind_of?(String) ? options[:include_blank] : nil, :value => StringPool::EMPTY_STRING) + "\n" + option_tags
+            option_tags = content_tag_string('option', options[:include_blank].kind_of?(String) ? options[:include_blank] : nil, :value => StringPool::EMPTY_STRING) + StringPool::NEWLINE + option_tags
           end
           if value.blank? && options[:prompt]
-            option_tags = content_tag_string('option', prompt_text(options[:prompt]), :value => StringPool::EMPTY_STRING) + "\n" + option_tags
+            option_tags = content_tag_string('option', prompt_text(options[:prompt]), :value => StringPool::EMPTY_STRING) + StringPool::NEWLINE + option_tags
           end
           option_tags
         end

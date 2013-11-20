@@ -85,7 +85,7 @@ module ActionView
 
         Array(single_or_multiple_records).map do |single_record|
           content_tag_for_single_record(tag_name, single_record, prefix, options, &block)
-        end.join("\n").html_safe
+        end.join(StringPool::NEWLINE).html_safe
       end
 
       private

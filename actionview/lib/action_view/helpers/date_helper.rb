@@ -775,7 +775,7 @@ module ActionView
           1.upto(12) do |month_number|
             options = { :value => month_number }
             options[:selected] = "selected" if month == month_number
-            month_options << content_tag(:option, month_name(month_number), options) + "\n"
+            month_options << content_tag(:option, month_name(month_number), options) + StringPool::NEWLINE
           end
           build_select(:month, month_options.join)
         end
@@ -928,7 +928,7 @@ module ActionView
             select_options << content_tag(:option, text, tag_options)
           end
 
-          (select_options.join("\n") + "\n").html_safe
+          (select_options.join(StringPool::NEWLINE) + StringPool::NEWLINE).html_safe
         end
 
         # Builds select tag from date type and html select options.
@@ -945,11 +945,11 @@ module ActionView
           select_options[:class] = type if @options[:with_css_classes]
 
           select_html = "\n"
-          select_html << content_tag(:option, StringPool::EMPTY_STRING, :value => StringPool::EMPTY_STRING) + "\n" if @options[:include_blank]
-          select_html << prompt_option_tag(type, @options[:prompt]) + "\n" if @options[:prompt]
+          select_html << content_tag(:option, StringPool::EMPTY_STRING, :value => StringPool::EMPTY_STRING) + StringPool::NEWLINE if @options[:include_blank]
+          select_html << prompt_option_tag(type, @options[:prompt]) + StringPool::NEWLINE if @options[:prompt]
           select_html << select_options_as_html
 
-          (content_tag(:select, select_html.html_safe, select_options) + "\n").html_safe
+          (content_tag(:select, select_html.html_safe, select_options) + StringPool::NEWLINE).html_safe
         end
 
         # Builds a prompt option tag with supplied options or from default options.
@@ -981,7 +981,7 @@ module ActionView
           }.merge!(@html_options.slice(:disabled))
           select_options[:disabled] = 'disabled' if @options[:disabled]
 
-          tag(:input, select_options) + "\n".html_safe
+          tag(:input, select_options) + StringPool::NEWLINE.html_safe
         end
 
         # Returns the name attribute for the input tag.

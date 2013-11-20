@@ -82,7 +82,7 @@ module ActionView
         return unless num = line_number
         num = num.to_i
 
-        source_code = @template.source.split("\n")
+        source_code = @template.source.split(StringPool::NEWLINE)
 
         start_on_line = [ num - SOURCE_CODE_RADIUS - 1, 0 ].max
         end_on_line   = [ num + SOURCE_CODE_RADIUS - 1, source_code.length].min
