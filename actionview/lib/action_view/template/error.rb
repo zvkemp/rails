@@ -41,7 +41,7 @@ module ActionView
         'template'
       end
 
-      searched_paths = prefixes.map { |prefix| [prefix, path].join("/") }
+      searched_paths = prefixes.map { |prefix| [prefix, path].join(StringPool::SLASH) }
 
       out  = "Missing #{template_type} #{searched_paths.join(", ")} with #{details.inspect}. Searched in:\n"
       out += paths.compact.map { |p| "  * #{p.to_s.inspect}\n" }.join

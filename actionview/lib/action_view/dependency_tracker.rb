@@ -64,7 +64,7 @@ module ActionView
         end
 
         def directory
-          name.split("/")[0..-2].join("/")
+          name.split(StringPool::SLASH)[0..-2].join(StringPool::SLASH)
         end
 
         def render_dependencies
@@ -77,7 +77,7 @@ module ActionView
             collect { |name| name.sub(/\A@?([a-z_]+\.)*([a-z_]+)\z/) { "#{$2.pluralize}/#{$2.singularize}" } }.
 
             # render("headline") => render("message/headline")
-            collect { |name| name.include?("/") ? name : "#{directory}/#{name}" }.
+            collect { |name| name.include?(StringPool::SLASH) ? name : "#{directory}/#{name}" }.
 
             # replace quotes from string renders
             collect { |name| name.gsub(/["']/, StringPool::EMPTY_STRING) }

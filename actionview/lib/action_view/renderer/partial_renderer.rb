@@ -450,15 +450,15 @@ module ActionView
     def merge_prefix_into_object_path(prefix, object_path)
       if prefix.include?(?/) && object_path.include?(?/)
         prefixes = []
-        prefix_array = File.dirname(prefix).split('/')
-        object_path_array = object_path.split('/')[0..-3] # skip model dir & partial
+        prefix_array = File.dirname(prefix).split(StringPool::SLASH)
+        object_path_array = object_path.split(StringPool::SLASH)[0..-3] # skip model dir & partial
 
         prefix_array.each_with_index do |dir, index|
           break if dir == object_path_array[index]
           prefixes << dir
         end
 
-        (prefixes << object_path).join("/")
+        (prefixes << object_path).join(StringPool::SLASH)
       else
         object_path
       end
@@ -473,7 +473,7 @@ module ActionView
 
     def retrieve_variable(path, as)
       variable = as || begin
-        base = path[-1] == "/" ? StringPool::EMPTY_STRING : File.basename(path)
+        base = path[-1] == StringPool::SLASH ? StringPool::EMPTY_STRING : File.basename(path)
         raise_invalid_identifier(path) unless base =~ /\A_?([a-z]\w*)(\.\w+)*\z/
         $1.to_sym
       end

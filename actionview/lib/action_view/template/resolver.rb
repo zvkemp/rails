@@ -316,7 +316,7 @@ module ActionView
   # a virtual path since it is invalid for such resolvers.
   class FallbackFileSystemResolver < FileSystemResolver #:nodoc:
     def self.instances
-      [new(StringPool::EMPTY_STRING), new("/")]
+      [new(StringPool::EMPTY_STRING), new(StringPool::SLASH)]
     end
 
     def decorate(*)

@@ -161,11 +161,11 @@ module ActionView
     def refresh(view)
       raise "A template needs to have a virtual path in order to be refreshed" unless @virtual_path
       lookup  = view.lookup_context
-      pieces  = @virtual_path.split("/")
+      pieces  = @virtual_path.split(StringPool::SLASH)
       name    = pieces.pop
       partial = !!name.sub!(/^_/, StringPool::EMPTY_STRING)
       lookup.disable_cache do
-        lookup.find_template(name, [ pieces.join('/') ], partial, @locals)
+        lookup.find_template(name, [ pieces.join(StringPool::SLASH) ], partial, @locals)
       end
     end
 

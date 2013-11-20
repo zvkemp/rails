@@ -158,13 +158,13 @@ module ActionView
       # name instead of the prefix.
       def normalize_name(name, prefixes) #:nodoc:
         prefixes = prefixes.presence
-        parts    = name.to_s.split('/')
+        parts    = name.to_s.split(StringPool::SLASH)
         parts.shift if parts.first.empty?
         name     = parts.pop
 
         return name, prefixes || [StringPool::EMPTY_STRING] if parts.empty?
 
-        parts    = parts.join('/')
+        parts    = parts.join(StringPool::SLASH)
         prefixes = prefixes ? prefixes.map { |p| "#{p}/#{parts}" } : [parts]
 
         return name, prefixes

@@ -80,7 +80,7 @@ module ActionView
       end
 
       def logical_name
-        name.gsub(%r|/_|, "/")
+        name.gsub(%r|/_|, StringPool::SLASH)
       end
 
       def partial?
