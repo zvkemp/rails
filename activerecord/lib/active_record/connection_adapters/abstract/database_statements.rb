@@ -57,7 +57,7 @@ module ActiveRecord
       # Executes +sql+ statement in the context of this connection using
       # +binds+ as the bind substitutes. +name+ is logged along with
       # the executed +sql+ statement.
-      def exec_query(sql, name = 'SQL', binds = [])
+      def exec_query(sql, name = StringPool::SQL, binds = [])
       end
 
       # Executes insert +sql+ statement in the context of this connection using

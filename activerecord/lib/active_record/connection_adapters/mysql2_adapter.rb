@@ -222,7 +222,7 @@ module ActiveRecord
         super
       end
 
-      def exec_query(sql, name = 'SQL', binds = [])
+      def exec_query(sql, name = StringPool::SQL, binds = [])
         result = execute(sql, name)
         ActiveRecord::Result.new(result.fields, result.to_a)
       end

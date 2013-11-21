@@ -272,7 +272,7 @@ module ActiveRecord
         @client_encoding = ENCODINGS[result.rows.last.last]
       end
 
-      def exec_query(sql, name = 'SQL', binds = [])
+      def exec_query(sql, name = StringPool::SQL, binds = [])
         if without_prepared_statement?(binds)
           result_set, affected_rows = exec_without_stmt(sql, name)
         else
@@ -410,7 +410,7 @@ module ActiveRecord
         end
       end
 
-      def exec_without_stmt(sql, name = 'SQL') # :nodoc:
+      def exec_without_stmt(sql, name = StringPool::SQL) # :nodoc:
         # Some queries, like SHOW CREATE TABLE don't work through the prepared
         # statement API. For those queries, we need to use this method. :'(
         log(sql, name) do

@@ -307,7 +307,7 @@ module ActiveRecord
         end
       end
 
-      def exec_delete(sql, name = 'SQL', binds = [])
+      def exec_delete(sql, name = StringPool::SQL, binds = [])
         exec_query(sql, name, binds)
         @connection.changes
       end

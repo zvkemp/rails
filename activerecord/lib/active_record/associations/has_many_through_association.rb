@@ -153,7 +153,7 @@ module ActiveRecord
               stmt.from scope.klass.arel_table
               stmt.wheres = arel.constraints
 
-              count = scope.klass.connection.delete(stmt, 'SQL', scope.bind_values)
+              count = scope.klass.connection.delete(stmt, StringPool::SQL, scope.bind_values)
             end
           when :nullify
             count = scope.update_all(source_reflection.foreign_key => nil)

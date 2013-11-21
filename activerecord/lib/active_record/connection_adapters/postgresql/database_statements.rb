@@ -133,7 +133,7 @@ module ActiveRecord
           Arel::Nodes::BindParam.new "$#{index + 1}"
         end
 
-        def exec_query(sql, name = 'SQL', binds = [])
+        def exec_query(sql, name = StringPool::SQL, binds = [])
           result = without_prepared_statement?(binds) ? exec_no_cache(sql, name, binds) :
                                                         exec_cache(sql, name, binds)
 
@@ -153,7 +153,7 @@ module ActiveRecord
           return ret
         end
 
-        def exec_delete(sql, name = 'SQL', binds = [])
+        def exec_delete(sql, name = StringPool::SQL, binds = [])
           result = without_prepared_statement?(binds) ? exec_no_cache(sql, name, binds) :
                                                         exec_cache(sql, name, binds)
           affected = result.cmd_tuples

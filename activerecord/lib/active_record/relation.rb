@@ -62,7 +62,7 @@ module ActiveRecord
 
       @klass.connection.insert(
         im,
-        'SQL',
+        StringPool::SQL,
         primary_key,
         primary_key_value,
         nil,
@@ -75,7 +75,7 @@ module ActiveRecord
 
       @klass.connection.update(
         um,
-        'SQL',
+        StringPool::SQL,
         binds)
     end
 
@@ -323,7 +323,7 @@ module ActiveRecord
         stmt.wheres = arel.constraints
       end
 
-      @klass.connection.update stmt, 'SQL', bind_values
+      @klass.connection.update stmt, StringPool::SQL, bind_values
     end
 
     # Updates an object (or multiple objects) and saves it to the database, if validations pass.
@@ -446,7 +446,7 @@ module ActiveRecord
           stmt.wheres = arel.constraints
         end
 
-        affected = @klass.connection.delete(stmt, 'SQL', bind_values)
+        affected = @klass.connection.delete(stmt, StringPool::SQL, bind_values)
 
         reset
         affected

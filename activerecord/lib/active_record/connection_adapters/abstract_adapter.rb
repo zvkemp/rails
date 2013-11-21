@@ -349,7 +349,7 @@ module ActiveRecord
 
       protected
 
-      def log(sql, name = "SQL", binds = [], statement_name = nil)
+      def log(sql, name = StringPool::SQL, binds = [], statement_name = nil)
         @instrumenter.instrument(
           "sql.active_record",
           :sql            => sql,

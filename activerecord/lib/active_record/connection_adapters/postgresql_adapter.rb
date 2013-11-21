@@ -893,7 +893,7 @@ module ActiveRecord
         end
 
         def last_insert_id_result(sequence_name) #:nodoc:
-          exec_query("SELECT currval('#{sequence_name}')", 'SQL')
+          exec_query("SELECT currval('#{sequence_name}')", StringPool::SQL)
         end
 
         # Executes a SELECT query and returns the results, performing any data type
