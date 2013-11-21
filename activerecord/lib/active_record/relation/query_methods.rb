@@ -819,7 +819,7 @@ module ActiveRecord
 
       build_joins(arel, joins_values.flatten) unless joins_values.empty?
 
-      collapse_wheres(arel, (where_values - ['']).uniq)
+      collapse_wheres(arel, (where_values - [StringPool::EMPTY]).uniq)
 
       arel.having(*having_values.uniq.reject(&:blank?)) unless having_values.empty?
 

@@ -70,7 +70,7 @@ module ActiveRecord
         when Date, Time then quoted_date(value)
         when Symbol     then value.to_s
         else
-          to_type = column ? " to #{column.type}" : ""
+          to_type = column ? " to #{column.type}" : StringPool::EMPTY
           raise TypeError, "can't cast #{value.class}#{to_type}"
         end
       end

@@ -581,7 +581,7 @@ module ActiveRecord
       @connection = nil
     end
 
-    def write(text="")
+    def write(text=StringPool::EMPTY)
       puts(text) if verbose
     end
 
@@ -915,7 +915,7 @@ module ActiveRecord
         begin
           execute_migration_in_transaction(migration, @direction)
         rescue => e
-          canceled_msg = use_transaction?(migration) ? ", this migration was canceled" : ""
+          canceled_msg = use_transaction?(migration) ? ", this migration was canceled" : StringPool::EMPTY
           raise StandardError, "An error has occurred#{canceled_msg}:\n\n#{e}", e.backtrace
         end
       end
@@ -932,7 +932,7 @@ module ActiveRecord
         begin
           execute_migration_in_transaction(migration, @direction)
         rescue => e
-          canceled_msg = use_transaction?(migration) ? "this and " : ""
+          canceled_msg = use_transaction?(migration) ? "this and " : StringPool::EMPTY
           raise StandardError, "An error has occurred, #{canceled_msg}all later migrations canceled:\n\n#{e}", e.backtrace
         end
       end

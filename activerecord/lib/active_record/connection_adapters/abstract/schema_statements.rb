@@ -737,7 +737,7 @@ module ActiveRecord
 
         # Overridden by the mysql adapter for supporting index lengths
         def quoted_columns_for_index(column_names, options = {})
-          option_strings = Hash[column_names.map {|name| [name, '']}]
+          option_strings = Hash[column_names.map {|name| [name, StringPool::EMPTY]}]
 
           # add index sort order if supported
           if supports_index_sort_order?
@@ -757,7 +757,7 @@ module ActiveRecord
 
           options.assert_valid_keys(:unique, :order, :name, :where, :length, :internal, :using, :algorithm, :type)
 
-          index_type = options[:unique] ? "UNIQUE" : ""
+          index_type = options[:unique] ? "UNIQUE" : StringPool::EMPTY
           index_type = options[:type].to_s if options.key?(:type)
           index_name = options[:name].to_s if options.key?(:name)
           max_index_length = options.fetch(:internal, false) ? index_name_length : allowed_index_name_length
@@ -771,7 +771,7 @@ module ActiveRecord
           using = "USING #{options[:using]}" if options[:using].present?
 
           if supports_partial_index?
-            index_options = options[:where] ? " WHERE #{options[:where]}" : ""
+            index_options = options[:where] ? " WHERE #{options[:where]}" : StringPool::EMPTY
           end
 
           if index_name.length > max_index_length

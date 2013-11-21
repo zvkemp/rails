@@ -39,7 +39,7 @@ module ActiveRecord
     end
 
     def to_sql
-      ""
+      StringPool::EMPTY
     end
 
     def count(*)

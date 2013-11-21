@@ -73,7 +73,7 @@ module ActiveRecord
             when :connection_limit
               " CONNECTION LIMIT = #{value}"
             else
-              ""
+              StringPool::EMPTY
             end
           end
 
@@ -112,7 +112,7 @@ module ActiveRecord
               FROM pg_class c
               LEFT JOIN pg_namespace n ON n.oid = c.relnamespace
               WHERE c.relkind in ('v','r')
-              AND c.relname = '#{table.gsub(/(^"|"$)/,'')}'
+              AND c.relname = '#{table.gsub(/(^"|"$)/,StringPool::EMPTY)}'
               AND n.nspname = #{schema ? "'#{schema}'" : 'ANY (current_schemas(false))'}
           SQL
         end
@@ -475,7 +475,7 @@ module ActiveRecord
               # Convert Arel node to string
               s = s.to_sql unless s.is_a?(String)
               # Remove any ASC/DESC modifiers
-              s.gsub(/\s+(ASC|DESC)\s*(NULLS\s+(FIRST|LAST)\s*)?/i, '')
+              s.gsub(/\s+(ASC|DESC)\s*(NULLS\s+(FIRST|LAST)\s*)?/i, StringPool::EMPTY)
             }.reject(&:blank?).map.with_index { |column, i| "#{column} AS alias_#{i}" }
 
           [super, *order_columns].join(', ')

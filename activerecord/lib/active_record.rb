@@ -64,6 +64,7 @@ module ActiveRecord
   autoload :Transactions
   autoload :Translation
   autoload :Validations
+  autoload :StringPool
 
   eager_autoload do
     autoload :ActiveRecordError, 'active_record/errors'

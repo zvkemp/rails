@@ -50,7 +50,7 @@ module ActiveRecord
       end
 
       def header(stream)
-        define_params = @version ? "version: #{@version}" : ""
+        define_params = @version ? "version: #{@version}" : StringPool::EMPTY
 
         if stream.respond_to?(:external_encoding) && stream.external_encoding
           stream.puts "# encoding: #{stream.external_encoding.name}"
@@ -157,12 +157,12 @@ HEADER
           # add column type definition to our format string
           format_string.unshift "    t.%-#{type_length}s "
 
-          format_string *= ''
+          format_string *= StringPool::EMPTY
 
           column_specs.each do |colspec|
             values = keys.zip(lengths).map{ |key, len| colspec.key?(key) ? colspec[key] + ", " : " " * len }
             values.unshift colspec[:type]
-            tbl.print((format_string % values).gsub(/,\s*$/, ''))
+            tbl.print((format_string % values).gsub(/,\s*$/, StringPool::EMPTY))
             tbl.puts
           end
 

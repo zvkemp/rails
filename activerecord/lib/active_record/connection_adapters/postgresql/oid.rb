@@ -47,9 +47,9 @@ module ActiveRecord
             value.sub!(/^\((.+)\)$/, '-\1') # (4)
             case value
             when /^-?\D+[\d,]+\.\d{2}$/  # (1)
-              value.gsub!(/[^-\d.]/, '')
+              value.gsub!(/[^-\d.]/, StringPool::EMPTY)
             when /^-?\D+[\d.]+,\d{2}$/  # (2)
-              value.gsub!(/[^-\d,]/, '').sub!(/,/, '.')
+              value.gsub!(/[^-\d,]/, StringPool::EMPTY).sub!(/,/, '.')
             end
 
             ConnectionAdapters::Column.value_to_decimal value

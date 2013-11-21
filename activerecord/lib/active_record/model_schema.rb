@@ -23,14 +23,14 @@ module ActiveRecord
       # a namespace by defining a singleton method in the parent module called table_name_prefix which
       # returns your chosen prefix.
       class_attribute :table_name_prefix, instance_writer: false
-      self.table_name_prefix = ""
+      self.table_name_prefix = StringPool::EMPTY
 
       ##
       # :singleton-method:
       # Works like +table_name_prefix+, but appends instead of prepends (set to "_basecamp" gives "projects_basecamp",
       # "people_basecamp"). By default, the suffix is the empty string.
       class_attribute :table_name_suffix, instance_writer: false
-      self.table_name_suffix = ""
+      self.table_name_suffix = StringPool::EMPTY
 
       ##
       # :singleton-method:

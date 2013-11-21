@@ -63,7 +63,7 @@ module ActiveRecord
         end
       end
 
-      def new_column(field, default, type, null, collation, extra = "") # :nodoc:
+      def new_column(field, default, type, null, collation, extra = StringPool::EMPTY) # :nodoc:
         Column.new(field, default, type, null, collation, strict_mode?, extra)
       end
 

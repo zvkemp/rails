@@ -38,7 +38,7 @@ module ActiveRecord
       class Column < ConnectionAdapters::Column # :nodoc:
         attr_reader :collation, :strict, :extra
 
-        def initialize(name, default, sql_type = nil, null = true, collation = nil, strict = false, extra = "")
+        def initialize(name, default, sql_type = nil, null = true, collation = nil, strict = false, extra = StringPool::EMPTY)
           @strict    = strict
           @collation = collation
           @extra     = extra
@@ -48,7 +48,7 @@ module ActiveRecord
         def extract_default(default)
           if blob_or_text_column?
             if default.blank?
-              null || strict ? nil : ''
+              null || strict ? nil : StringPool::EMPTY
             else
               raise ArgumentError, "#{type} columns cannot have a default value: #{default.inspect}"
             end
@@ -124,7 +124,7 @@ module ActiveRecord
         # Test whether the column has default '', is not null, and is not
         # a type allowing default ''.
         def missing_default_forged_as_empty_string?(default)
-          type != :string && !null && default == ''
+          type != :string && !null && default == StringPool::EMPTY
         end
       end
 
@@ -237,7 +237,7 @@ module ActiveRecord
       end
 
       # Overridden by the adapters to instantiate their specific Column type.
-      def new_column(field, default, type, null, collation, extra = "") # :nodoc:
+      def new_column(field, default, type, null, collation, extra = StringPool::EMPTY) # :nodoc:
         Column.new(field, default, type, null, collation, extra)
       end
 
@@ -632,7 +632,7 @@ module ActiveRecord
       end
 
       def quoted_columns_for_index(column_names, options = {})
-        option_strings = Hash[column_names.map {|name| [name, '']}]
+        option_strings = Hash[column_names.map {|name| [name, StringPool::EMPTY]}]
 
         # add index length
         option_strings = add_index_length(option_strings, column_names, options)

@@ -43,7 +43,7 @@ module ActiveRecord
         end
 
         def suffix
-          ''
+          StringPool::EMPTY
         end
       end
 

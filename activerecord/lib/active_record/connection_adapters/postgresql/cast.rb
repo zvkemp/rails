@@ -20,7 +20,7 @@ module ActiveRecord
           when 'infinity'; Float::INFINITY
           when '-infinity'; -Float::INFINITY
           when / BC$/
-            super("-" + string.sub(/ BC$/, ""))
+            super("-" + string.sub(/ BC$/, StringPool::EMPTY))
           else
             super
           end
@@ -83,8 +83,8 @@ module ActiveRecord
         end
 
         def range_to_string(object)
-          from = object.begin.respond_to?(:infinite?) && object.begin.infinite? ? '' : object.begin
-          to   = object.end.respond_to?(:infinite?) && object.end.infinite? ? '' : object.end
+          from = object.begin.respond_to?(:infinite?) && object.begin.infinite? ? StringPool::EMPTY : object.begin
+          to   = object.end.respond_to?(:infinite?) && object.end.infinite? ? StringPool::EMPTY : object.end
           "[#{from},#{to}#{object.exclude_end? ? ')' : ']'}"
         end
 
@@ -134,7 +134,7 @@ module ActiveRecord
             if value.nil?
               'NULL'
             else
-              if value == ""
+              if value == StringPool::EMPTY
                 '""'
               else
                 '"%s"' % value.to_s.gsub(/(["\\])/, '\\\\\1')

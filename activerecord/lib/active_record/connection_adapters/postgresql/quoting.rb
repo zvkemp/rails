@@ -178,7 +178,7 @@ module ActiveRecord
           end
 
           if value.year < 0
-            result = result.sub(/^-/, "") + " BC"
+            result = result.sub(/^-/, StringPool::EMPTY) + " BC"
           end
           result
         end
