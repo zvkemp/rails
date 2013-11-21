@@ -265,7 +265,7 @@ module ActiveRecord
       end
 
       def quote_table_name(name) #:nodoc:
-        @quoted_table_names[name] ||= quote_column_name(name).gsub('.', '`.`')
+        @quoted_table_names[name] ||= quote_column_name(name).gsub(StringPool::DOT, '`.`')
       end
 
       def quoted_true
@@ -414,7 +414,7 @@ module ActiveRecord
         return true if tables(nil, nil, name).any?
 
         name          = name.to_s
-        schema, table = name.split('.', 2)
+        schema, table = name.split(StringPool::DOT, 2)
 
         unless table # A table was provided without a schema
           table  = schema

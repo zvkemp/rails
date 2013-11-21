@@ -35,8 +35,8 @@ module ActiveRecord
         else
           column = column.to_s
 
-          if column.include?('.')
-            table_name, column = column.split('.', 2)
+          if column.include?(StringPool::DOT)
+            table_name, column = column.split(StringPool::DOT, 2)
             table = Arel::Table.new(table_name, default_table.engine)
           end
 
@@ -73,7 +73,7 @@ module ActiveRecord
           key
         else
           key = key.to_s
-          key.split('.').first if key.include?('.')
+          key.split(StringPool::DOT).first if key.include?(StringPool::DOT)
         end
       end.compact
     end

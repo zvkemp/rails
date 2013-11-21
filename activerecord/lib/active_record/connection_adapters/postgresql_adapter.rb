@@ -945,7 +945,7 @@ module ActiveRecord
 
           if match_data
             rest = name[match_data[0].length, name.length]
-            rest = rest[1, rest.length] if rest.start_with? "."
+            rest = rest[1, rest.length] if rest.start_with? StringPool::DOT
             [match_data[1], (rest.length > 0 ? rest : nil)]
           end
         end

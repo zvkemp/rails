@@ -49,7 +49,7 @@ module ActiveRecord
             when /^-?\D+[\d,]+\.\d{2}$/  # (1)
               value.gsub!(/[^-\d.]/, StringPool::EMPTY)
             when /^-?\D+[\d.]+,\d{2}$/  # (2)
-              value.gsub!(/[^-\d,]/, StringPool::EMPTY).sub!(/,/, '.')
+              value.gsub!(/[^-\d,]/, StringPool::EMPTY).sub!(/,/, StringPool::DOT)
             end
 
             ConnectionAdapters::Column.value_to_decimal value

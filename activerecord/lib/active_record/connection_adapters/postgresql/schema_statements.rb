@@ -263,7 +263,7 @@ module ActiveRecord
         def default_sequence_name(table_name, pk = nil) #:nodoc:
           result = serial_sequence(table_name, pk || StringPool::ID)
           return nil unless result
-          result.split('.').last
+          result.split(StringPool::DOT).last
         rescue ActiveRecord::StatementInvalid
           "#{table_name}_#{pk || StringPool::ID}_seq"
         end

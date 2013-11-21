@@ -14,7 +14,7 @@ module ActiveRecord
 
       # Truncates a table alias according to the limits of the current adapter.
       def table_alias_for(table_name)
-        table_name[0...table_alias_length].tr('.', '_')
+        table_name[0...table_alias_length].tr(StringPool::DOT, '_')
       end
 
       # Checks to see if the table +table_name+ exists on the database.

@@ -108,7 +108,7 @@ module ActiveRecord
               when /^-?\D+[\d,]+\.\d{2}$/  # (1)
                 data.gsub!(/[^-\d.]/, StringPool::EMPTY)
               when /^-?\D+[\d.]+,\d{2}$/  # (2)
-                data.gsub!(/[^-\d,]/, StringPool::EMPTY).sub!(/,/, '.')
+                data.gsub!(/[^-\d,]/, StringPool::EMPTY).sub!(/,/, StringPool::DOT)
               end
             end
           end

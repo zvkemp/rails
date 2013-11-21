@@ -338,7 +338,7 @@ module ActiveRecord
     end
 
     def column_for(field)
-      field_name = field.respond_to?(:name) ? field.name.to_s : field.to_s.split('.').last
+      field_name = field.respond_to?(:name) ? field.name.to_s : field.to_s.split(StringPool::DOT).last
       @klass.columns_hash[field_name]
     end
 

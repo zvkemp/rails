@@ -74,11 +74,11 @@ module ActiveRecord
         include Comparable
 
         def initialize(version_string)
-          @version = version_string.split('.').map { |v| v.to_i }
+          @version = version_string.split(StringPool::DOT).map { |v| v.to_i }
         end
 
         def <=>(version_string)
-          @version <=> version_string.split('.').map { |v| v.to_i }
+          @version <=> version_string.split(StringPool::DOT).map { |v| v.to_i }
         end
       end
 
