@@ -151,7 +151,7 @@ module ActiveRecord
             SELECT a.attnum, a.attname
             FROM pg_attribute a
             WHERE a.attrelid = #{oid}
-            AND a.attnum IN (#{indkey.join(",")})
+            AND a.attnum IN (#{indkey.join(StringPool::COMMA)})
             SQL
 
             column_names = columns.values_at(*indkey).compact

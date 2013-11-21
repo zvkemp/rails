@@ -561,7 +561,7 @@ module ActiveRecord
           rename.each { |a| column_mappings[a.last] = a.first }
           from_columns = columns(from).collect {|col| col.name}
           columns = columns.find_all{|col| from_columns.include?(column_mappings[col])}
-          quoted_columns = columns.map { |col| quote_column_name(col) } * ','
+          quoted_columns = columns.map { |col| quote_column_name(col) } * StringPool::COMMA
 
           quoted_to = quote_table_name(to)
 

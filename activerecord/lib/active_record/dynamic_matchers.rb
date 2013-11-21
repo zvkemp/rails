@@ -90,7 +90,7 @@ module ActiveRecord
       end
 
       def attributes_hash
-        "{" + attribute_names.map { |name| ":#{name} => #{name}" }.join(',') + "}"
+        "{" + attribute_names.map { |name| ":#{name} => #{name}" }.join(StringPool::COMMA) + "}"
       end
 
       def finder

@@ -107,10 +107,10 @@ module ActiveRecord
           end
 
           def extract_bounds(value)
-            from, to = value[1..-2].split(',')
+            from, to = value[1..-2].split(StringPool::COMMA)
             {
-              from:          (value[1] == ',' || from == '-infinity') ? infinity(:negative => true) : from,
-              to:            (value[-2] == ',' || to == 'infinity') ? infinity : to,
+              from:          (value[1] == StringPool::COMMA || from == '-infinity') ? infinity(:negative => true) : from,
+              to:            (value[-2] == StringPool::COMMA || to == 'infinity') ? infinity : to,
               exclude_start: (value[0] == '('),
               exclude_end:   (value[-1] == ')')
             }

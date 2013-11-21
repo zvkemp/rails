@@ -5,7 +5,7 @@ module ActiveRecord
 
         DOUBLE_QUOTE = '"'
         BACKSLASH = "\\"
-        COMMA = ','
+        COMMA = StringPool::COMMA
         BRACKET_OPEN = '{'
         BRACKET_CLOSE = '}'
 

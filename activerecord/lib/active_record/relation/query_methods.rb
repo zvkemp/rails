@@ -991,7 +991,7 @@ module ActiveRecord
         when Arel::Nodes::Ordering
           o.reverse
         when String
-          o.to_s.split(',').map! do |s|
+          o.to_s.split(StringPool::COMMA).map! do |s|
             s.strip!
             s.gsub!(/\sasc\Z/i, ' DESC') || s.gsub!(/\sdesc\Z/i, ' ASC') || s.concat(' DESC')
           end

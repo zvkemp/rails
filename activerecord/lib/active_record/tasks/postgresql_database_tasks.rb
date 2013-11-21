@@ -48,7 +48,7 @@ module ActiveRecord
         set_psql_env
         search_path = configuration['schema_search_path']
         unless search_path.blank?
-          search_path = search_path.split(",").map{|search_path_part| "--schema=#{Shellwords.escape(search_path_part.strip)}" }.join(" ")
+          search_path = search_path.split(StringPool::COMMA).map{|search_path_part| "--schema=#{Shellwords.escape(search_path_part.strip)}" }.join(" ")
         end
 
         command = "pg_dump -i -s -x -O -f #{Shellwords.escape(filename)} #{search_path} #{Shellwords.escape(configuration['database'])}"

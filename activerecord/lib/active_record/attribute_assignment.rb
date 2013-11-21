@@ -78,7 +78,7 @@ module ActiveRecord
         end
       end
       unless errors.empty?
-        error_descriptions = errors.map { |ex| ex.message }.join(",")
+        error_descriptions = errors.map { |ex| ex.message }.join(StringPool::COMMA)
         raise MultiparameterAssignmentErrors.new(errors), "#{errors.size} error(s) on assignment of multiparameter attributes [#{error_descriptions}]"
       end
     end

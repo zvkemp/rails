@@ -10,7 +10,7 @@ module ActiveRecord
           if string[0] == '(' && string[-1] == ')'
             string = string[1...-1]
           end
-          string.split(',').map{ |v| Float(v) }
+          string.split(StringPool::COMMA).map{ |v| Float(v) }
         end
 
         def string_to_time(string)
@@ -39,7 +39,7 @@ module ActiveRecord
           if Hash === object
             object.map { |k,v|
               "#{escape_hstore(k)}=>#{escape_hstore(v)}"
-            }.join ','
+            }.join StringPool::COMMA
           else
             object
           end
@@ -79,7 +79,7 @@ module ActiveRecord
               adapter.type_cast(val, column, true)
             end
           end
-          "{#{casted_values.join(',')}}"
+          "{#{casted_values.join(StringPool::COMMA)}}"
         end
 
         def range_to_string(object)

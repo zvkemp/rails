@@ -94,7 +94,7 @@ module ActiveRecord
         def extract_limit(sql_type)
           case sql_type
           when /^enum\((.+)\)/i
-            $1.split(',').map{|enum| enum.strip.length - 2}.max
+            $1.split(StringPool::COMMA).map{|enum| enum.strip.length - 2}.max
           when /blob|text/i
             case sql_type
             when /tiny/i
@@ -567,7 +567,7 @@ module ActiveRecord
         execute_and_free("SHOW CREATE TABLE #{quote_table_name(table)}", StringPool::SCHEMA) do |result|
           create_table = each_hash(result).first[:"Create Table"]
           if create_table.to_s =~ /PRIMARY KEY\s+(?:USING\s+\w+\s+)?\((.+)\)/
-            keys = $1.split(",").map { |key| key.delete('`"') }
+            keys = $1.split(StringPool::COMMA).map { |key| key.delete('`"') }
             keys.length == 1 ? [keys.first, nil] : nil
           else
             nil

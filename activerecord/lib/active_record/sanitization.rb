@@ -157,7 +157,7 @@ module ActiveRecord
           if value.respond_to?(:empty?) && value.empty?
             c.quote(nil)
           else
-            value.map { |v| c.quote(v) }.join(',')
+            value.map { |v| c.quote(v) }.join(StringPool::COMMA)
           end
         else
           c.quote(value)
