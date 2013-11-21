@@ -14,7 +14,7 @@ module ActiveRecord
 
       # Truncates a table alias according to the limits of the current adapter.
       def table_alias_for(table_name)
-        table_name[0...table_alias_length].tr(StringPool::DOT, '_')
+        table_name[0...table_alias_length].tr(StringPool::DOT, StringPool::UNDERSCORE)
       end
 
       # Checks to see if the table +table_name+ exists on the database.
@@ -649,7 +649,7 @@ module ActiveRecord
         migrated = select_values("SELECT version FROM #{sm_table}").map { |v| v.to_i }
         paths = migrations_paths.map {|p| "#{p}/[0-9]*_*.rb" }
         versions = Dir[*paths].map do |filename|
-          filename.split('/').last.split('_').first.to_i
+          filename.split('/').last.split(StringPool::UNDERSCORE).first.to_i
         end
 
         unless migrated.include?(version)

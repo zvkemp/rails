@@ -387,7 +387,7 @@ module ActiveRecord
 
     def self.default_fixture_table_name(fixture_set_name, config = ActiveRecord::Base) # :nodoc:
        "#{ config.table_name_prefix }"\
-       "#{ fixture_set_name.tr('/', '_') }"\
+       "#{ fixture_set_name.tr('/', StringPool::UNDERSCORE) }"\
        "#{ config.table_name_suffix }".to_sym
     end
 
@@ -867,7 +867,7 @@ module ActiveRecord
         methods = Module.new do
           fixture_set_names.each do |fs_name|
             fs_name = fs_name.to_s
-            accessor_name = fs_name.tr('/', '_').to_sym
+            accessor_name = fs_name.tr('/', StringPool::UNDERSCORE).to_sym
 
             define_method(accessor_name) do |*fixture_names|
               force_reload = fixture_names.pop if fixture_names.last == true || fixture_names.last == :reload

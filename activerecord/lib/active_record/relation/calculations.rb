@@ -332,7 +332,7 @@ module ActiveRecord
       table_name.gsub!(/\*/, 'all')
       table_name.gsub!(/\W+/, ' ')
       table_name.strip!
-      table_name.gsub!(/ +/, '_')
+      table_name.gsub!(/ +/, StringPool::UNDERSCORE)
 
       @klass.connection.table_alias_for(table_name)
     end
