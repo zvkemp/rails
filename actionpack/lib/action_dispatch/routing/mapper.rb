@@ -90,7 +90,7 @@ module ActionDispatch
           end
 
           def optional_format?
-            options[:format] != false && !path.include?(':format') && !path.end_with?('/')
+            options[:format] != false && !path.include?(':format') && !path.end_with?(StringPool::SLASH)
           end
 
           def normalize_options!
@@ -218,7 +218,7 @@ module ActionDispatch
               action     ||= default_action
 
               unless controller.is_a?(Regexp)
-                controller = [@scope[:module], controller].compact.join("/").presence
+                controller = [@scope[:module], controller].compact.join(StringPool::SLASH).presence
               end
 
               if controller.is_a?(String) && controller =~ %r{\A/}
@@ -314,7 +314,7 @@ module ActionDispatch
       end
 
       def self.normalize_name(name)
-        normalize_path(name)[1..-1].tr("/", "_")
+        normalize_path(name)[1..-1].tr(StringPool::SLASH, "_")
       end
 
       module Base
@@ -332,7 +332,7 @@ module ActionDispatch
         # because this means it will be matched first. As this is the most popular route
         # of most Rails applications, this is beneficial.
         def root(options = {})
-          match '/', { :as => :root, :via => :get }.merge!(options)
+          match StringPool::SLASH, { :as => :root, :via => :get }.merge!(options)
         end
 
         # Matches a url pattern to one or more routes. Any symbols in a pattern
@@ -534,7 +534,7 @@ module ActionDispatch
               app.railtie_name
             else
               class_name = app.class.is_a?(Class) ? app.name : app.class.name
-              ActiveSupport::Inflector.underscore(class_name).tr("/", "_")
+              ActiveSupport::Inflector.underscore(class_name).tr(StringPool::SLASH, "_")
             end
           end
 
@@ -698,7 +698,7 @@ module ActionDispatch
           options = args.extract_options!.dup
           recover = {}
 
-          options[:path] = args.flatten.join('/') if args.any?
+          options[:path] = args.flatten.join(StringPool::SLASH) if args.any?
           options[:constraints] ||= {}
 
           if options[:constraints].is_a?(Hash)
@@ -1435,7 +1435,7 @@ module ActionDispatch
           action = action.to_s.dup
 
           if action =~ /^[\w\/]+$/
-            options[:action] ||= action unless action.include?("/")
+            options[:action] ||= action unless action.include?(StringPool::SLASH)
           else
             action = nil
           end

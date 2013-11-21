@@ -31,7 +31,7 @@ module ActionDispatch
 
         def url_for(options = {})
           options = options.dup
-          path  = options.delete(:script_name).to_s.chomp("/")
+          path  = options.delete(:script_name).to_s.chomp(StringPool::SLASH)
           path << options.delete(:path).to_s
 
           params = options[:params].is_a?(Hash) ? options[:params] : options.slice(:params)

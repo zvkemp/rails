@@ -261,7 +261,7 @@ module ActionDispatch
       end
 
       def handle_options(options) #:nodoc:
-        options[:path] ||= "/"
+        options[:path] ||= StringPool::SLASH
 
         if options[:domain] == :all
           # if there is a provided tld length then we use it otherwise default domain regexp

@@ -16,7 +16,7 @@ module ActionDispatch
         #   normalize_path("/%ab")  # => "/%AB"
         def self.normalize_path(path)
           path = "/#{path}"
-          path.squeeze!('/')
+          path.squeeze!(StringPool::SLASH)
           path.sub!(%r{/+\Z}, StringPool::EMPTY)
           path.gsub!(/(%[a-f0-9]{2})/) { $1.upcase }
           path = '/' if path == StringPool::EMPTY
@@ -27,7 +27,7 @@ module ActionDispatch
         # http://tools.ietf.org/html/rfc3986
         module UriEscape # :nodoc:
           # Symbol captures can generate multiple path segments, so include /.
-          reserved_segment  = '/'
+          reserved_segment  = StringPool::SLASH
           reserved_fragment = '/?'
           reserved_pchar    = ':@&=+$,;%'
 

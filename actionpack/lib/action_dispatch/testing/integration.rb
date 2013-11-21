@@ -300,7 +300,7 @@ module ActionDispatch
 
           # NOTE: rack-test v0.5 doesn't build a default uri correctly
           # Make sure requested path is always a full uri
-          uri = URI.parse('/')
+          uri = URI.parse(StringPool::SLASH)
           uri.scheme ||= env['rack.url_scheme']
           uri.host   ||= env['SERVER_NAME']
           uri.port   ||= env['SERVER_PORT'].try(:to_i)

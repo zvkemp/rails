@@ -4,7 +4,7 @@ require 'active_support/core_ext/uri'
 module ActionDispatch
   class FileHandler
     def initialize(root, cache_control)
-      @root          = root.chomp('/')
+      @root          = root.chomp(StringPool::SLASH)
       @compiled_root = /^#{Regexp.escape(root)}/
       headers = cache_control && { 'Cache-Control' => cache_control }
       @file_server   = ::Rack::File.new(@root, headers)
@@ -54,7 +54,7 @@ module ActionDispatch
     def call(env)
       case env['REQUEST_METHOD']
       when 'GET', 'HEAD'
-        path = env['PATH_INFO'].chomp('/')
+        path = env['PATH_INFO'].chomp(StringPool::SLASH)
         if match = @file_handler.match?(path)
           env["PATH_INFO"] = match
           return @file_handler.call(env)

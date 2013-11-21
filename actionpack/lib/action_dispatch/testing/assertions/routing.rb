@@ -73,10 +73,10 @@ module ActionDispatch
         if expected_path =~ %r{://}
           fail_on(URI::InvalidURIError) do
             uri = URI.parse(expected_path)
-            expected_path = uri.path.to_s.empty? ? "/" : uri.path
+            expected_path = uri.path.to_s.empty? ? StringPool::SLASH : uri.path
           end
         else
-          expected_path = "/#{expected_path}" unless expected_path.first == '/'
+          expected_path = "/#{expected_path}" unless expected_path.first == StringPool::SLASH
         end
         # Load routes.rb if it hasn't been loaded.
 
@@ -191,10 +191,10 @@ module ActionDispatch
               request.env["rack.url_scheme"] = uri.scheme || "http"
               request.host = uri.host if uri.host
               request.port = uri.port if uri.port
-              request.path = uri.path.to_s.empty? ? "/" : uri.path
+              request.path = uri.path.to_s.empty? ? StringPool::SLASH : uri.path
             end
           else
-            path = "/#{path}" unless path.first == "/"
+            path = "/#{path}" unless path.first == StringPool::SLASH
             request.path = path
           end
 

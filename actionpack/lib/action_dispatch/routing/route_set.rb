@@ -89,7 +89,7 @@ module ActionDispatch
         end
 
         def split_glob_param!(params)
-          params[@glob_param] = params[@glob_param].split('/').map { |v| URI.parser.unescape(v) }
+          params[@glob_param] = params[@glob_param].split(StringPool::SLASH).map { |v| URI.parser.unescape(v) }
         end
       end
 
@@ -500,7 +500,7 @@ module ActionDispatch
           if name == :controller
             value
           elsif value.is_a?(Array)
-            value.map { |v| v.to_param }.join('/')
+            value.map { |v| v.to_param }.join(StringPool::SLASH)
           elsif param = value.to_param
             param
           end
@@ -577,11 +577,11 @@ module ActionDispatch
         # if the current controller is "foo/bar/baz" and controller: "baz/bat"
         # is specified, the controller becomes "foo/baz/bat"
         def use_relative_controller!
-          if !named_route && different_controller? && !controller.start_with?("/")
-            old_parts = current_controller.split('/')
-            size = controller.count("/") + 1
+          if !named_route && different_controller? && !controller.start_with?(StringPool::SLASH)
+            old_parts = current_controller.split(StringPool::SLASH)
+            size = controller.count(StringPool::SLASH) + 1
             parts = old_parts[0...-size] << controller
-            @options[:controller] = parts.join("/")
+            @options[:controller] = parts.join(StringPool::SLASH)
           end
         end
 

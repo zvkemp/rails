@@ -100,9 +100,9 @@
     })
   }
 
-  // Ensure path always starts with a slash "/" and remove params or fragments
+  // Ensure path always starts with a slash StringPool::SLASH and remove params or fragments
   function sanitizePath(path) {
-    var path = path.charAt(0) == '/' ? path : "/" + path;
+    var path = path.charAt(0) == StringPool::SLASH ? path : StringPool::SLASH + path;
     return path.replace(/\#.*|\?.*/, StringPool::EMPTY);
   }
 

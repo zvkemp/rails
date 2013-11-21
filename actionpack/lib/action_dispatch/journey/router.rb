@@ -62,7 +62,7 @@ module ActionDispatch
                                                              @params_key)
 
           unless route.path.anchored
-            env['SCRIPT_NAME'] = (script_name.to_s + match.to_s).chomp('/')
+            env['SCRIPT_NAME'] = (script_name.to_s + match.to_s).chomp(StringPool::SLASH)
             env['PATH_INFO']   = match.post_match
           end
 
@@ -105,7 +105,7 @@ module ActionDispatch
 
         def normalize_path(path)
           path = "/#{path}"
-          path.squeeze!('/')
+          path.squeeze!(StringPool::SLASH)
           path
         end
 
