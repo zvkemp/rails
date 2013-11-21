@@ -76,7 +76,7 @@ module ActionDispatch
 
             if @matchers.key?(node)
               re = /#{@matchers[node]}|/
-              @capture_count.push((re.match('').length - 1) + (@capture_count.last || 0))
+              @capture_count.push((re.match(StringPool::EMPTY).length - 1) + (@capture_count.last || 0))
             else
               @capture_count << (@capture_count.last || 0)
             end

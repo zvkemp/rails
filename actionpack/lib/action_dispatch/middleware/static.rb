@@ -19,7 +19,7 @@ module ActionDispatch
       matches = Dir[paths]
       match = matches.detect { |m| File.file?(m) }
       if match
-        match.sub!(@compiled_root, '')
+        match.sub!(@compiled_root, StringPool::EMPTY)
         ::Rack::Utils.escape(match)
       end
     end

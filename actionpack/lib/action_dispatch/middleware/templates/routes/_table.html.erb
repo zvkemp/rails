@@ -103,7 +103,7 @@
   // Ensure path always starts with a slash "/" and remove params or fragments
   function sanitizePath(path) {
     var path = path.charAt(0) == '/' ? path : "/" + path;
-    return path.replace(/\#.*|\?.*/, '');
+    return path.replace(/\#.*|\?.*/, StringPool::EMPTY);
   }
 
   // Enables path search functionality
@@ -116,7 +116,7 @@
 
     // Remove matches if no path is present
     pathElem.onblur = function(e) {
-      if (pathElem.value === "") selectedSection.innerHTML = "";
+      if (pathElem.value === StringPool::EMPTY) selectedSection.innerHTML = StringPool::EMPTY;
     }
 
     // On key press perform a search for matching paths

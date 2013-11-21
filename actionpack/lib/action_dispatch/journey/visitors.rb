@@ -81,7 +81,7 @@ module ActionDispatch
         private
 
         def visit_GROUP(node)
-          ""
+          StringPool::EMPTY
         end
       end
 
@@ -115,7 +115,7 @@ module ActionDispatch
             right = visit(node.right, optional)
 
             if optional && !(right && left)
-              ""
+              StringPool::EMPTY
             else
               [left, right].join
             end

@@ -25,7 +25,7 @@
         <p class="fun_routes">
           Some fun routes to try:
           <% fun_routes.each do |path| %>
-             <a href="#" onclick="document.forms[0].elements[0].value=this.text.replace(/^\s+|\s+$/g,''); return match(this.text.replace(/^\s+|\s+$/g,''));">
+             <a href="#" onclick="document.forms[0].elements[0].value=this.text.replace(/^\s+|\s+$/g,StringPool::EMPTY); return match(this.text.replace(/^\s+|\s+$/g,StringPool::EMPTY));">
                <%= path %>
              </a>
           <% end %>

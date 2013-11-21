@@ -265,7 +265,7 @@ module ActionDispatch
               end
             end
             text.strip! unless NO_STRIP.include?(match.name)
-            text.sub!(/\A\n/, '') if match.name == "textarea"
+            text.sub!(/\A\n/, StringPool::EMPTY) if match.name == "textarea"
             unless match_with.is_a?(Regexp) ? (text =~ match_with) : (text == match_with.to_s)
               content_mismatch ||= sprintf("<%s> expected but was\n<%s>.", match_with, text)
               true
@@ -313,7 +313,7 @@ module ActionDispatch
       end
 
       def count_description(min, max, count) #:nodoc:
-        pluralize = lambda {|word, quantity| word << (quantity == 1 ? '' : 's')}
+        pluralize = lambda {|word, quantity| word << (quantity == 1 ? StringPool::EMPTY : 's')}
 
         if min && max && (max != min)
           "between #{min} and #{max} elements"

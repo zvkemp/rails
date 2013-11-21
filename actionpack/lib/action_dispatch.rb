@@ -38,6 +38,8 @@ module ActionDispatch
   class IllegalStateError < StandardError
   end
 
+  autoload :StringPool
+
   eager_autoload do
     autoload_under 'http' do
       autoload :Request

@@ -46,7 +46,7 @@ module ActionDispatch
     private
 
       def normalize(object)
-        object.to_s.strip.sub(/^::/, '')
+        object.to_s.strip.sub(/^::/, StringPool::EMPTY)
       end
     end
 

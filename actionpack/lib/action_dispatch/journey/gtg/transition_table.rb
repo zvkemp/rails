@@ -66,7 +66,7 @@ module ActionDispatch
             f.readlines
           }
           3.times { svg.shift }
-          svg.join.sub(/width="[^"]*"/, '').sub(/height="[^"]*"/, '')
+          svg.join.sub(/width="[^"]*"/, StringPool::EMPTY).sub(/height="[^"]*"/, StringPool::EMPTY)
         end
 
         def visualizer(paths, title = 'FSM')

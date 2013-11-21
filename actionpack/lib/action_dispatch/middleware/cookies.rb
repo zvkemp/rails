@@ -205,9 +205,9 @@ module ActionDispatch
       DOMAIN_REGEXP = /[^.]*\.([^.]*|..\...|...\...)$/
 
       def self.options_for_env(env) #:nodoc:
-        { signed_cookie_salt: env[SIGNED_COOKIE_SALT] || '',
-          encrypted_cookie_salt: env[ENCRYPTED_COOKIE_SALT] || '',
-          encrypted_signed_cookie_salt: env[ENCRYPTED_SIGNED_COOKIE_SALT] || '',
+        { signed_cookie_salt: env[SIGNED_COOKIE_SALT] || StringPool::EMPTY,
+          encrypted_cookie_salt: env[ENCRYPTED_COOKIE_SALT] || StringPool::EMPTY,
+          encrypted_signed_cookie_salt: env[ENCRYPTED_SIGNED_COOKIE_SALT] || StringPool::EMPTY,
           secret_token: env[SECRET_TOKEN],
           secret_key_base: env[SECRET_KEY_BASE],
           upgrade_legacy_signed_cookies: env[SECRET_TOKEN].present? && env[SECRET_KEY_BASE].present?
@@ -274,7 +274,7 @@ module ActionDispatch
           end
         elsif options[:domain].is_a? Array
           # if host matches one of the supplied domains without a dot in front of it
-          options[:domain] = options[:domain].find {|domain| @host.include? domain.sub(/^\./, '') }
+          options[:domain] = options[:domain].find {|domain| @host.include? domain.sub(/^\./, StringPool::EMPTY) }
         end
       end
 

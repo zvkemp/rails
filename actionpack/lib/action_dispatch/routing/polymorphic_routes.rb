@@ -166,7 +166,7 @@ module ActionDispatch
 
       private
         def action_prefix(options)
-          options[:action] ? "#{options[:action]}_" : ''
+          options[:action] ? "#{options[:action]}_" : StringPool::EMPTY
         end
 
         def routing_type(options)

@@ -92,7 +92,7 @@ module ActionDispatch
           if options[:user] && options[:password]
             "#{Rack::Utils.escape(options[:user])}:#{Rack::Utils.escape(options[:password])}@"
           else
-            ""
+            StringPool::EMPTY
           end
         end
 
@@ -166,7 +166,7 @@ module ActionDispatch
 
       # Returns the host for this request, such as example.com.
       def host
-        raw_host_with_port.sub(/:\d+$/, '')
+        raw_host_with_port.sub(/:\d+$/, StringPool::EMPTY)
       end
 
       # Returns a \host:\port string for this request, such as "example.com" or
@@ -208,7 +208,7 @@ module ActionDispatch
       # Returns a string \port suffix, including colon, like ":8080" if the \port
       # number of this request is not the default HTTP \port 80 or HTTPS \port 443.
       def port_string
-        standard_port? ? '' : ":#{port}"
+        standard_port? ? StringPool::EMPTY : ":#{port}"
       end
 
       def server_port

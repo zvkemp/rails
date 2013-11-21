@@ -16,7 +16,7 @@ module ActionDispatch
         end
 
         def names
-          @path.scan(/:\w+/).map { |s| s.tr(':', '') }
+          @path.scan(/:\w+/).map { |s| s.tr(':', StringPool::EMPTY) }
         end
       end
     end

@@ -24,7 +24,7 @@ module ActionDispatch
       end
 
       def verb
-        super.source.gsub(/[$^]/, '')
+        super.source.gsub(/[$^]/, StringPool::EMPTY)
       end
 
       def path
@@ -44,11 +44,11 @@ module ActionDispatch
               sub('\\A' , '^').
               sub('\\Z' , '$').
               sub('\\z' , '$').
-              sub(/^\// , '').
-              sub(/\/[a-z]*$/ , '').
-              gsub(/\(\?#.+\)/ , '').
+              sub(/^\// , StringPool::EMPTY).
+              sub(/\/[a-z]*$/ , StringPool::EMPTY).
+              gsub(/\(\?#.+\)/ , StringPool::EMPTY).
               gsub(/\(\?-\w+:/ , '(').
-              gsub(/\s/ , '')
+              gsub(/\s/ , StringPool::EMPTY)
         Regexp.new(str).source
       end
 

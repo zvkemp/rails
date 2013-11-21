@@ -44,7 +44,7 @@ module ActionDispatch
 
         expected_options.stringify_keys!
 
-        msg = message(msg, "") {
+        msg = message(msg, StringPool::EMPTY) {
           sprintf("The recognized options <%s> did not match <%s>, difference:",
                   request.path_parameters, expected_options)
         }

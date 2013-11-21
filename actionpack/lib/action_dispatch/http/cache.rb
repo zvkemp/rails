@@ -19,7 +19,7 @@ module ActionDispatch
 
         def if_none_match_etags
           (if_none_match ? if_none_match.split(/\s*,\s*/) : []).collect do |etag|
-            etag.gsub(/^\"|\"$/, "")
+            etag.gsub(/^\"|\"$/, StringPool::EMPTY)
           end
         end
 
@@ -29,7 +29,7 @@ module ActionDispatch
 
         def etag_matches?(etag)
           if etag
-            etag = etag.gsub(/^\"|\"$/, "")
+            etag = etag.gsub(/^\"|\"$/, StringPool::EMPTY)
             if_none_match_etags.include?(etag)
           end
         end

@@ -95,7 +95,7 @@ module ActionDispatch
 
           def normalize_options!
             @options.reverse_merge!(scope[:options]) if scope[:options]
-            path_without_format = path.sub(/\(\.:format\)$/, '')
+            path_without_format = path.sub(/\(\.:format\)$/, StringPool::EMPTY)
 
             # Add a constraint for wildcard route to make it non-greedy and match the
             # optional format part of the route by default
@@ -1401,9 +1401,9 @@ module ActionDispatch
             route_options = options.dup
             route_options[:path] ||= _path if _path.is_a?(String)
 
-            path_without_format = _path.to_s.sub(/\(\.:format\)$/, '')
+            path_without_format = _path.to_s.sub(/\(\.:format\)$/, StringPool::EMPTY)
             if using_match_shorthand?(path_without_format, route_options)
-              route_options[:to] ||= path_without_format.gsub(%r{^/}, "").sub(%r{/([^/]*)$}, '#\1')
+              route_options[:to] ||= path_without_format.gsub(%r{^/}, StringPool::EMPTY).sub(%r{/([^/]*)$}, '#\1')
             end
 
             decomposed_match(_path, route_options)

@@ -17,9 +17,9 @@ module ActionDispatch
         def self.normalize_path(path)
           path = "/#{path}"
           path.squeeze!('/')
-          path.sub!(%r{/+\Z}, '')
+          path.sub!(%r{/+\Z}, StringPool::EMPTY)
           path.gsub!(/(%[a-f0-9]{2})/) { $1.upcase }
-          path = '/' if path == ''
+          path = '/' if path == StringPool::EMPTY
           path
         end
 
