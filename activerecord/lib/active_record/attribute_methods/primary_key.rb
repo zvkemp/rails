@@ -40,14 +40,14 @@ module ActiveRecord
       protected
 
       def attribute_method?(attr_name)
-        attr_name == 'id' || super
+        attr_name == StringPool::ID || super
       end
 
       module ClassMethods
         def define_method_attribute(attr_name)
           super
 
-          if attr_name == primary_key && attr_name != 'id'
+          if attr_name == primary_key && attr_name != StringPool::ID
             generated_attribute_methods.send(:alias_method, :id, primary_key)
           end
         end
@@ -81,7 +81,7 @@ module ActiveRecord
         end
 
         def get_primary_key(base_name) #:nodoc:
-          return 'id' if base_name.blank?
+          return StringPool::ID if base_name.blank?
 
           case primary_key_prefix_type
           when :table_name
@@ -92,7 +92,7 @@ module ActiveRecord
             if ActiveRecord::Base != self && table_exists?
               connection.schema_cache.primary_keys(table_name)
             else
-              'id'
+              StringPool::ID
             end
           end
         end

@@ -379,12 +379,12 @@ module ActiveRecord
       attributes = attributes.with_indifferent_access
       existing_record = send(association_name)
 
-      if (options[:update_only] || !attributes['id'].blank?) && existing_record &&
-          (options[:update_only] || existing_record.id.to_s == attributes['id'].to_s)
+      if (options[:update_only] || !attributes[StringPool::ID].blank?) && existing_record &&
+          (options[:update_only] || existing_record.id.to_s == attributes[StringPool::ID].to_s)
         assign_to_or_mark_for_destruction(existing_record, attributes, options[:allow_destroy]) unless call_reject_if(association_name, attributes)
 
-      elsif attributes['id'].present?
-        raise_nested_attributes_record_not_found!(association_name, attributes['id'])
+      elsif attributes[StringPool::ID].present?
+        raise_nested_attributes_record_not_found!(association_name, attributes[StringPool::ID])
 
       elsif !reject_new_record?(association_name, attributes)
         assignable_attributes = attributes.except(*UNASSIGNABLE_KEYS)
@@ -441,7 +441,7 @@ module ActiveRecord
 
       if attributes_collection.is_a? Hash
         keys = attributes_collection.keys
-        attributes_collection = if keys.include?('id') || keys.include?(:id)
+        attributes_collection = if keys.include?(StringPool::ID) || keys.include?(:id)
           [attributes_collection]
         else
           attributes_collection.values
@@ -453,23 +453,23 @@ module ActiveRecord
       existing_records = if association.loaded?
         association.target
       else
-        attribute_ids = attributes_collection.map {|a| a['id'] || a[:id] }.compact
+        attribute_ids = attributes_collection.map {|a| a[StringPool::ID] || a[:id] }.compact
         attribute_ids.empty? ? [] : association.scope.where(association.klass.primary_key => attribute_ids)
       end
 
       attributes_collection.each do |attributes|
         attributes = attributes.with_indifferent_access
 
-        if attributes['id'].blank?
+        if attributes[StringPool::ID].blank?
           unless reject_new_record?(association_name, attributes)
             association.build(attributes.except(*UNASSIGNABLE_KEYS))
           end
-        elsif existing_record = existing_records.detect { |record| record.id.to_s == attributes['id'].to_s }
+        elsif existing_record = existing_records.detect { |record| record.id.to_s == attributes[StringPool::ID].to_s }
           unless call_reject_if(association_name, attributes)
             # Make sure we are operating on the actual object which is in the association's
             # proxy_target array (either by finding it, or adding it if not found)
             # Take into account that the proxy_target may have changed due to callbacks
-            target_record = association.target.detect { |record| record.id.to_s == attributes['id'].to_s }
+            target_record = association.target.detect { |record| record.id.to_s == attributes[StringPool::ID].to_s }
             if target_record
               existing_record = target_record
             else
@@ -479,7 +479,7 @@ module ActiveRecord
             assign_to_or_mark_for_destruction(existing_record, attributes, options[:allow_destroy])
           end
         else
-          raise_nested_attributes_record_not_found!(association_name, attributes['id'])
+          raise_nested_attributes_record_not_found!(association_name, attributes[StringPool::ID])
         end
       end
     end

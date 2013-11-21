@@ -119,7 +119,7 @@ HEADER
           tbl.print "  create_table #{remove_prefix_and_suffix(table).inspect}"
           pkcol = columns.detect { |c| c.name == pk }
           if pkcol
-            if pk != 'id'
+            if pk != StringPool::ID
               tbl.print %Q(, primary_key: "#{pk}")
             elsif pkcol.sql_type == 'uuid'
               tbl.print ", id: :uuid"

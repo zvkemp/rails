@@ -113,7 +113,7 @@ module ActiveRecord
           column ||= @column_types[name]
 
           return @attributes.fetch(name) {
-            if name == 'id' && self.class.primary_key != name
+            if name == StringPool::ID && self.class.primary_key != name
               read_attribute(self.class.primary_key)
             end
           } unless column

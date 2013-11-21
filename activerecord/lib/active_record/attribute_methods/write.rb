@@ -56,7 +56,7 @@ module ActiveRecord
       # turned into +nil+.
       def write_attribute(attr_name, value)
         attr_name = attr_name.to_s
-        attr_name = self.class.primary_key if attr_name == 'id' && self.class.primary_key
+        attr_name = self.class.primary_key if attr_name == StringPool::ID && self.class.primary_key
         @attributes_cache.delete(attr_name)
         column = column_for_attribute(attr_name)
 

@@ -261,11 +261,11 @@ module ActiveRecord
 
         # Returns the sequence name for a table's primary key or some other specified key.
         def default_sequence_name(table_name, pk = nil) #:nodoc:
-          result = serial_sequence(table_name, pk || 'id')
+          result = serial_sequence(table_name, pk || StringPool::ID)
           return nil unless result
           result.split('.').last
         rescue ActiveRecord::StatementInvalid
-          "#{table_name}_#{pk || 'id'}_seq"
+          "#{table_name}_#{pk || StringPool::ID}_seq"
         end
 
         def serial_sequence(table, column)
