@@ -35,7 +35,7 @@ module ActionDispatch
     end
 
     def path=(path)
-      @env['PATH_INFO'] = path
+      @env[StringPool::PATH_INFO] = path
     end
 
     def action=(action_name)

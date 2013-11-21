@@ -31,7 +31,7 @@ module ActionDispatch
         end
 
         def path_info
-          env['PATH_INFO']
+          env[StringPool::PATH_INFO]
         end
 
         def ip
@@ -54,16 +54,16 @@ module ActionDispatch
       end
 
       def call(env)
-        env['PATH_INFO'] = normalize_path(env['PATH_INFO'])
+        env[StringPool::PATH_INFO] = normalize_path(env[StringPool::PATH_INFO])
 
         find_routes(env).each do |match, parameters, route|
           script_name, path_info, set_params = env.values_at('SCRIPT_NAME',
-                                                             'PATH_INFO',
+                                                             StringPool::PATH_INFO,
                                                              @params_key)
 
           unless route.path.anchored
             env['SCRIPT_NAME'] = (script_name.to_s + match.to_s).chomp(StringPool::SLASH)
-            env['PATH_INFO']   = match.post_match
+            env[StringPool::PATH_INFO]   = match.post_match
           end
 
           env[@params_key] = (set_params || {}).merge parameters
@@ -72,7 +72,7 @@ module ActionDispatch
 
           if 'pass' == headers['X-Cascade']
             env['SCRIPT_NAME'] = script_name
-            env['PATH_INFO']   = path_info
+            env[StringPool::PATH_INFO]   = path_info
             env[@params_key]   = set_params
             next
           end
@@ -87,7 +87,7 @@ module ActionDispatch
         find_routes(req.env).each do |match, parameters, route|
           unless route.path.anchored
             req.env['SCRIPT_NAME'] = match.to_s
-            req.env['PATH_INFO']   = match.post_match.sub(/^([^\/])/, '/\1')
+            req.env[StringPool::PATH_INFO]   = match.post_match.sub(/^([^\/])/, '/\1')
           end
 
           yield(route, nil, parameters)

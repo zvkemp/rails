@@ -42,7 +42,7 @@ module ActionDispatch
       wrapper = ExceptionWrapper.new(env, exception)
       status  = wrapper.status_code
       env["action_dispatch.exception"] = wrapper.exception
-      env["PATH_INFO"] = "/#{status}"
+      env[StringPool::PATH_INFO] = "/#{status}"
       response = @exceptions_app.call(env)
       response[1]['X-Cascade'] == 'pass' ? pass_response(status) : response
     rescue Exception => failsafe_error
