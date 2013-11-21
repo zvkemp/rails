@@ -566,7 +566,7 @@ module ActiveRecord
         end
 
         initialize_type_map
-        @local_tz = execute('SHOW TIME ZONE', 'SCHEMA').first["TimeZone"]
+        @local_tz = execute('SHOW TIME ZONE', StringPool::SCHEMA).first["TimeZone"]
         @use_insert_returning = @config.key?(:insert_returning) ? self.class.type_cast_config_to_boolean(@config[:insert_returning]) : true
       end
 
@@ -618,7 +618,7 @@ module ActiveRecord
       # Enable standard-conforming strings if available.
       def set_standard_conforming_strings
         old, self.client_min_messages = client_min_messages, 'panic'
-        execute('SET standard_conforming_strings = on', 'SCHEMA') rescue nil
+        execute('SET standard_conforming_strings = on', StringPool::SCHEMA) rescue nil
       ensure
         self.client_min_messages = old
       end
@@ -660,14 +660,14 @@ module ActiveRecord
       def extension_enabled?(name)
         if supports_extensions?
           res = exec_query "SELECT EXISTS(SELECT * FROM pg_available_extensions WHERE name = '#{name}' AND installed_version IS NOT NULL) as enabled",
-            'SCHEMA'
+            StringPool::SCHEMA
           res.column_types['enabled'].type_cast res.rows.first.first
         end
       end
 
       def extensions
         if supports_extensions?
-          res = exec_query "SELECT extname from pg_extension", "SCHEMA"
+          res = exec_query "SELECT extname from pg_extension", StringPool::SCHEMA
           res.rows.map { |r| res.column_types['extname'].type_cast r.first }
         else
           super
@@ -676,7 +676,7 @@ module ActiveRecord
 
       # Returns the configured supported identifier length supported by PostgreSQL
       def table_alias_length
-        @table_alias_length ||= query('SHOW max_identifier_length', 'SCHEMA')[0][0].to_i
+        @table_alias_length ||= query('SHOW max_identifier_length', StringPool::SCHEMA)[0][0].to_i
       end
 
       # Set the authorized user for this session
@@ -744,7 +744,7 @@ module ActiveRecord
         end
 
         def initialize_type_map
-          result = execute('SELECT oid, typname, typelem, typdelim, typinput FROM pg_type', 'SCHEMA')
+          result = execute('SELECT oid, typname, typelem, typdelim, typinput FROM pg_type', StringPool::SCHEMA)
           leaves, nodes = result.partition { |row| row['typelem'] == '0' }
 
           # populate the leaf nodes
@@ -865,9 +865,9 @@ module ActiveRecord
           # TIMESTAMP WITH ZONE types in UTC.
           # (SET TIME ZONE does not use an equals sign like other SET variables)
           if ActiveRecord::Base.default_timezone == :utc
-            execute("SET time zone 'UTC'", 'SCHEMA')
+            execute("SET time zone 'UTC'", StringPool::SCHEMA)
           elsif @local_tz
-            execute("SET time zone '#{@local_tz}'", 'SCHEMA')
+            execute("SET time zone '#{@local_tz}'", StringPool::SCHEMA)
           end
 
           # SET statements from :variables config hash
@@ -876,9 +876,9 @@ module ActiveRecord
           variables.map do |k, v|
             if v == ':default' || v == :default
               # Sets the value to the global or compile default
-              execute("SET SESSION #{k.to_s} TO DEFAULT", 'SCHEMA')
+              execute("SET SESSION #{k.to_s} TO DEFAULT", StringPool::SCHEMA)
             elsif !v.nil?
-              execute("SET SESSION #{k.to_s} TO #{quote(v)}", 'SCHEMA')
+              execute("SET SESSION #{k.to_s} TO #{quote(v)}", StringPool::SCHEMA)
             end
           end
         end
@@ -929,7 +929,7 @@ module ActiveRecord
         #  - format_type includes the column size constraint, e.g. varchar(50)
         #  - ::regclass is a function that gives the id for a table name
         def column_definitions(table_name) #:nodoc:
-          exec_query(<<-end_sql, 'SCHEMA').rows
+          exec_query(<<-end_sql, StringPool::SCHEMA).rows
               SELECT a.attname, format_type(a.atttypid, a.atttypmod),
                      pg_get_expr(d.adbin, d.adrelid), a.attnotnull, a.atttypid, a.atttypmod
                 FROM pg_attribute a LEFT JOIN pg_attrdef d

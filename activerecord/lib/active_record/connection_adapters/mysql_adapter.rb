@@ -268,7 +268,7 @@ module ActiveRecord
 
         result = exec_query(
           "SHOW VARIABLES WHERE Variable_name = 'character_set_client'",
-          'SCHEMA')
+          StringPool::SCHEMA)
         @client_encoding = ENCODINGS[result.rows.last.last]
       end
 

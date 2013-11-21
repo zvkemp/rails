@@ -363,7 +363,7 @@ module ActiveRecord
         SQL
         sql << " AND name = #{quote_table_name(table_name)}" if table_name
 
-        exec_query(sql, 'SCHEMA').map do |row|
+        exec_query(sql, StringPool::SCHEMA).map do |row|
           row['name']
         end
       end
@@ -390,12 +390,12 @@ module ActiveRecord
 
       # Returns an array of indexes for the given table.
       def indexes(table_name, name = nil) #:nodoc:
-        exec_query("PRAGMA index_list(#{quote_table_name(table_name)})", 'SCHEMA').map do |row|
+        exec_query("PRAGMA index_list(#{quote_table_name(table_name)})", StringPool::SCHEMA).map do |row|
           IndexDefinition.new(
             table_name,
             row['name'],
             row['unique'] != 0,
-            exec_query("PRAGMA index_info('#{row['name']}')", "SCHEMA").map { |col|
+            exec_query("PRAGMA index_info('#{row['name']}')", StringPool::SCHEMA).map { |col|
               col['name']
             })
         end
@@ -486,7 +486,7 @@ module ActiveRecord
         end
 
         def table_structure(table_name)
-          structure = exec_query("PRAGMA table_info(#{quote_table_name(table_name)})", 'SCHEMA').to_hash
+          structure = exec_query("PRAGMA table_info(#{quote_table_name(table_name)})", StringPool::SCHEMA).to_hash
           raise(ActiveRecord::StatementInvalid, "Could not find table '#{table_name}'") if structure.empty?
           structure
         end

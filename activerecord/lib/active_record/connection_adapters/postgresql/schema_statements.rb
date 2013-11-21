@@ -90,7 +90,7 @@ module ActiveRecord
 
         # Returns the list of all tables in the schema search path or a specified schema.
         def tables(name = nil)
-          query(<<-SQL, 'SCHEMA').map { |row| row[0] }
+          query(<<-SQL, StringPool::SCHEMA).map { |row| row[0] }
             SELECT tablename
             FROM pg_tables
             WHERE schemaname = ANY (current_schemas(false))
@@ -107,7 +107,7 @@ module ActiveRecord
           binds = [[nil, table]]
           binds << [nil, schema] if schema
 
-          exec_query(<<-SQL, 'SCHEMA').rows.first[0].to_i > 0
+          exec_query(<<-SQL, StringPool::SCHEMA).rows.first[0].to_i > 0
               SELECT COUNT(*)
               FROM pg_class c
               LEFT JOIN pg_namespace n ON n.oid = c.relnamespace
@@ -119,7 +119,7 @@ module ActiveRecord
 
         # Returns true if schema exists.
         def schema_exists?(name)
-          exec_query(<<-SQL, 'SCHEMA').rows.first[0].to_i > 0
+          exec_query(<<-SQL, StringPool::SCHEMA).rows.first[0].to_i > 0
             SELECT COUNT(*)
             FROM pg_namespace
             WHERE nspname = '#{name}'
@@ -128,7 +128,7 @@ module ActiveRecord
 
         # Returns an array of indexes for the given table.
         def indexes(table_name, name = nil)
-           result = query(<<-SQL, 'SCHEMA')
+           result = query(<<-SQL, StringPool::SCHEMA)
              SELECT distinct i.relname, d.indisunique, d.indkey, pg_get_indexdef(d.indexrelid), t.oid
              FROM pg_class t
              INNER JOIN pg_index d ON t.oid = d.indrelid
@@ -147,7 +147,7 @@ module ActiveRecord
             inddef = row[3]
             oid = row[4]
 
-            columns = Hash[query(<<-SQL, "SCHEMA")]
+            columns = Hash[query(<<-SQL, StringPool::SCHEMA)]
             SELECT a.attnum, a.attname
             FROM pg_attribute a
             WHERE a.attrelid = #{oid}
@@ -181,17 +181,17 @@ module ActiveRecord
 
         # Returns the current database name.
         def current_database
-          query('select current_database()', 'SCHEMA')[0][0]
+          query('select current_database()', StringPool::SCHEMA)[0][0]
         end
 
         # Returns the current schema name.
         def current_schema
-          query('SELECT current_schema', 'SCHEMA')[0][0]
+          query('SELECT current_schema', StringPool::SCHEMA)[0][0]
         end
 
         # Returns the current database encoding format.
         def encoding
-          query(<<-end_sql, 'SCHEMA')[0][0]
+          query(<<-end_sql, StringPool::SCHEMA)[0][0]
             SELECT pg_encoding_to_char(pg_database.encoding) FROM pg_database
             WHERE pg_database.datname LIKE '#{current_database}'
           end_sql
@@ -199,21 +199,21 @@ module ActiveRecord
 
         # Returns the current database collation.
         def collation
-          query(<<-end_sql, 'SCHEMA')[0][0]
+          query(<<-end_sql, StringPool::SCHEMA)[0][0]
             SELECT pg_database.datcollate FROM pg_database WHERE pg_database.datname LIKE '#{current_database}'
           end_sql
         end
 
         # Returns the current database ctype.
         def ctype
-          query(<<-end_sql, 'SCHEMA')[0][0]
+          query(<<-end_sql, StringPool::SCHEMA)[0][0]
             SELECT pg_database.datctype FROM pg_database WHERE pg_database.datname LIKE '#{current_database}'
           end_sql
         end
 
         # Returns an array of schema names.
         def schema_names
-          query(<<-SQL, 'SCHEMA').flatten
+          query(<<-SQL, StringPool::SCHEMA).flatten
             SELECT nspname
               FROM pg_namespace
              WHERE nspname !~ '^pg_.*'
@@ -239,24 +239,24 @@ module ActiveRecord
         # This should be not be called manually but set in database.yml.
         def schema_search_path=(schema_csv)
           if schema_csv
-            execute("SET search_path TO #{schema_csv}", 'SCHEMA')
+            execute("SET search_path TO #{schema_csv}", StringPool::SCHEMA)
             @schema_search_path = schema_csv
           end
         end
 
         # Returns the active schema search path.
         def schema_search_path
-          @schema_search_path ||= query('SHOW search_path', 'SCHEMA')[0][0]
+          @schema_search_path ||= query('SHOW search_path', StringPool::SCHEMA)[0][0]
         end
 
         # Returns the current client message level.
         def client_min_messages
-          query('SHOW client_min_messages', 'SCHEMA')[0][0]
+          query('SHOW client_min_messages', StringPool::SCHEMA)[0][0]
         end
 
         # Set the client message level.
         def client_min_messages=(level)
-          execute("SET client_min_messages TO '#{level}'", 'SCHEMA')
+          execute("SET client_min_messages TO '#{level}'", StringPool::SCHEMA)
         end
 
         # Returns the sequence name for a table's primary key or some other specified key.
@@ -269,7 +269,7 @@ module ActiveRecord
         end
 
         def serial_sequence(table, column)
-          result = exec_query(<<-eosql, 'SCHEMA')
+          result = exec_query(<<-eosql, StringPool::SCHEMA)
             SELECT pg_get_serial_sequence('#{table}', '#{column}')
           eosql
           result.rows.first.first
@@ -291,7 +291,7 @@ module ActiveRecord
           if pk && sequence
             quoted_sequence = quote_table_name(sequence)
 
-            select_value <<-end_sql, 'SCHEMA'
+            select_value <<-end_sql, StringPool::SCHEMA
               SELECT setval('#{quoted_sequence}', (SELECT COALESCE(MAX(#{quote_column_name pk})+(SELECT increment_by FROM #{quoted_sequence}), (SELECT min_value FROM #{quoted_sequence})) FROM #{quote_table_name(table)}), false)
             end_sql
           end
@@ -301,7 +301,7 @@ module ActiveRecord
         def pk_and_sequence_for(table) #:nodoc:
           # First try looking for a sequence with a dependency on the
           # given table's primary key.
-          result = query(<<-end_sql, 'SCHEMA')[0]
+          result = query(<<-end_sql, StringPool::SCHEMA)[0]
             SELECT attr.attname, seq.relname
             FROM pg_class      seq,
                  pg_attribute  attr,
@@ -318,7 +318,7 @@ module ActiveRecord
           end_sql
 
           if result.nil? or result.empty?
-            result = query(<<-end_sql, 'SCHEMA')[0]
+            result = query(<<-end_sql, StringPool::SCHEMA)[0]
               SELECT attr.attname,
                 CASE
                   WHEN pg_get_expr(def.adbin, def.adrelid) !~* 'nextval' THEN NULL
@@ -344,7 +344,7 @@ module ActiveRecord
 
         # Returns just a table's primary key
         def primary_key(table)
-          row = exec_query(<<-end_sql, 'SCHEMA').rows.first
+          row = exec_query(<<-end_sql, StringPool::SCHEMA).rows.first
             SELECT attr.attname
             FROM pg_attribute attr
             INNER JOIN pg_constraint cons ON attr.attrelid = cons.conrelid AND attr.attnum = cons.conkey[1]

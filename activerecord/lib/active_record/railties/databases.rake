@@ -239,7 +239,7 @@ db_namespace = namespace :db do
     desc 'Create a db/schema.rb file that is portable against any DB supported by AR'
     task :dump => [:environment, :load_config] do
       require 'active_record/schema_dumper'
-      filename = ENV['SCHEMA'] || File.join(ActiveRecord::Tasks::DatabaseTasks.db_dir, 'schema.rb')
+      filename = ENV[StringPool::SCHEMA] || File.join(ActiveRecord::Tasks::DatabaseTasks.db_dir, 'schema.rb')
       File.open(filename, "w:utf-8") do |file|
         ActiveRecord::SchemaDumper.dump(ActiveRecord::Base.connection, file)
       end
@@ -248,7 +248,7 @@ db_namespace = namespace :db do
 
     desc 'Load a schema.rb file into the database'
     task :load => [:environment, :load_config] do
-      file = ENV['SCHEMA'] || File.join(ActiveRecord::Tasks::DatabaseTasks.db_dir, 'schema.rb')
+      file = ENV[StringPool::SCHEMA] || File.join(ActiveRecord::Tasks::DatabaseTasks.db_dir, 'schema.rb')
       ActiveRecord::Tasks::DatabaseTasks.check_schema_file(file)
       load(file)
     end

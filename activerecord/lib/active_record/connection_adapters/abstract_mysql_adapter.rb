@@ -404,7 +404,7 @@ module ActiveRecord
         sql << "IN #{quote_table_name(database)} " if database
         sql << "LIKE #{quote(like)}" if like
 
-        execute_and_free(sql, 'SCHEMA') do |result|
+        execute_and_free(sql, StringPool::SCHEMA) do |result|
           result.collect { |field| field.first }
         end
       end
@@ -428,7 +428,7 @@ module ActiveRecord
       def indexes(table_name, name = nil) #:nodoc:
         indexes = []
         current_index = nil
-        execute_and_free("SHOW KEYS FROM #{quote_table_name(table_name)}", 'SCHEMA') do |result|
+        execute_and_free("SHOW KEYS FROM #{quote_table_name(table_name)}", StringPool::SCHEMA) do |result|
           each_hash(result) do |row|
             if current_index != row[:Key_name]
               next if row[:Key_name] == 'PRIMARY' # skip the primary key
@@ -451,7 +451,7 @@ module ActiveRecord
       # Returns an array of +Column+ objects for the table specified by +table_name+.
       def columns(table_name)#:nodoc:
         sql = "SHOW FULL FIELDS FROM #{quote_table_name(table_name)}"
-        execute_and_free(sql, 'SCHEMA') do |result|
+        execute_and_free(sql, StringPool::SCHEMA) do |result|
           each_hash(result).map do |field|
             field_name = set_field_encoding(field[:Field])
             new_column(field_name, field[:Default], field[:Type], field[:Null] == "YES", field[:Collation], field[:Extra])
@@ -558,13 +558,13 @@ module ActiveRecord
 
       # SHOW VARIABLES LIKE 'name'
       def show_variable(name)
-        variables = select_all("SHOW VARIABLES LIKE '#{name}'", 'SCHEMA')
+        variables = select_all("SHOW VARIABLES LIKE '#{name}'", StringPool::SCHEMA)
         variables.first['Value'] unless variables.empty?
       end
 
       # Returns a table's primary key and belonging sequence.
       def pk_and_sequence_for(table)
-        execute_and_free("SHOW CREATE TABLE #{quote_table_name(table)}", 'SCHEMA') do |result|
+        execute_and_free("SHOW CREATE TABLE #{quote_table_name(table)}", StringPool::SCHEMA) do |result|
           create_table = each_hash(result).first[:"Create Table"]
           if create_table.to_s =~ /PRIMARY KEY\s+(?:USING\s+\w+\s+)?\((.+)\)/
             keys = $1.split(",").map { |key| key.delete('`"') }
@@ -686,7 +686,7 @@ module ActiveRecord
           raise ActiveRecordError, "No such column: #{table_name}.#{column_name}"
         end
 
-        current_type = select_one("SHOW COLUMNS FROM #{quote_table_name(table_name)} LIKE '#{column_name}'", 'SCHEMA')["Type"]
+        current_type = select_one("SHOW COLUMNS FROM #{quote_table_name(table_name)} LIKE '#{column_name}'", StringPool::SCHEMA)["Type"]
         schema_creation.accept ChangeColumnDefinition.new column, current_type, options
       end
 

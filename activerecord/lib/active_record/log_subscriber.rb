@@ -1,6 +1,6 @@
 module ActiveRecord
   class LogSubscriber < ActiveSupport::LogSubscriber
-    IGNORE_PAYLOAD_NAMES = ["SCHEMA", "EXPLAIN"]
+    IGNORE_PAYLOAD_NAMES = [StringPool::SCHEMA, "EXPLAIN"]
 
     def self.runtime=(value)
       ActiveRecord::RuntimeRegistry.sql_runtime = value

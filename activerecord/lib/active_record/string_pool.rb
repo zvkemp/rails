@@ -1,5 +1,6 @@
 module ActiveRecord
   module StringPool
-    EMPTY = ''.freeze
+    EMPTY  = ''.freeze
+    SCHEMA = 'SCHEMA'.freeze
   end
 end
