@@ -28,7 +28,7 @@ module ActiveRecord
             value ? quoted_true : quoted_false
           end
           # BigDecimals need to be put in a non-normalized form and quoted.
-        when nil        then "NULL"
+        when nil        then StringPool::NULL
         when BigDecimal then value.to_s('F')
         when Numeric, ActiveSupport::Duration then value.to_s
         when Date, Time then "'#{quoted_date(value)}'"

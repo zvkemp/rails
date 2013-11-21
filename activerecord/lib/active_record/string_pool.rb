@@ -6,6 +6,7 @@ module ActiveRecord
     UNDERSCORE = '_'.freeze
 
     ID     = 'id'.freeze
+    NULL   = 'NULL'.freeze
     SCHEMA = 'SCHEMA'.freeze
     SQL    = 'SQL'.freeze
   end

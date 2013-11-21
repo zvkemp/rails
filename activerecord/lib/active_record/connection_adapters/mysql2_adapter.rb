@@ -150,7 +150,7 @@ module ActiveRecord
         def compute_column_widths(result)
           [].tap do |widths|
             result.columns.each_with_index do |column, i|
-              cells_in_column = [column] + result.rows.map {|r| r[i].nil? ? 'NULL' : r[i].to_s}
+              cells_in_column = [column] + result.rows.map {|r| r[i].nil? ? StringPool::NULL : r[i].to_s}
               widths << cells_in_column.map(&:length).max
             end
           end
@@ -164,7 +164,7 @@ module ActiveRecord
         def build_cells(items, widths)
           cells = []
           items.each_with_index do |item, i|
-            item = 'NULL' if item.nil?
+            item = StringPool::NULL if item.nil?
             justifier = item.is_a?(Numeric) ? 'rjust' : 'ljust'
             cells << item.to_s.send(justifier, widths[i])
           end

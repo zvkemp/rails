@@ -50,7 +50,7 @@ module ActiveRecord
             nil
           elsif String === string
             Hash[string.scan(HstorePair).map { |k,v|
-              v = v.upcase == 'NULL' ? nil : v.gsub(/\A"(.*)"\Z/m,'\1').gsub(/\\(.)/, '\1')
+              v = v.upcase == StringPool::NULL ? nil : v.gsub(/\A"(.*)"\Z/m,'\1').gsub(/\\(.)/, '\1')
               k = k.gsub(/\A"(.*)"\Z/m,'\1').gsub(/\\(.)/, '\1')
               [k,v]
             }]
@@ -70,7 +70,7 @@ module ActiveRecord
         def array_to_string(value, column, adapter)
           casted_values = value.map do |val|
             if String === val
-              if val == "NULL"
+              if val == StringPool::NULL
                 "\"#{val}\""
               else
                 quote_and_escape(adapter.type_cast(val, column, true))
@@ -132,7 +132,7 @@ module ActiveRecord
 
           def escape_hstore(value)
             if value.nil?
-              'NULL'
+              StringPool::NULL
             else
               if value == StringPool::EMPTY
                 '""'
@@ -144,7 +144,7 @@ module ActiveRecord
 
           def quote_and_escape(value)
             case value
-            when "NULL"
+            when StringPool::NULL
               value
             else
               "\"#{value.gsub(/"/,"\\\"")}\""

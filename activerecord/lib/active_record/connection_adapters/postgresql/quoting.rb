@@ -93,7 +93,7 @@ module ActiveRecord
             end
           when NilClass
             if column.array && array_member
-              'NULL'
+              StringPool::NULL
             elsif column.array
               value
             else

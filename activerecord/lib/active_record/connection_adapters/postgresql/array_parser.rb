@@ -92,7 +92,7 @@ module ActiveRecord
 
           def add_item_to_array(array, current_item, quoted)
             if current_item.length == 0
-            elsif !quoted && current_item == 'NULL'
+            elsif !quoted && current_item == StringPool::NULL
               array.push nil
             else
               array.push current_item
