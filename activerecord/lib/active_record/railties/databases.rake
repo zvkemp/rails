@@ -239,7 +239,7 @@ db_namespace = namespace :db do
     desc 'Create a db/schema.rb file that is portable against any DB supported by AR'
     task :dump => [:environment, :load_config] do
       require 'active_record/schema_dumper'
-      filename = ENV[StringPool::SCHEMA] || File.join(ActiveRecord::Tasks::DatabaseTasks.db_dir, 'schema.rb')
+      filename = ENV['SCHEMA'] || File.join(ActiveRecord::Tasks::DatabaseTasks.db_dir, 'schema.rb')
       File.open(filename, "w:utf-8") do |file|
         ActiveRecord::SchemaDumper.dump(ActiveRecord::Base.connection, file)
       end
@@ -248,7 +248,7 @@ db_namespace = namespace :db do
 
     desc 'Load a schema.rb file into the database'
     task :load => [:environment, :load_config] do
-      file = ENV[StringPool::SCHEMA] || File.join(ActiveRecord::Tasks::DatabaseTasks.db_dir, 'schema.rb')
+      file = ENV['SCHEMA'] || File.join(ActiveRecord::Tasks::DatabaseTasks.db_dir, 'schema.rb')
       ActiveRecord::Tasks::DatabaseTasks.check_schema_file(file)
       load(file)
     end
@@ -376,7 +376,7 @@ namespace :railties do
   namespace :install do
     # desc "Copies missing migrations from Railties (e.g. engines). You can specify Railties to use with FROM=railtie1,railtie2"
     task :migrations => :'db:load_config' do
-      to_load = ENV['FROM'].blank? ? :all : ENV['FROM'].split(StringPool::COMMA).map {|n| n.strip }
+      to_load = ENV['FROM'].blank? ? :all : ENV['FROM'].split(',').map {|n| n.strip }
       railties = {}
       Rails.application.railties.each do |railtie|
         next unless to_load == :all || to_load.include?(railtie.railtie_name)
