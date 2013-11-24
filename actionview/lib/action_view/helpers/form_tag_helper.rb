@@ -196,7 +196,7 @@ module ActionView
           options ||= {}
           options = options.stringify_keys
         end
-        options["for"] = sanitize_to_id(name) unless name.blank? || options.has_key?("for")
+        options[StringPool::FOR] = sanitize_to_id(name) unless name.blank? || options.has_key?(StringPool::FOR)
         content_tag :label, content_or_options || name.to_s.humanize, options, &block
       end
 

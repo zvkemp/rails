@@ -95,9 +95,9 @@ module ActionView
 
         sources.uniq.map { |source|
           tag_options = {
-            "rel" => "stylesheet",
-            "media" => "screen",
-            "href" => path_to_stylesheet(source, path_options)
+            "rel"            => "stylesheet",
+            "media"          => "screen",
+            StringPool::HREF => path_to_stylesheet(source, path_options)
           }.merge!(options)
           tag(:link, tag_options)
         }.join(StringPool::NEWLINE).html_safe
@@ -135,10 +135,10 @@ module ActionView
 
         tag(
           "link",
-          "rel"   => tag_options[:rel] || "alternate",
+          "rel"             => tag_options[:rel] || "alternate",
           StringPool::TYPE  => tag_options[:type] || Mime::Type.lookup_by_extension(type.to_s).to_s,
-          "title" => tag_options[:title] || type.to_s.upcase,
-          "href"  => url_options.is_a?(Hash) ? url_for(url_options.merge(:only_path => false)) : url_options
+          "title"           => tag_options[:title] || type.to_s.upcase,
+          StringPool::HREF  => url_options.is_a?(Hash) ? url_for(url_options.merge(:only_path => false)) : url_options
         )
       end
 

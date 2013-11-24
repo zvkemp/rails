@@ -179,7 +179,7 @@ module ActionView
         html_options = convert_options_to_data_attributes(options, html_options)
 
         url = url_for(options)
-        html_options['href'] ||= url
+        html_options[StringPool::HREF] ||= url
 
         content_tag(:a, name || url, html_options, &block)
       end
@@ -309,7 +309,7 @@ module ActionView
           content_tag('button', html_options, &block)
         else
           html_options[StringPool::VALUE] = name || url
-          tag('input', html_options)
+          tag(StringPool::INPUT, html_options)
         end
 
         inner_tags = method_tag.safe_concat(button).safe_concat(request_token_tag)
@@ -468,7 +468,7 @@ module ActionView
         }.compact
         extras = extras.empty? ? StringPool::EMPTY : '?' + ERB::Util.html_escape(extras.join('&'))
 
-        html_options["href"] = "mailto:#{email_address}#{extras}".html_safe
+        html_options[StringPool::HREF] = "mailto:#{email_address}#{extras}".html_safe
 
         content_tag(:a, name || email_address.html_safe, html_options, &block)
       end
@@ -618,7 +618,7 @@ module ActionView
         end
 
         def method_tag(method)
-          tag('input', type: StringPool::HIDDEN, name: '_method', value: method.to_s)
+          tag(StringPool::INPUT, type: StringPool::HIDDEN, name: '_method', value: method.to_s)
         end
     end
   end

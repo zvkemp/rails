@@ -9,7 +9,7 @@ module ActionView
           options[StringPool::VALUE] = options.fetch(StringPool::VALUE) { value_before_type_cast(object) } unless field_type == "file"
           options[StringPool::VALUE] &&= ERB::Util.html_escape(options[StringPool::VALUE])
           add_default_name_and_id(options)
-          tag("input", options)
+          tag(StringPool::INPUT, options)
         end
 
         class << self

@@ -7,11 +7,12 @@ module ActionView
 
         attr_reader :object
 
+        CSB = ']' # Closing Square Bracket
         def initialize(object_name, method_name, template_object, options = {})
           @object_name, @method_name = object_name.to_s.dup, method_name.to_s.dup
           @template_object = template_object
 
-          @object_name.sub!(/\[\]$/,StringPool::EMPTY) || @object_name.sub!(/\[\]\]$/,"]")
+          @object_name.sub!(/\[\]$/,StringPool::EMPTY) || @object_name.sub!(/\[\]\]$/, CSB)
           @object = retrieve_object(options.delete(:object))
           @options = options
           @auto_index = retrieve_autoindex(Regexp.last_match.pre_match) if Regexp.last_match
@@ -72,15 +73,15 @@ module ActionView
         end
 
         def add_default_name_and_id(options)
-          if options.has_key?("index")
-            options[StringPool::NAME] ||= options.fetch(StringPool::NAME){ tag_name_with_index(options["index"], options["multiple"]) }
-            options[StringPool::ID] = options.fetch(StringPool::ID){ tag_id_with_index(options["index"]) }
-            options.delete("index")
+          if options.has_key?(StringPool::INDEX)
+            options[StringPool::NAME] ||= options.fetch(StringPool::NAME){ tag_name_with_index(options[StringPool::INDEX], options[StringPool::MULTIPLE]) }
+            options[StringPool::ID] = options.fetch(StringPool::ID){ tag_id_with_index(options[StringPool::INDEX]) }
+            options.delete(StringPool::INDEX)
           elsif defined?(@auto_index)
-            options[StringPool::NAME] ||= options.fetch(StringPool::NAME){ tag_name_with_index(@auto_index, options["multiple"]) }
+            options[StringPool::NAME] ||= options.fetch(StringPool::NAME){ tag_name_with_index(@auto_index, options[StringPool::MULTIPLE]) }
             options[StringPool::ID] = options.fetch(StringPool::ID){ tag_id_with_index(@auto_index) }
           else
-            options[StringPool::NAME] ||= options.fetch(StringPool::NAME){ tag_name(options["multiple"]) }
+            options[StringPool::NAME] ||= options.fetch(StringPool::NAME){ tag_name(options[StringPool::MULTIPLE]) }
             options[StringPool::ID] = options.fetch(StringPool::ID){ tag_id }
           end
 
@@ -122,15 +123,15 @@ module ActionView
           value = options.fetch(:selected) { value(object) }
           select = content_tag("select", add_options(option_tags, options, value), html_options)
 
-          if html_options["multiple"] && options.fetch(:include_hidden, true)
-            tag("input", :disabled => html_options["disabled"], :name => html_options[StringPool::NAME], :type => StringPool::HIDDEN, :value => StringPool::EMPTY) + select
+          if html_options[StringPool::MULTIPLE] && options.fetch(:include_hidden, true)
+            tag(StringPool::INPUT, :disabled => html_options["disabled"], :name => html_options[StringPool::NAME], :type => StringPool::HIDDEN, :value => StringPool::EMPTY) + select
           else
             select
           end
         end
 
         def select_not_required?(html_options)
-          !html_options["required"] || html_options["multiple"] || html_options["size"].to_i > 1
+          !html_options["required"] || html_options[StringPool::MULTIPLE] || html_options["size"].to_i > 1
         end
 
         def add_options(option_tags, options, value = nil)

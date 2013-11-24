@@ -57,12 +57,12 @@ module ActionDispatch
         env[StringPool::PATH_INFO] = normalize_path(env[StringPool::PATH_INFO])
 
         find_routes(env).each do |match, parameters, route|
-          script_name, path_info, set_params = env.values_at('SCRIPT_NAME',
+          script_name, path_info, set_params = env.values_at(StringPool::SCRIPT_NAME,
                                                              StringPool::PATH_INFO,
                                                              @params_key)
 
           unless route.path.anchored
-            env['SCRIPT_NAME'] = (script_name.to_s + match.to_s).chomp(StringPool::SLASH)
+            env[StringPool::SCRIPT_NAME] = (script_name.to_s + match.to_s).chomp(StringPool::SLASH)
             env[StringPool::PATH_INFO]   = match.post_match
           end
 
@@ -71,7 +71,7 @@ module ActionDispatch
           status, headers, body = route.app.call(env)
 
           if 'pass' == headers['X-Cascade']
-            env['SCRIPT_NAME'] = script_name
+            env[StringPool::SCRIPT_NAME] = script_name
             env[StringPool::PATH_INFO]   = path_info
             env[@params_key]   = set_params
             next
@@ -86,7 +86,7 @@ module ActionDispatch
       def recognize(req)
         find_routes(req.env).each do |match, parameters, route|
           unless route.path.anchored
-            req.env['SCRIPT_NAME'] = match.to_s
+            req.env[StringPool::SCRIPT_NAME] = match.to_s
             req.env[StringPool::PATH_INFO]   = match.post_match.sub(/^([^\/])/, '/\1')
           end
 

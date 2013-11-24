@@ -21,8 +21,8 @@ module ActionView
           tag_value = options.delete(StringPool::VALUE)
           name_and_id = options.dup
 
-          if name_and_id["for"]
-            name_and_id[StringPool::ID] = name_and_id["for"]
+          if name_and_id[StringPool::FOR]
+            name_and_id[StringPool::ID] = name_and_id[StringPool::FOR]
           else
             name_and_id.delete(StringPool::ID)
           end
@@ -30,8 +30,8 @@ module ActionView
           add_default_name_and_id_for_value(tag_value, name_and_id)
           options.delete("index")
           options.delete("namespace")
-          options.delete("multiple")
-          options["for"] = name_and_id[StringPool::ID] unless options.key?("for")
+          options.delete(StringPool::MULTIPLE)
+          options[StringPool::FOR] = name_and_id[StringPool::ID] unless options.key?(StringPool::FOR)
 
           if block_given?
             content = @template_object.capture(&block)

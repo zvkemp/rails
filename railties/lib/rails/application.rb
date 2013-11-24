@@ -133,9 +133,12 @@ module Rails
 
     # Implements call according to the Rack API. It simply
     # dispatches the request to the underlying middleware stack.
+    ORIGINAL_FULLPATH    = 'ORIGINAL_FULLPATH'.freeze
+    ORIGINAL_SCRIPT_NAME = 'ORIGINAL_SCRIPT_NAME'.freeze
+    SCRIPT_NAME          = 'SCRIPT_NAME'.freeze
     def call(env)
-      env["ORIGINAL_FULLPATH"] = build_original_fullpath(env)
-      env["ORIGINAL_SCRIPT_NAME"] = env["SCRIPT_NAME"]
+      env[ORIGINAL_FULLPATH] = build_original_fullpath(env)
+      env[ORIGINAL_SCRIPT_NAME] = env[SCRIPT_NAME]
       super(env)
     end
 

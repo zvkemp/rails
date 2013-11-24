@@ -23,6 +23,9 @@ module ActionView
         :textarea => StringPool::NEWLINE
       }
 
+      CLOSE_TAG_GT       = '>'.freeze
+      CLOSE_TAG_SLASH_GT = ' />'.freeze
+
       # Returns an empty HTML tag of type +name+ which by default is XHTML
       # compliant. Set +open+ to true to create an open tag compatible
       # with HTML 4.0 and below. Add HTML attributes by passing an attributes
@@ -65,7 +68,7 @@ module ActionView
       #   tag("div", data: {name: 'Stephen', city_state: %w(Chicago IL)})
       #   # => <div data-name="Stephen" data-city-state="[&quot;Chicago&quot;,&quot;IL&quot;]" />
       def tag(name, options = nil, open = false, escape = true)
-        "<#{name}#{tag_options(options, escape) if options}#{open ? ">" : " />"}".html_safe
+        "<#{name}#{tag_options(options, escape) if options}#{open ? CLOSE_TAG_GT : CLOSE_TAG_SLASH_GT}".html_safe
       end
 
       # Returns an HTML block tag of type +name+ surrounding the +content+. Add
@@ -137,11 +140,12 @@ module ActionView
           "<#{name}#{tag_options}>#{PRE_CONTENT_STRINGS[name.to_sym]}#{content}</#{name}>".html_safe
         end
 
+        DATA = 'data'
         def tag_options(options, escape = true)
           return if options.blank?
           attrs = []
           options.each_pair do |key, value|
-            if key.to_s == 'data' && value.is_a?(Hash)
+            if key.to_s == DATA && value.is_a?(Hash)
               value.each_pair do |k, v|
                 attrs << data_tag_option(k, v, escape)
               end

@@ -17,7 +17,7 @@ module ActionView
           options[StringPool::VALUE]    = @tag_value
           options[StringPool::CHECKED] = StringPool::CHECKED if input_checked?(object, options)
           add_default_name_and_id_for_value(@tag_value, options)
-          tag("input", options)
+          tag(StringPool::INPUT, options)
         end
 
         private
