@@ -52,7 +52,7 @@ module ActiveRecord
       def instantiate(record, column_types = {})
         klass = discriminate_class_for_record(record)
         column_types = klass.decorate_columns(column_types.dup)
-        klass.allocate.init_with('attributes' => record, 'column_types' => column_types)
+        klass.allocate.init_with(StringPool::ATTRIBUTES => record, StringPool::COLUMN_TYPES => column_types)
       end
 
       private

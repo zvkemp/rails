@@ -195,8 +195,8 @@ module ActiveRecord
     #   post.init_with('attributes' => { 'title' => 'hello world' })
     #   post.title # => 'hello world'
     def init_with(coder)
-      @attributes   = self.class.initialize_attributes(coder['attributes'])
-      @column_types_override = coder['column_types']
+      @attributes   = self.class.initialize_attributes(coder[StringPool::ATTRIBUTES])
+      @column_types_override = coder[StringPool::COLUMN_TYPES]
       @column_types = self.class.column_types
 
       init_internals
@@ -271,7 +271,7 @@ module ActiveRecord
     #   Post.new.encode_with(coder)
     #   coder # => {"attributes" => {"id" => nil, ... }}
     def encode_with(coder)
-      coder['attributes'] = attributes
+      coder[StringPool::ATTRIBUTES] = attributes
     end
 
     # Returns true if +comparison_object+ is the same exact object, or +comparison_object+

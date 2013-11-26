@@ -5,9 +5,11 @@ module ActiveRecord
     EMPTY      = ''.freeze
     UNDERSCORE = '_'.freeze
 
-    ID     = 'id'.freeze
-    NULL   = 'NULL'.freeze
-    SCHEMA = 'SCHEMA'.freeze
-    SQL    = 'SQL'.freeze
+    ATTRIBUTES   = 'attributes'.freeze
+    COLUMN_TYPES = 'column_types'.freeze
+    ID           = 'id'.freeze
+    NULL         = 'NULL'.freeze
+    SCHEMA       = 'SCHEMA'.freeze
+    SQL          = 'SQL'.freeze
   end
 end
