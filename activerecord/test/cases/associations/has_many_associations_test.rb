@@ -104,7 +104,7 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
     car = Car.create(:name => 'honda')
     car.funky_bulbs.create!
     assert_nothing_raised { car.reload.funky_bulbs.delete_all }
-    assert_equal 0, Bulb.count, "bulbs should have been deleted using :delete_all strategey"
+    assert_equal 0, Bulb.count, "bulbs should have been deleted using :delete_all strategy"
   end
 
   def test_building_the_associated_object_with_implicit_sti_base_class
@@ -1761,4 +1761,32 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
     assert_equal 1, speedometer.minivans.to_a.size, "Only one association should be present:\n#{speedometer.minivans.to_a}"
     assert_equal 1, speedometer.reload.minivans.to_a.size
   end
+
+  test "can unscope the default scope of the associated model" do
+    car = Car.create!
+    bulb1 = Bulb.create! name: "defaulty", car: car
+    bulb2 = Bulb.create! name: "other",    car: car
+
+    assert_equal [bulb1], car.bulbs
+    assert_equal [bulb1, bulb2], car.all_bulbs.sort_by(&:id)
+  end
+
+  test "raises RecordNotDestroyed when replaced child can't be destroyed" do
+    car = Car.create!
+    original_child = FailedBulb.create!(car: car)
+
+    assert_raise(ActiveRecord::RecordNotDestroyed) do
+      car.failed_bulbs = [FailedBulb.create!]
+    end
+
+    assert_equal [original_child], car.reload.failed_bulbs
+  end
+  
+  test 'updates counter cache when default scope is given' do
+    topic = DefaultRejectedTopic.create approved: true
+
+    assert_difference "topic.reload.replies_count", 1 do
+      topic.approved_replies.create!
+    end
+  end 
 end

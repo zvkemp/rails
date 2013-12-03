@@ -321,10 +321,12 @@ in mind. It is not meant as a silver bullet to handle all your
 whitelisting problems. However you can easily mix the API with your
 own code to adapt to your situation.
 
-Imagine a scenario where you want to whitelist an attribute
-containing a hash with any keys. Using strong parameters you can't
-allow a hash with any keys but you can use a simple assignment to get
-the job done:
+Imagine a scenario where you have parameters representing a product
+name and a hash of arbitrary data associated with that product, and
+you want to whitelist the product name attribute but also the whole
+data hash. The strong parameters API doesn't let you directly
+whitelist the whole of a nested hash with any keys, but you can use
+the keys of your nested hash to declare what to whitelist:
 
 ```ruby
 def product_params
@@ -348,7 +350,7 @@ For most stores, this ID is used to look up the session data on the server, e.g.
 
 The CookieStore can store around 4kB of data - much less than the others - but this is usually enough. Storing large amounts of data in the session is discouraged no matter which session store your application uses. You should especially avoid storing complex objects (anything other than basic Ruby objects, the most common example being model instances) in the session, as the server might not be able to reassemble them between requests, which will result in an error.
 
-If your user sessions don't store critical data or don't need to be around for long periods (for instance if you just use the flash for messaging), you can consider using ActionDispatch::Session::CacheStore. This will store sessions using the cache implementation you have configured for your application. The advantage of this is that you can use your existing cache infrastructure for storing sessions without requiring any additional setup or administration. The downside, of course, is that the sessions will be ephemeral and could disappear at any time.
+If your user sessions don't store critical data or don't need to be around for long periods (for instance if you just use the flash for messaging), you can consider using `ActionDispatch::Session::CacheStore`. This will store sessions using the cache implementation you have configured for your application. The advantage of this is that you can use your existing cache infrastructure for storing sessions without requiring any additional setup or administration. The downside, of course, is that the sessions will be ephemeral and could disappear at any time.
 
 Read more about session storage in the [Security Guide](security.html).
 
@@ -988,7 +990,7 @@ you should also note the following things:
 * Failing to close the response stream will leave the corresponding socket open
   forever. Make sure to call `close` whenever you are using a response stream.
 * WEBrick servers buffer all responses, and so including `ActionController::Live`
-  will not work. You must use a web server which does not automatically buffer 
+  will not work. You must use a web server which does not automatically buffer
   responses.
 
 Log Filtering

@@ -1,4 +1,22 @@
-*   Take a hash with options inside array in #url_for
+*   Try to escape each part of a url correctly when using a redirect route.
+
+    Fixes #13110.
+
+    *Andrew White*
+
+*   Better error message for typos in assert_response argument.
+
+    When the response type argument to `assert_response` is not a known
+    response type, `assert_response` now throws an ArgumentError with a clear
+    message. This is intended to help debug typos in the response type.
+
+    *Victor Costan*
+
+*   Fix formatting for `rake routes` when a section is shorter than a header.
+
+    *Sıtkı Bağdat*
+
+*   Take a hash with options inside array in `#url_for`.
 
     Example:
 
@@ -118,10 +136,6 @@
 
     *Vasiliy Ermolovich*
 
-*   Separate Action View completely from Action Pack.
-
-    *Łukasz Strzałkowski*
-
 *   Development mode exceptions are rendered in text format in case of XHR request.
 
     *Kir Shatrov*
@@ -222,11 +236,13 @@
 
     *Yves Senn*, *Andrew White*
 
-*   ActionView extracted from ActionPack
+*   Action View extracted from Action Pack.
 
     *Piotr Sarnacki*, *Łukasz Strzałkowski*
 
-*   Fix removing trailing slash for mounted apps #3215
+*   Fix removing trailing slash for mounted apps.
+
+    Fixes #3215.
 
     *Piotr Sarnacki*
 

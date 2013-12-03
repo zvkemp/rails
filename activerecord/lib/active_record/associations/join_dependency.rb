@@ -73,7 +73,7 @@ module ActiveRecord
 
       # base is the base class on which operation is taking place.
       # associations is the list of associations which are joined using hash, symbol or array.
-      # joins is the list of all string join commnads and arel nodes.
+      # joins is the list of all string join commands and arel nodes.
       #
       #  Example :
       #
@@ -83,14 +83,14 @@ module ActiveRecord
       #  end
       #
       #  If I execute `@physician.patients.to_a` then
-      #    base #=> Physician
-      #    associations #=> []
-      #    joins #=>  [#<Arel::Nodes::InnerJoin: ...]
+      #    base # => Physician
+      #    associations # => []
+      #    joins # =>  [#<Arel::Nodes::InnerJoin: ...]
       #
       #  However if I execute `Physician.joins(:appointments).to_a` then
-      #    base #=> Physician
-      #    associations #=> [:appointments]
-      #    joins #=>  []
+      #    base # => Physician
+      #    associations # => [:appointments]
+      #    joins # =>  []
       #
       def initialize(base, associations, joins)
         @alias_tracker = AliasTracker.new(base.connection, joins)

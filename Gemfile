@@ -12,7 +12,7 @@ gem 'bcrypt-ruby', '~> 3.1.2'
 gem 'jquery-rails', '~> 2.2.0'
 gem 'turbolinks'
 gem 'coffee-rails', '~> 4.0.0'
-gem 'arel', github: 'rails/arel'
+gem 'arel', github: 'rails/arel', branch: 'master'
 
 # This needs to be with require false to avoid
 # it being automatically loaded by sprockets
@@ -45,7 +45,6 @@ group :test do
 end
 
 platforms :ruby do
-  gem 'yajl-ruby'
   gem 'nokogiri', '>= 1.4.5'
 
   # Needed for compiling the ActionDispatch::Journey parser
@@ -79,10 +78,8 @@ platforms :jruby do
 end
 
 platforms :rbx do
-  gem 'psych'
-  gem 'rubysl-mathn'
-  gem 'rubysl-matrix'
-  gem 'rubysl-rexml'
+  gem 'psych', '~> 2.0'
+  gem 'rubysl', '~> 2.0'
 end
 
 # gems that are necessary for ActiveRecord tests with Oracle database

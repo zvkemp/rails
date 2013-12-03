@@ -1,8 +1,56 @@
+*   Show valid keys when `assert_valid_keys` raises an exception, and show the
+    wrong value as it was entered.
+
+    *Gonzalo Rodríguez-Baltanás Díaz*
+
+*   Both `cattr_*` and `mattr_*` method definitions now live in `active_support/core_ext/module/attribute_accessors`.
+
+    Requires to `active_support/core_ext/class/attribute_accessors` are
+    deprecated and will be removed in Ruby on Rails 4.2.
+
+    *Genadi Samokovarov*
+
+*   Deprecated `Numeric#{ago,until,since,from_now}`, the user is expected to explicitly
+    convert the value into an AS::Duration, i.e. `5.ago` => `5.seconds.ago`
+
+    This will help to catch subtle bugs like:
+
+        def recent?(days = 3)
+          self.created_at >= days.ago
+        end
+
+    The above code would check if the model is created within the last 3 **seconds**.
+
+    In the future, `Numeric#{ago,until,since,from_now}` should be removed completely,
+    or throw some sort of errors to indicate there are no implicit conversion from
+    Numeric to AS::Duration.
+
+    *Godfrey Chan*
+
+*   Requires JSON gem version 1.7.7 or above due to a security issue in older versions.
+
+    *Godfrey Chan*
+
+*   Removed the old pure-Ruby JSON encoder and switched to a new encoder based on the built-in JSON
+    gem.
+
+    Support for encoding `BigDecimal` as a JSON number, as well as defining custom `encode_json`
+    methods to control the JSON output has been **removed from core**. The new encoder will always
+    encode BigDecimals as `String`s and ignore any custom `encode_json` methods.
+
+    The old encoder has been extracted into the `activesupport-json_encoder` gem. Installing that
+    gem will bring back the ability to encode `BigDecimal`s as numbers as well as `encode_json`
+    support.
+
+    Setting the related configuration `ActiveSupport.encode_big_decimal_as_string` without the
+    `activesupport-json_encoder` gem installed will raise an error.
+
+    *Godfrey Chan*
+
 *   Add `ActiveSupport::Testing::TimeHelpers#travel` and `#travel_to`. These methods change current
     time to the given time or time difference by stubbing `Time.now` and `Date.today` to return the
     time or date after the difference calculation, or the time or date that got passed into the
-    method respectively. These methods also accept a block, which will return current time back to
-    its original state at the end of the block.
+    method respectively.
 
     Example for `#travel`:
 
@@ -157,7 +205,8 @@
 
     *Simon Coffey*
 
-*   Add String#remove(pattern) as a short-hand for the common pattern of String#gsub(pattern, '')
+*   Add `String#remove(pattern)` as a short-hand for the common pattern of
+    `String#gsub(pattern, '')`.
 
     *DHH*
 
@@ -260,11 +309,12 @@
 
     *Carlos Antonio da Silva*
 
-*   Remove deprecated `BufferedLogger`.
+*   Remove deprecated `BufferedLogger`, use `ActiveSupport::Logger` instead.
 
     *Yves Senn*
 
-*   Remove deprecated `assert_present` and `assert_blank` methods.
+*   Remove deprecated `assert_present` and `assert_blank` methods, use `assert
+    object.blank?` and `assert object.present?` instead.
 
     *Yves Senn*
 

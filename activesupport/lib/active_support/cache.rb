@@ -3,7 +3,7 @@ require 'zlib'
 require 'active_support/core_ext/array/extract_options'
 require 'active_support/core_ext/array/wrap'
 require 'active_support/core_ext/benchmark'
-require 'active_support/core_ext/class/attribute_accessors'
+require 'active_support/core_ext/module/attribute_accessors'
 require 'active_support/core_ext/numeric/bytes'
 require 'active_support/core_ext/numeric/time'
 require 'active_support/core_ext/object/to_param'
@@ -361,7 +361,7 @@ module ActiveSupport
       #
       #   cache.write("bim", "bam")
       #   cache.fetch_multi("bim", "boom") {|key| key * 2 }
-      #   #=> ["bam", "boomboom"]
+      #   # => ["bam", "boomboom"]
       #
       def fetch_multi(*names)
         options = names.extract_options!

@@ -1,3 +1,46 @@
+*   Previously, the `has_one` macro incorrectly accepted the `counter_cache`
+    option, but never actually supported it. Now it will raise an `ArgumentError`
+    when using `has_one` with `counter_cache`.
+
+    *Godfrey Chan*
+
+*   Implement `rename_index` natively for MySQL >= 5.7.
+
+    *Cody Cutrer*
+
+*   Fix bug when validating the uniqueness of an aliased attribute.
+
+    Fixes #12402.
+
+    *Lauro Caetano*
+
+*   Update counter cache on a `has_many` relationship regardless of default scope.
+
+    Fix #12952.
+
+    *Uku Taht*
+
+*   `rename_index` adds the new index before removing the old one. This allows to
+    rename indexes on columns with a foreign key and prevents the following error:
+
+        Cannot drop index 'index_engines_on_car_id': needed in a foreign key constraint
+
+    *Cody Cutrer*, *Yves Senn*
+
+*   Raise `ActiveRecord::RecordNotDestroyed` when a replaced child marked with `dependent: destroy` fails to be destroyed.
+
+    Fix #12812
+
+    *Brian Thomas Storti*
+
+*   Fix validation on uniqueness of empty association.
+
+    *Evgeny Li*
+
+*   Make `ActiveRecord::Relation#unscope` affect relations it is merged in to.
+
+    *Jon Leighton*
+
 *   Use strings to represent non-string `order_values`.
 
     *Yves Senn*
@@ -44,7 +87,7 @@
 
     *Adam Williams*, *Yves Senn*
 
-*   Fix bug where `has_one` associaton record update result in crash, when replaced with itself.
+*   Fix bug where `has_one` association record update result in crash, when replaced with itself.
 
     Fixes #12834.
 
@@ -816,7 +859,7 @@
 
         class Author < ActiveRecord::Base
           has_many :posts
-          has_many :taggings, :through => :posts
+          has_many :taggings, through: :posts
         end
 
         class Post < ActiveRecord::Base
@@ -831,7 +874,7 @@
 
         class Author < ActiveRecord::Base
           has_many :posts
-          has_many :taggings, :through => :posts, :source => :tagging
+          has_many :taggings, through: :posts, source: :tagging
         end
 
         class Post < ActiveRecord::Base

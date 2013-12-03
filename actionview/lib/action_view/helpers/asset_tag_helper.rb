@@ -103,7 +103,7 @@ module ActionView
         }.join(StringPool::NEWLINE).html_safe
       end
 
-      # Returns a link tag that browsers and news readers can use to auto-detect
+      # Returns a link tag that browsers and feed readers can use to auto-detect
       # an RSS or Atom feed. The +type+ can either be <tt>:rss</tt> (default) or
       # <tt>:atom</tt>. Control the link options in url_for format using the
       # +url_options+. You can modify the LINK tag itself in +tag_options+.
@@ -208,8 +208,11 @@ module ActionView
         end
 
         if size = options.delete(:size)
-          options[:width], options[:height] = size.split("x") if size =~ %r{\A\d+x\d+\z}
-          options[:width] = options[:height] = size if size =~ %r{\A\d+\z}
+          if size =~ %r{\A\d+x\d+\z}
+            options[:width], options[:height] = size.split('x')
+          elsif size =~ %r{\A\d+\z}
+            options[:width] = options[:height] = size
+          end
         end
 
         tag("img", options)

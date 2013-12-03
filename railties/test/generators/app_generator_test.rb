@@ -29,6 +29,7 @@ DEFAULT_APP_FILES = %w(
   lib/tasks
   lib/assets
   log
+  test/test_helper.rb
   test/fixtures
   test/controllers
   test/models
@@ -37,6 +38,8 @@ DEFAULT_APP_FILES = %w(
   test/integration
   vendor
   vendor/assets
+  vendor/assets/stylesheets
+  vendor/assets/javascripts
   tmp/cache
   tmp/cache/assets
 )
@@ -58,6 +61,7 @@ class AppGeneratorTest < Rails::Generators::TestCase
     assert_file("app/views/layouts/application.html.erb", /stylesheet_link_tag\s+"application", media: "all", "data-turbolinks-track" => true/)
     assert_file("app/views/layouts/application.html.erb", /javascript_include_tag\s+"application", "data-turbolinks-track" => true/)
     assert_file("app/assets/stylesheets/application.css")
+    assert_file("app/assets/javascripts/application.js")
   end
 
   def test_invalid_application_name_raises_an_error
@@ -108,6 +112,9 @@ class AppGeneratorTest < Rails::Generators::TestCase
     Rails.application.stubs(:is_a?).returns(Rails::Application)
 
     FileUtils.mv(app_root, app_moved_root)
+
+    # make sure we are in correct dir
+    FileUtils.cd(app_moved_root)
 
     generator = Rails::Generators::AppGenerator.new ["rails"], { with_dispatchers: true },
                                                                destination_root: app_moved_root, shell: @shell
@@ -182,7 +189,7 @@ class AppGeneratorTest < Rails::Generators::TestCase
     template.unlink
   end
 
-  def test_application_html_checks_gems
+  def test_skip_turbolinks_when_it_is_not_on_gemfile
     template = Tempfile.open 'my_template'
     template.puts 'add_gem_entry_filter { |gem| gem.name != "turbolinks" }'
     template.flush
@@ -191,10 +198,16 @@ class AppGeneratorTest < Rails::Generators::TestCase
     assert_file "Gemfile" do |contents|
       assert_no_match 'turbolinks', contents
     end
-    assert_file "Gemfile" do |contents|
+
+    assert_file "app/views/layouts/application.html.erb" do |contents|
       assert_no_match 'turbolinks', contents
     end
+
     assert_file "app/views/layouts/application.html.erb" do |contents|
+      assert_no_match('data-turbolinks-track', contents)
+    end
+
+    assert_file "app/assets/javascripts/application.js" do |contents|
       assert_no_match 'turbolinks', contents
     end
   ensure
@@ -278,7 +291,6 @@ class AppGeneratorTest < Rails::Generators::TestCase
     run_generator [destination_root, "--skip-sprockets"]
     assert_file "config/application.rb" do |content|
       assert_match(/#\s+require\s+["']sprockets\/railtie["']/, content)
-      assert_match(/config\.assets\.enabled = false/, content)
     end
     assert_file "Gemfile" do |content|
       assert_no_match(/sass-rails/, content)
@@ -312,33 +324,13 @@ class AppGeneratorTest < Rails::Generators::TestCase
     end
   end
 
-  def test_creation_of_a_test_directory
-    run_generator
-    assert_file 'test'
-  end
-
-  def test_creation_of_app_assets_images_directory
-    run_generator
-    assert_file "app/assets/images"
-  end
-
-  def test_creation_of_vendor_assets_javascripts_directory
-    run_generator
-    assert_file "vendor/assets/javascripts"
-  end
-
-  def test_creation_of_vendor_assets_stylesheets_directory
-    run_generator
-    assert_file "vendor/assets/stylesheets"
-  end
-
   def test_jquery_is_the_default_javascript_library
     run_generator
     assert_file "app/assets/javascripts/application.js" do |contents|
       assert_match %r{^//= require jquery}, contents
       assert_match %r{^//= require jquery_ujs}, contents
     end
-    assert_file "Gemfile", /^gem 'jquery-rails'/
+    assert_gem "jquery-rails"
   end
 
   def test_other_javascript_libraries
@@ -363,6 +355,7 @@ class AppGeneratorTest < Rails::Generators::TestCase
 
     assert_file "Gemfile" do |content|
       assert_no_match(/coffee-rails/, content)
+      assert_no_match(/jquery-rails/, content)
     end
   end
 
@@ -373,7 +366,13 @@ class AppGeneratorTest < Rails::Generators::TestCase
 
   def test_inclusion_of_debugger
     run_generator
-    assert_file "Gemfile", /# gem 'debugger'/
+    if defined?(JRUBY_VERSION)
+      assert_file "Gemfile" do |content|
+        assert_no_match(/debugger/, content)
+      end
+    else
+      assert_file "Gemfile", /# gem 'debugger'/
+    end
   end
 
   def test_inclusion_of_lazy_loaded_sdoc

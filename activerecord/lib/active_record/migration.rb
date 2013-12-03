@@ -1,4 +1,4 @@
-require "active_support/core_ext/class/attribute_accessors"
+require "active_support/core_ext/module/attribute_accessors"
 require 'set'
 
 module ActiveRecord
@@ -896,7 +896,7 @@ module ActiveRecord
 
       validate(@migrations)
 
-      ActiveRecord::SchemaMigration.create_table
+      Base.connection.initialize_schema_migrations_table
     end
 
     def current_version

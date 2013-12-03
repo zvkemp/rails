@@ -179,14 +179,14 @@ duplicate = array.dup
 duplicate.push 'another-string'
 
 # the object was duplicated, so the element was added only to the duplicate
-array     #=> ['string']
-duplicate #=> ['string', 'another-string']
+array     # => ['string']
+duplicate # => ['string', 'another-string']
 
 duplicate.first.gsub!('string', 'foo')
 
 # first element was not duplicated, it will be changed in both arrays
-array     #=> ['foo']
-duplicate #=> ['foo', 'another-string']
+array     # => ['foo']
+duplicate # => ['foo', 'another-string']
 ```
 
 As you can see, after duplicating the `Array` instance, we got another object, therefore we can modify it and the original object will stay unchanged. This is not true for array's elements, however. Since `dup` does not make deep copy, the string inside the array is still the same object.
@@ -199,8 +199,8 @@ duplicate = array.deep_dup
 
 duplicate.first.gsub!('string', 'foo')
 
-array     #=> ['string']
-duplicate #=> ['foo']
+array     # => ['string']
+duplicate # => ['foo']
 ```
 
 If the object is not duplicable, `deep_dup` will just return it:
@@ -624,7 +624,7 @@ NOTE: Defined in `active_support/core_ext/module/attr_internal.rb`.
 
 #### Module Attributes
 
-The macros `mattr_reader`, `mattr_writer`, and `mattr_accessor` are analogous to the `cattr_*` macros defined for class. Check [Class Attributes](#class-attributes).
+The macros `mattr_reader`, `mattr_writer`, and `mattr_accessor` are the same as the `cattr_*` macros defined for class. In fact, the `cattr_*` macros are just aliases for the `mattr_*` macros. Check [Class Attributes](#class-attributes).
 
 For example, the dependencies mechanism uses them:
 
@@ -735,7 +735,7 @@ X.local_constants    # => [:X1, :X2, :Y]
 X::Y.local_constants # => [:Y1, :X1]
 ```
 
-The names are returned as symbols. (The deprecated method `local_constant_names` returns strings.)
+The names are returned as symbols.
 
 NOTE: Defined in `active_support/core_ext/module/introspection.rb`.
 
@@ -888,7 +888,7 @@ class User < ActiveRecord::Base
 end
 ```
 
-With that configuration you get a user's name via his profile, `user.profile.name`, but it could be handy to still be able to access such attribute directly:
+With that configuration you get a user's name via their profile, `user.profile.name`, but it could be handy to still be able to access such attribute directly:
 
 ```ruby
 class User < ActiveRecord::Base
@@ -1119,7 +1119,7 @@ end
 
 A model may find it useful to set `:instance_accessor` to `false` as a way to prevent mass-assignment from setting the attribute.
 
-NOTE: Defined in `active_support/core_ext/class/attribute_accessors.rb`.
+NOTE: Defined in `active_support/core_ext/module/attribute_accessors.rb`. `active_support/core_ext/class/attribute_accessors.rb` is deprecated and will be removed in Ruby on Rails 4.2.
 
 ### Subclasses & Descendants
 
@@ -1554,7 +1554,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.acronym 'SSL'
 end
 
-"SSLError".underscore.camelize #=> "SSLError"
+"SSLError".underscore.camelize # => "SSLError"
 ```
 
 `camelize` is aliased to `camelcase`.
@@ -2284,8 +2284,6 @@ The defaults for these options can be localized, their keys are:
 | `:two_words_connector` | `support.array.two_words_connector` |
 | `:words_connector`     | `support.array.words_connector`     |
 | `:last_word_connector` | `support.array.last_word_connector` |
-
-Options `:connector` and `:skip_last_comma` are deprecated.
 
 NOTE: Defined in `active_support/core_ext/array/conversions.rb`.
 
