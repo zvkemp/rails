@@ -3,6 +3,8 @@ Ruby on Rails 4.1 Release Notes
 
 Highlights in Rails 4.1:
 
+* Variants
+* Spring
 * Action View extracted from Action Pack
 
 These release notes cover only the major changes. To know about various bug
@@ -27,6 +29,100 @@ guide.
 Major Features
 --------------
 
+### Variants
+
+We often want to render different html/json/xml templates for phones,
+tablets, and desktop browsers. Variants makes it easy.
+
+The request variant is a specialization of the request format, like `:tablet`,
+`:phone`, or `:desktop`.
+
+You can set the variant in a before_action:
+
+```ruby
+request.variant = :tablet if request.user_agent =~ /iPad/
+```
+
+Respond to variants in the action just like you respond to formats:
+
+```ruby
+respond_to do |format|
+  format.html do |html|
+    html.tablet # renders app/views/projects/show.html+tablet.erb
+    html.phone { extra_setup; render ... }
+  end
+end
+```
+
+Provide separate templates for each format and variant:
+
+```
+app/views/projects/show.html.erb
+app/views/projects/show.html+tablet.erb
+app/views/projects/show.html+phone.erb
+```
+
+### Spring
+
+New Rails 4.1 applications will ship with "springified" binstubs. This means
+that `bin/rails` and `bin/rake` will automatically take advantage preloaded
+spring environments.
+
+**running rake tasks:**
+
+```
+bin/rake routes
+```
+
+**running tests:**
+
+```
+bin/rake test
+bin/rake test test/models
+bin/rake test test/models/user_test.rb
+```
+
+**running a console:**
+
+```
+bin/rails console
+```
+
+**spring introspection:**
+
+```
+$ bundle exec spring status
+Spring is running:
+
+ 1182 spring server | my_app | started 29 mins ago
+ 3656 spring app    | my_app | started 23 secs ago | test mode
+ 3746 spring app    | my_app | started 10 secs ago | development mode
+```
+
+Have a look at the
+[Spring README](https://github.com/jonleighton/spring/blob/master/README.md) to
+see a all available features.
+
+### Active Record enums
+
+Declare an enum attribute where the values map to integers in the database, but
+can be queried by name.
+
+```ruby
+class Conversation < ActiveRecord::Base
+  enum status: [ :active, :archived ]
+end
+
+conversation.archive!
+conversation.active? # => false
+conversation.status  # => "archived"
+
+Conversation.archived # => Relation for all archived Conversations
+```
+
+See
+[active_record/enum.rb](https://github.com/rails/rails/blob/4-1-stable/activerecord/lib/active_record/enum.rb#L2-L42)
+for a detailed write up.
 
 Documentation
 -------------
@@ -56,6 +152,12 @@ for detailed changes.
   `rake test:recent`.
 
 ### Notable changes
+
+* The [Spring application
+  preloader](https://github.com/jonleighton/spring) is now installed
+  by default for new applications. It uses the development group of
+  the Gemfile, so will not be installed in
+  production. ([Pull Request](https://github.com/rails/rails/pull/12958))
 
 * `BACKTRACE` environment variable to show unfiltered backtraces for test
   failures. ([Commit](https://github.com/rails/rails/commit/84eac5dab8b0fe9ee20b51250e52ad7bfea36553))
@@ -104,6 +206,17 @@ for detailed changes.
 
 ### Removals
 
+* Removed `MultiJSON` dependency. As a result, `ActiveSupport::JSON.decode`
+  no longer accepts an options hash for `MultiJSON`. ([Pull Request](https://github.com/rails/rails/pull/10576) / [More Details](upgrading_ruby_on_rails.html#changes-in-json-handling))
+
+* Removed support for the `encode_json` hook used for encoding custom objects into
+  JSON. This feature has been extracted into the [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder)
+  gem.
+  ([Related Pull Request](https://github.com/rails/rails/pull/12183) /
+  [More Details](upgrading_ruby_on_rails.html#changes-in-json-handling))
+
+* Removed deprecated `ActiveSupport::JSON::Variable` with no replacement.
+
 * Removed deprecated `String#encoding_aware?` core extensions (`core_ext/string/encoding`).
 
 * Removed deprecated `Module#local_constant_names` in favor of `Module#local_constants`.
@@ -138,7 +251,31 @@ for detailed changes.
   explicitly convert the value into an AS::Duration, i.e. `5.ago` => `5.seconds.ago`
   ([Pull Request](https://github.com/rails/rails/pull/12389))
 
+* Deprecated the require path `active_support/core_ext/object/to_json`. Require
+  `active_support/core_ext/object/json` instead. ([Pull Request](https://github.com/rails/rails/pull/12203))
+
+* Deprecated `ActiveSupport::JSON::Encoding::CircularReferenceError`. This feature
+  has been extracted into the [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder)
+  gem.
+  ([Pull Request](https://github.com/rails/rails/pull/12785) /
+  [More Details](upgrading_ruby_on_rails.html#changes-in-json-handling))
+
+* Deprecated `ActiveSupport.encode_big_decimal_as_string` option. This feature has
+  been extracetd into the [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder)
+  gem.
+  ([Pull Request](https://github.com/rails/rails/pull/13060) /
+  [More Details](upgrading_ruby_on_rails.html#changes-in-json-handling))
+
 ### Notable changes
+
+* `ActiveSupport`'s JSON encoder has been rewritten to take advantage of the
+  JSON gem rather than doing custom encoding in pure-Ruby.
+  ([Pull Request](https://github.com/rails/rails/pull/12183) /
+  [More Details](upgrading_ruby_on_rails.html#changes-in-json-handling))
+
+* Improved compatibility with the JSON gem.
+  ([Pull Request](https://github.com/rails/rails/pull/12862) /
+  [More Details](upgrading_ruby_on_rails.html#changes-in-json-handling))
 
 * Added `ActiveSupport::Testing::TimeHelpers#travel` and `#travel_to`. These
   methods change current time to the given time or time difference by stubbing
@@ -186,8 +323,8 @@ for detailed changes.
 
 ### Notable changes
 
-* Take a hash with options inside array in
-  `#url_for`. ([Pull Request](https://github.com/rails/rails/pull/9599))
+* `#url_for` takes a hash with options inside an
+  array. ([Pull Request](https://github.com/rails/rails/pull/9599))
 
 * Added `session#fetch` method fetch behaves similarly to
   [Hash#fetch](http://www.ruby-doc.org/core-1.9.3/Hash.html#method-i-fetch),
@@ -233,28 +370,17 @@ for detailed changes.
 
 * Removed deprecated `SchemaStatements#distinct`.
 
-* Moved deprecated `ActiveRecord::TestCase` into the rails test
+* Moved deprecated `ActiveRecord::TestCase` into the Rails test
   suite. The class is no longer public and is only used for internal
   Rails tests.
 
 * Removed support for deprecated option `:restrict` for `:dependent`
   in associations.
 
-* Removed support for deprecated `delete_sql` in associations.
-
-* Removed support for deprecated `insert_sql` in associations.
-
-* Removed support for deprecated `finder_sql` in associations.
-
-* Removed support for deprecated `counter_sql` in associations.
+* Removed support for deprecated `:delete_sql`, `:insert_sql`, `:finder_sql`
+  and `:counter_sql` options in associations.
 
 * Removed deprecated method `type_cast_code` from Column.
-
-* Removed deprecated options `delete_sql` and `insert_sql` from HABTM
-  association.
-
-* Removed deprecated options `finder_sql` and `counter_sql` from
-  collection association.
 
 * Removed deprecated `ActiveRecord::Base#connection` method.
   Make sure to access it via the class.
@@ -274,9 +400,9 @@ for detailed changes.
 
 * Removed `activerecord-deprecated_finders` as a dependency
 
-* Usage of `implicit_readonly` is being removed. Please use `readonly` method
+* Removed usage of `implicit_readonly`. Please use `readonly` method
   explicitly to mark records as
-  `readonly. ([Pull Request](https://github.com/rails/rails/pull/10769))
+  `readonly`. ([Pull Request](https://github.com/rails/rails/pull/10769))
 
 ### Deprecations
 
@@ -347,6 +473,10 @@ for detailed changes.
 * Handle aliased attributes in ActiveRecord::Relation. When using symbol keys,
   ActiveRecord will now translate aliased attribute names to the actual column
   name used in the database. ([Pull Request](https://github.com/rails/rails/pull/7839))
+
+* The ERB in fixture files is no longer evaluated in the context of the main
+  object. Helper methods used by multiple fixtures should be defined on modules
+  included in `ActiveRecord::FixtureSet.context_class`. ([Pull Request](https://github.com/rails/rails/pull/13022))
 
 Credits
 -------

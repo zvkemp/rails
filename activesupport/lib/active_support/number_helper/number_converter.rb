@@ -11,7 +11,7 @@ module ActiveSupport
       class_attribute :namespace
 
       # Does the object need a number that is a valid float?
-      class_attribute :need_valid_float
+      class_attribute :validate_float
 
       attr_reader :number, :opts
 
@@ -119,14 +119,18 @@ module ActiveSupport
       end
 
       def initialize(number, options)
-        @number     = number
-        @opts       = options.symbolize_keys
+        @number = number
+        @opts   = options.symbolize_keys
       end
 
       def execute
-        return unless @number
-        return @number if need_valid_float? && !valid_float?
-        convert
+        if !number
+          nil
+        elsif validate_float? && !valid_float?
+          number
+        else
+          convert
+        end
       end
 
       private
@@ -169,7 +173,7 @@ module ActiveSupport
         end
 
         def valid_float? #:nodoc:
-          Float(@number)
+          Float(number)
         rescue ArgumentError, TypeError
           false
         end

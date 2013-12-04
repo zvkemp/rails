@@ -1,3 +1,41 @@
+*   Improve formatting of migration exception messages: make them easier to read
+    with line breaks before/after, and improve the error for pending migrations.
+
+    *John Bachir*
+
+*   Fix `last` with `offset` to return the proper record instead of always the last one.
+
+    Example:
+
+        Model.offset(4).last
+        # => returns the 4th record from the end.
+
+    Fixes #7441.
+
+    *kostya*, *Lauro Caetano*
+
+*   `type_to_sql` returns a `String` for unmapped columns. This fixes an error
+    when using unmapped array types in PG
+
+    Example:
+
+        change_colum :table, :column, :bigint, array: true
+
+    Fixes #13146.
+
+    *Jens Fahnenbruck*, *Yves Senn*
+
+*   Fix `QueryCache` to work with nested blocks, so that it will only clear the existing cache
+    after leaving the outer block instead of clearing it right after the inner block is finished.
+
+    *Vipul A M*
+
+*   The ERB in fixture files is no longer evaluated in the context of the main
+    object. Helper methods used by multiple fixtures should be defined on the
+    class object returned by `ActiveRecord::FixtureSet.context_class`.
+
+    *Victor Costan*
+
 *   Previously, the `has_one` macro incorrectly accepted the `counter_cache`
     option, but never actually supported it. Now it will raise an `ArgumentError`
     when using `has_one` with `counter_cache`.
