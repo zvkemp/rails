@@ -30,7 +30,7 @@ module ActionView
           add_default_name_and_id_for_value(tag_value, name_and_id)
           options.delete("index")
           options.delete("namespace")
-          options.delete(StringPool::MULTIPLE)
+
           options[StringPool::FOR] = name_and_id[StringPool::ID] unless options.key?(StringPool::FOR)
 
           if block_given?
