@@ -209,6 +209,15 @@ module ActionController #:nodoc:
     #   app/views/projects/show.html+tablet.erb
     #   app/views/projects/show.html+phone.erb
     #
+    # When you're not sharing any code within the format, you can simplify defining variants
+    # using the inline syntax:
+    #
+    #   respond_to do |format|
+    #     format.js         { render "trash" }
+    #     format.html.phone { redirect_to progress_path }
+    #     format.html.none  { render "trash" }
+    #   end
+    #
     # Be sure to check the documentation of +respond_with+ and
     # <tt>ActionController::MimeResponds.respond_to</tt> for more examples.
     def respond_to(*mimes, &block)
@@ -430,7 +439,8 @@ module ActionController #:nodoc:
 
       def initialize(mimes)
         @responses = {}
-        mimes.each { |mime| send(mime) }
+
+        mimes.each { |mime| @responses["Mime::#{mime.upcase}".constantize] = nil }
       end
 
       def any(*args, &block)
@@ -444,12 +454,18 @@ module ActionController #:nodoc:
 
       def custom(mime_type, &block)
         mime_type = Mime::Type.lookup(mime_type.to_s) unless mime_type.is_a?(Mime::Type)
-        @responses[mime_type] ||= block
+        @responses[mime_type] ||= if block_given?
+          block
+        else
+          VariantCollector.new
+        end
       end
 
       def response(variant)
         response = @responses.fetch(format, @responses[Mime::ALL])
-        if response.nil? || response.arity == 0
+        if response.is_a?(VariantCollector)
+          response.variant(variant)
+        elsif response.nil? || response.arity == 0
           response
         else
           lambda { response.call VariantFilter.new(variant) }
@@ -460,6 +476,22 @@ module ActionController #:nodoc:
         @format = request.negotiate_mime(@responses.keys)
       end
 
+      #Used for inline syntax
+      class VariantCollector #:nodoc:
+        def initialize
+          @variants = {}
+        end
+
+        def method_missing(name, *args, &block)
+          @variants[name] = block if block_given?
+        end
+
+        def variant(name)
+          @variants[name.nil? ? :none : name]
+        end
+      end
+
+      #Used for nested block syntax
       class VariantFilter #:nodoc:
         def initialize(variant)
           @variant = variant

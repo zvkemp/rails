@@ -669,8 +669,10 @@ module ActiveRecord
       #   #       #<Pet id: 2, name: "Spook", person_id: 1>,
       #   #       #<Pet id: 3, name: "Choo-Choo", person_id: 1>
       #   #    ]
-      def count(column_name = nil)
-        @association.count(column_name)
+      def count(column_name = nil, options = {})
+        # TODO: Remove options argument as soon we remove support to
+        # activerecord-deprecated_finders.
+        @association.count(column_name, options)
       end
 
       # Returns the size of the collection. If the collection hasn't been loaded,

@@ -1,4 +1,10 @@
-*   Add Mime::Type.register "text/vcard", :vcf to the default list of mime types
+*   Fix generating a path for engine inside a resources block.
+
+    Fixes #8533.
+
+    *Piotr Sarnacki*
+
+*   Add `Mime::Type.register "text/vcard", :vcf` to the default list of mime types.
 
     *DHH*
 
@@ -22,7 +28,7 @@
     The request variant is a specialization of the request format, like `:tablet`,
     `:phone`, or `:desktop`.
 
-    You can set the variant in a before_action:
+    You can set the variant in a `before_action`:
 
         request.variant = :tablet if request.user_agent =~ /iPad/
 
@@ -40,6 +46,14 @@
         app/views/projects/show.html.erb
         app/views/projects/show.html+tablet.erb
         app/views/projects/show.html+phone.erb
+
+    You can also simplify the variants definition using the inline syntax:
+
+        respond_to do |format|
+          format.js         { render "trash" }
+          format.html.phone { redirect_to progress_path }
+          format.html.none  { render "trash" }
+        end
 
     *Łukasz Strzałkowski*
 
@@ -81,9 +95,7 @@
 
 *   Add `session#fetch` method
 
-    fetch behaves similarly to [Hash#fetch](http://www.ruby-doc.org/core-1.9.3/Hash.html#method-i-fetch),
-    with the exception that the returned value is always saved into the session.
-
+    fetch behaves like [Hash#fetch](http://www.ruby-doc.org/core-1.9.3/Hash.html#method-i-fetch).
     It returns a value from the hash for the given key.
     If the key can’t be found, there are several options:
 
