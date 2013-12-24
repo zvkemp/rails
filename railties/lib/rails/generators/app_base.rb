@@ -308,7 +308,7 @@ module Rails
                                     'Use SCSS for stylesheets')
         else
           gems << GemfileEntry.version('sass-rails',
-                                     '~> 4.0.0.rc1',
+                                     '~> 4.0.1',
                                      'Use SCSS for stylesheets')
         end
 
@@ -329,7 +329,7 @@ module Rails
 
       def jbuilder_gemfile_entry
         comment = 'Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder'
-        GemfileEntry.version('jbuilder', '~> 1.2', comment)
+        GemfileEntry.version('jbuilder', '~> 2.0', comment)
       end
 
       def sdoc_gemfile_entry

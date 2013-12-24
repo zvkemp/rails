@@ -1,11 +1,77 @@
+*   Fixed Float related error in NumberHelper with large precisions.
+
+    before:
+        ActiveSupport::NumberHelper.number_to_rounded '3.14159', precision: 50
+        #=> "3.14158999999999988261834005243144929409027099609375"
+    after:
+        ActiveSupport::NumberHelper.number_to_rounded '3.14159', precision: 50
+        #=> "3.14159000000000000000000000000000000000000000000000"
+
+    *Kenta Murata*, *Akira Matsuda*
+
+*   Default the new `I18n.enforce_available_locales` config to `true`, meaning
+    `I18n` will make sure that all locales passed to it must be declared in the
+    `available_locales` list.
+
+    To disable it add the following configuration to your application:
+
+        config.i18n.enforce_available_locales = false
+
+    This also ensures I18n configuration is properly initialized taking the new
+    option into account, to avoid their deprecations while booting up the app.
+
+    *Carlos Antonio da Silva*, *Yves Senn*
+
+*   Introduce Module#concerning: a natural, low-ceremony way to separate
+    responsibilities within a class.
+
+    Imported from https://github.com/37signals/concerning#readme
+
+        class Todo < ActiveRecord::Base
+          concerning :EventTracking do
+            included do
+              has_many :events
+            end
+
+            def latest_event
+              ...
+            end
+
+            private
+              def some_internal_method
+                ...
+              end
+          end
+
+          concerning :Trashable do
+            def trashed?
+              ...
+            end
+
+            def latest_event
+              super some_option: true
+            end
+          end
+        end
+
+    is equivalent to defining these modules inline, extending them into
+    concerns, then mixing them in to the class.
+
+    Inline concerns tame "junk drawer" classes that intersperse many unrelated
+    class-level declarations, public instance methods, and private
+    implementation. Coalesce related bits and give them definition.
+    These are a stepping stone toward future growth & refactoring.
+
+    When to move on from an inline concern:
+     * Encapsulating state? Extract collaborator object.
+     * Encompassing more public behavior or implementation? Move to separate file.
+     * Sharing behavior among classes? Move to separate file.
+
+    *Jeremy Kemper*
+
 *   Fix file descriptor being leaked on each call to `Kernel.silence_stream`.
 
     *Mario Visic*
-
-*   Ensure `config.i18n.enforce_available_locales` is set before any other
-    configuration option.
-
-    *Yves Senn*
 
 *   Added `Date#all_week/month/quarter/year` for generating date ranges.
 
@@ -292,7 +358,7 @@
 
     *Arun Agrawal*
 
-*   Remove deprecated `DateTime.local_offset` in favor of `DateTime.civil_from_fromat`.
+*   Remove deprecated `DateTime.local_offset` in favor of `DateTime.civil_from_format`.
 
     *Arun Agrawal*
 

@@ -144,7 +144,7 @@ module ActiveRecord
 
           def quote_and_escape(value)
             case value
-            when StringPool::NULL
+            when StringPool::NULL, Numeric
               value
             else
               "\"#{value.gsub(/"/,"\\\"")}\""

@@ -14,11 +14,7 @@ db_namespace = namespace :db do
 
   desc 'Create the database from DATABASE_URL or config/database.yml for the current Rails.env (use db:create:all to create all databases in the config)'
   task :create => [:load_config] do
-    if ENV['DATABASE_URL']
-      ActiveRecord::Tasks::DatabaseTasks.create_database_url
-    else
-      ActiveRecord::Tasks::DatabaseTasks.create_current
-    end
+    ActiveRecord::Tasks::DatabaseTasks.create_current
   end
 
   namespace :drop do
@@ -29,11 +25,7 @@ db_namespace = namespace :db do
 
   desc 'Drops the database using DATABASE_URL or the current Rails.env (use db:drop:all to drop all databases)'
   task :drop => [:load_config] do
-    if ENV['DATABASE_URL']
-      ActiveRecord::Tasks::DatabaseTasks.drop_database_url
-    else
-      ActiveRecord::Tasks::DatabaseTasks.drop_current
-    end
+    ActiveRecord::Tasks::DatabaseTasks.drop_current
   end
 
   desc "Migrate the database (options: VERSION=x, VERBOSE=false, SCOPE=blog)."
@@ -343,7 +335,7 @@ db_namespace = namespace :db do
     end
 
     # desc "Recreate the test database from a fresh schema"
-    task :clone do
+    task :clone => :environment do
       case ActiveRecord::Base.schema_format
         when :ruby
           db_namespace["test:clone_schema"].invoke
@@ -364,7 +356,7 @@ db_namespace = namespace :db do
     end
 
     # desc 'Check for pending migrations and load the test schema'
-    task :prepare => :load_config do
+    task :prepare => [:environment, :load_config] do
       unless ActiveRecord::Base.configurations.blank?
         db_namespace['test:load'].invoke
       end
@@ -401,4 +393,3 @@ namespace :railties do
 end
 
 task 'test:prepare' => ['db:test:prepare', 'db:test:load', 'db:abort_if_pending_migrations']
-

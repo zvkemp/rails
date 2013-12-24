@@ -3,9 +3,10 @@ Ruby on Rails 4.1 Release Notes
 
 Highlights in Rails 4.1:
 
-* Variants
-* Spring
-* Action View extracted from Action Pack
+* Spring application preloader
+* `config/secrets.yml`
+* Action Pack variants
+* Action Mailer previews
 
 These release notes cover only the major changes. To know about various bug
 fixes and changes, please refer to the change logs or check out the
@@ -22,22 +23,83 @@ coverage before going in. You should also first upgrade to Rails 4.0 in case you
 haven't and make sure your application still runs as expected before attempting
 an update to Rails 4.1. A list of things to watch out for when upgrading is
 available in the
-[Upgrading to Rails](upgrading_ruby_on_rails.html#upgrading-from-rails-4-0-to-rails-4-1)
+[Upgrading Ruby on Rails](upgrading_ruby_on_rails.html#upgrading-from-rails-4-0-to-rails-4-1)
 guide.
 
 
 Major Features
 --------------
 
-### Variants
+### Spring Application Preloader
 
-We often want to render different html/json/xml templates for phones,
-tablets, and desktop browsers. Variants makes it easy.
+Spring is a Rails application preloader. It speeds up development by keeping
+your application running in the background so you don't need to boot it every
+time you run a test, rake task or migration.
+
+New Rails 4.1 applications will ship with "springified" binstubs. This means
+that `bin/rails` and `bin/rake` will automatically take advantage of preloaded
+spring environments.
+
+**Running rake tasks:**
+
+```
+bin/rake test:models
+```
+
+**Running a Rails command:**
+
+```
+bin/rails console
+```
+
+**Spring introspection:**
+
+```
+$ bin/spring status
+Spring is running:
+
+ 1182 spring server | my_app | started 29 mins ago
+ 3656 spring app    | my_app | started 23 secs ago | test mode
+ 3746 spring app    | my_app | started 10 secs ago | development mode
+```
+
+Have a look at the
+[Spring README](https://github.com/jonleighton/spring/blob/master/README.md) to
+see all available features.
+
+See the [Upgrading Ruby on Rails](upgrading_ruby_on_rails.html#spring)
+guide on how to migrate existing applications to use this feature.
+
+### `config/secrets.yml`
+
+Rails 4.1 generates a new `secrets.yml` file in the `config` folder. By default,
+this file contains the application's `secret_key_base`, but it could also be
+used to store other secrets such as access keys for external APIs.
+
+The secrets added to this file are accessible via `Rails.application.secrets`.
+For example, with the following `config/secrets.yml`:
+
+```yaml
+development:
+  secret_key_base: 3b7cd727ee24e8444053437c36cc66c3
+  some_api_key: SOMEKEY
+```
+
+`Rails.application.secrets.some_api_key` returns `SOMEKEY` in the development
+environment.
+
+See the [Upgrading Ruby on Rails](upgrading_ruby_on_rails.html#config-secrets-yml)
+guide on how to migrate existing applications to use this feature.
+
+### Action Pack Variants
+
+We often want to render different HTML/JSON/XML templates for phones,
+tablets, and desktop browsers. Variants make it easy.
 
 The request variant is a specialization of the request format, like `:tablet`,
 `:phone`, or `:desktop`.
 
-You can set the variant in a before_action:
+You can set the variant in a `before_action`:
 
 ```ruby
 request.variant = :tablet if request.user_agent =~ /iPad/
@@ -72,46 +134,31 @@ respond_to do |format|
 end
 ```
 
-### Spring
+### Action Mailer Previews
 
-New Rails 4.1 applications will ship with "springified" binstubs. This means
-that `bin/rails` and `bin/rake` will automatically take advantage preloaded
-spring environments.
+Action Mailer previews provide a way to visually see how emails look by visiting
+a special URL that renders them.
 
-**running rake tasks:**
+You implement a preview class whose methods return the mail object you'd like
+to check:
 
-```
-bin/rake routes
-```
-
-**running tests:**
-
-```
-bin/rake test
-bin/rake test test/models
-bin/rake test test/models/user_test.rb
+```ruby
+class NotifierPreview < ActionMailer::Preview
+  def welcome
+    Notifier.welcome(User.first)
+  end
+end
 ```
 
-**running a console:**
+The preview is available in http://localhost:3000/rails/mailers/notifier/welcome,
+and a list of them in http://localhost:3000/rails/mailers.
 
-```
-bin/rails console
-```
+By default, these preview classes live in `test/mailers/previews`.
+This can be configured using the `preview_path` option.
 
-**spring introspection:**
-
-```
-$ bundle exec spring status
-Spring is running:
-
- 1182 spring server | my_app | started 29 mins ago
- 3656 spring app    | my_app | started 23 secs ago | test mode
- 3746 spring app    | my_app | started 10 secs ago | development mode
-```
-
-Have a look at the
-[Spring README](https://github.com/jonleighton/spring/blob/master/README.md) to
-see a all available features.
+See its
+[documentation](http://api.rubyonrails.org/v4.1.0/classes/ActionMailer/Base.html)
+for a detailed write up.
 
 ### Active Record enums
 
@@ -123,31 +170,76 @@ class Conversation < ActiveRecord::Base
   enum status: [ :active, :archived ]
 end
 
-conversation.archive!
+conversation.archived!
 conversation.active? # => false
 conversation.status  # => "archived"
 
 Conversation.archived # => Relation for all archived Conversations
 ```
 
-See
-[active_record/enum.rb](https://github.com/rails/rails/blob/4-1-stable/activerecord/lib/active_record/enum.rb#L2-L42)
+See its
+[documentation](http://api.rubyonrails.org/v4.1.0/classes/ActiveRecord/Enum.html)
 for a detailed write up.
 
-### Application message verifier.
+### Message Verifiers
 
-Create a message verifier that can be used to generate and verify signed
-messages in the application.
+Message verifiers can be used to generate and verify signed messages. This can
+be useful to safely transport sensitive data like remember-me tokens and
+friends.
+
+The method `Rails.application.message_verifier` returns a new message verifier
+that signs messages with a key derived from secret_key_base and the given
+message verifier name:
 
 ```ruby
-message = Rails.application.message_verifier('salt').generate('my sensible data')
-Rails.application.message_verifier('salt').verify(message)
-# => 'my sensible data'
+signed_token = Rails.application.message_verifier(:remember_me).generate(token)
+Rails.application.message_verifier(:remember_me).verify(signed_token) # => token
+
+Rails.application.message_verifier(:remember_me).verify(tampered_token)
+# raises ActiveSupport::MessageVerifier::InvalidSignature
 ```
 
-Documentation
--------------
+### Module#concerning
 
+A natural, low-ceremony way to separate responsibilities within a class:
+
+```ruby
+class Todo < ActiveRecord::Base
+  concerning :EventTracking do
+    included do
+      has_many :events
+    end
+
+    def latest_event
+      ...
+    end
+
+    private
+      def some_internal_method
+        ...
+      end
+  end
+end
+```
+
+This example is equivalent to defining a `EventTracking` module inline,
+extending it with `ActiveSupport::Concern`, then mixing it in to the
+`Todo` class.
+
+See its
+[documentation](http://api.rubyonrails.org/v4.1.0/classes/Module/Concerning.html)
+for a detailed write up and the intended use cases.
+
+### CSRF protection from remote `<script>` tags
+
+Cross-site request forgery (CSRF) protection now covers GET requests with
+JavaScript responses, too. That prevents a third-party site from referencing
+your JavaScript URL and attempting to run it to extract sensitive data.
+
+This means any of your tests that hit `.js` URLs will now fail CSRF protection
+unless they use `xhr`. Upgrade your tests to be explicit about expecting
+XmlHttpRequests. Instead of `post :create, format: :js`, switch to the explicit
+`xhr :post, :create, format: :js`.
 
 Railties
 --------
@@ -189,138 +281,6 @@ for detailed changes.
 * Add `Application#message_verifier` method to return a message
   verifier. ([Pull Request](https://github.com/rails/rails/pull/12995))
 
-Action Mailer
--------------
-
-Please refer to the
-[Changelog](https://github.com/rails/rails/blob/4-1-stable/actionmailer/CHANGELOG.md)
-for detailed changes.
-
-### Notable changes
-
-* Instrument the generation of Action Mailer messages. The time it takes to
-  generate a message is written to the log. ([Pull Request](https://github.com/rails/rails/pull/12556))
-
-
-Active Model
-------------
-
-Please refer to the
-[Changelog](https://github.com/rails/rails/blob/4-1-stable/activemodel/CHANGELOG.md)
-for detailed changes.
-
-### Deprecations
-
-* Deprecate `Validator#setup`. This should be done manually now in the
-  validator's constructor. ([Commit](https://github.com/rails/rails/commit/7d84c3a2f7ede0e8d04540e9c0640de7378e9b3a))
-
-### Notable changes
-
-* Added new API methods `reset_changes` and `changes_applied` to
-  `ActiveModel::Dirty` that control changes state.
-
-
-Active Support
---------------
-
-Please refer to the
-[Changelog](https://github.com/rails/rails/blob/4-1-stable/activesupport/CHANGELOG.md)
-for detailed changes.
-
-
-### Removals
-
-* Removed `MultiJSON` dependency. As a result, `ActiveSupport::JSON.decode`
-  no longer accepts an options hash for `MultiJSON`. ([Pull Request](https://github.com/rails/rails/pull/10576) / [More Details](upgrading_ruby_on_rails.html#changes-in-json-handling))
-
-* Removed support for the `encode_json` hook used for encoding custom objects into
-  JSON. This feature has been extracted into the [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder)
-  gem.
-  ([Related Pull Request](https://github.com/rails/rails/pull/12183) /
-  [More Details](upgrading_ruby_on_rails.html#changes-in-json-handling))
-
-* Removed deprecated `ActiveSupport::JSON::Variable` with no replacement.
-
-* Removed deprecated `String#encoding_aware?` core extensions (`core_ext/string/encoding`).
-
-* Removed deprecated `Module#local_constant_names` in favor of `Module#local_constants`.
-
-* Removed deprecated `DateTime.local_offset` in favor of `DateTime.civil_from_fromat`.
-
-* Removed deprecated `Logger` core extensions (`core_ext/logger.rb`).
-
-* Removed deprecated `Time#time_with_datetime_fallback`, `Time#utc_time` and
-  `Time#local_time` in favor of `Time#utc` and `Time#local`.
-
-* Removed deprecated `Hash#diff` with no replacement.
-
-* Removed deprecated `Date#to_time_in_current_zone` in favor of `Date#in_time_zone`.
-
-* Removed deprecated `Proc#bind` with no replacement.
-
-* Removed deprecated `Array#uniq_by` and `Array#uniq_by!`, use native
-  `Array#uniq` and `Array#uniq!` instead.
-
-* Removed deprecated `ActiveSupport::BasicObject`, use
-  `ActiveSupport::ProxyObject` instead.
-
-* Removed deprecated `BufferedLogger`, use `ActiveSupport::Logger` instead.
-
-* Removed deprecated `assert_present` and `assert_blank` methods, use `assert
-  object.blank?` and `assert object.present?` instead.
-
-### Deprecations
-
-* Deprecated `Numeric#{ago,until,since,from_now}`, the user is expected to
-  explicitly convert the value into an AS::Duration, i.e. `5.ago` => `5.seconds.ago`
-  ([Pull Request](https://github.com/rails/rails/pull/12389))
-
-* Deprecated the require path `active_support/core_ext/object/to_json`. Require
-  `active_support/core_ext/object/json` instead. ([Pull Request](https://github.com/rails/rails/pull/12203))
-
-* Deprecated `ActiveSupport::JSON::Encoding::CircularReferenceError`. This feature
-  has been extracted into the [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder)
-  gem.
-  ([Pull Request](https://github.com/rails/rails/pull/12785) /
-  [More Details](upgrading_ruby_on_rails.html#changes-in-json-handling))
-
-* Deprecated `ActiveSupport.encode_big_decimal_as_string` option. This feature has
-  been extracetd into the [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder)
-  gem.
-  ([Pull Request](https://github.com/rails/rails/pull/13060) /
-  [More Details](upgrading_ruby_on_rails.html#changes-in-json-handling))
-
-### Notable changes
-
-* `ActiveSupport`'s JSON encoder has been rewritten to take advantage of the
-  JSON gem rather than doing custom encoding in pure-Ruby.
-  ([Pull Request](https://github.com/rails/rails/pull/12183) /
-  [More Details](upgrading_ruby_on_rails.html#changes-in-json-handling))
-
-* Improved compatibility with the JSON gem.
-  ([Pull Request](https://github.com/rails/rails/pull/12862) /
-  [More Details](upgrading_ruby_on_rails.html#changes-in-json-handling))
-
-* Added `ActiveSupport::Testing::TimeHelpers#travel` and `#travel_to`. These
-  methods change current time to the given time or time difference by stubbing
-  `Time.now` and
-  `Date.today`. ([Pull Request](https://github.com/rails/rails/pull/12824))
-
-* Added `Numeric#in_milliseconds`, like `1.hour.in_milliseconds`, so we can feed
-  them to JavaScript functions like
-  `getTime()`. ([Commit](https://github.com/rails/rails/commit/423249504a2b468d7a273cbe6accf4f21cb0e643))
-
-* Added `Date#middle_of_day`, `DateTime#middle_of_day` and `Time#middle_of_day`
-  methods. Also added `midday`, `noon`, `at_midday`, `at_noon` and
-  `at_middle_of_day` as
-  aliases. ([Pull Request](https://github.com/rails/rails/pull/10879))
-
-* Added `String#remove(pattern)` as a short-hand for the common pattern of
-  `String#gsub(pattern,'')`. ([Commit](https://github.com/rails/rails/commit/5da23a3f921f0a4a3139495d2779ab0d3bd4cb5f))
-
-* Removed 'cow' => 'kine' irregular inflection from default
-  inflections. ([Commit](https://github.com/rails/rails/commit/c300dca9963bda78b8f358dbcb59cabcdc5e1dc9))
-
 Action Pack
 -----------
 
@@ -340,15 +300,22 @@ for detailed changes.
 
 * Removed deprecated constants from Action Controller:
 
-      ActionController::AbstractRequest  => ActionDispatch::Request
-      ActionController::Request          => ActionDispatch::Request
-      ActionController::AbstractResponse => ActionDispatch::Response
-      ActionController::Response         => ActionDispatch::Response
-      ActionController::Routing          => ActionDispatch::Routing
-      ActionController::Integration      => ActionDispatch::Integration
-      ActionController::IntegrationTest  => ActionDispatch::IntegrationTest
+  | Removed                            | Successor                       |
+  |:-----------------------------------|:--------------------------------|
+  | ActionController::AbstractRequest  | ActionDispatch::Request         |
+  | ActionController::Request          | ActionDispatch::Request         |
+  | ActionController::AbstractResponse | ActionDispatch::Response        |
+  | ActionController::Response         | ActionDispatch::Response        |
+  | ActionController::Routing          | ActionDispatch::Routing         |
+  | ActionController::Integration      | ActionDispatch::Integration     |
+  | ActionController::IntegrationTest  | ActionDispatch::IntegrationTest |
 
 ### Notable changes
+
+* `protect_from_forgery` also prevents cross-origin `<script>` tags.
+  Update your tests to use `xhr :get, :foo, format: :js` instead of
+  `get :foo, format: :js`.
+  ([Pull Request](https://github.com/rails/rails/pull/13345))
 
 * `#url_for` takes a hash with options inside an
   array. ([Pull Request](https://github.com/rails/rails/pull/9599))
@@ -361,6 +328,17 @@ for detailed changes.
 * Separated Action View completely from Action
   Pack. ([Pull Request](https://github.com/rails/rails/pull/11032))
 
+Action Mailer
+-------------
+
+Please refer to the
+[Changelog](https://github.com/rails/rails/blob/4-1-stable/actionmailer/CHANGELOG.md)
+for detailed changes.
+
+### Notable changes
+
+* Instrument the generation of Action Mailer messages. The time it takes to
+  generate a message is written to the log. ([Pull Request](https://github.com/rails/rails/pull/12556))
 
 Active Record
 -------------
@@ -504,6 +482,125 @@ for detailed changes.
 * The ERB in fixture files is no longer evaluated in the context of the main
   object. Helper methods used by multiple fixtures should be defined on modules
   included in `ActiveRecord::FixtureSet.context_class`. ([Pull Request](https://github.com/rails/rails/pull/13022))
+
+Active Model
+------------
+
+Please refer to the
+[Changelog](https://github.com/rails/rails/blob/4-1-stable/activemodel/CHANGELOG.md)
+for detailed changes.
+
+### Deprecations
+
+* Deprecate `Validator#setup`. This should be done manually now in the
+  validator's constructor. ([Commit](https://github.com/rails/rails/commit/7d84c3a2f7ede0e8d04540e9c0640de7378e9b3a))
+
+### Notable changes
+
+* Added new API methods `reset_changes` and `changes_applied` to
+  `ActiveModel::Dirty` that control changes state.
+
+
+Active Support
+--------------
+
+Please refer to the
+[Changelog](https://github.com/rails/rails/blob/4-1-stable/activesupport/CHANGELOG.md)
+for detailed changes.
+
+
+### Removals
+
+* Removed `MultiJSON` dependency. As a result, `ActiveSupport::JSON.decode`
+  no longer accepts an options hash for `MultiJSON`. ([Pull Request](https://github.com/rails/rails/pull/10576) / [More Details](upgrading_ruby_on_rails.html#changes-in-json-handling))
+
+* Removed support for the `encode_json` hook used for encoding custom objects into
+  JSON. This feature has been extracted into the [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder)
+  gem.
+  ([Related Pull Request](https://github.com/rails/rails/pull/12183) /
+  [More Details](upgrading_ruby_on_rails.html#changes-in-json-handling))
+
+* Removed deprecated `ActiveSupport::JSON::Variable` with no replacement.
+
+* Removed deprecated `String#encoding_aware?` core extensions (`core_ext/string/encoding`).
+
+* Removed deprecated `Module#local_constant_names` in favor of `Module#local_constants`.
+
+* Removed deprecated `DateTime.local_offset` in favor of `DateTime.civil_from_format`.
+
+* Removed deprecated `Logger` core extensions (`core_ext/logger.rb`).
+
+* Removed deprecated `Time#time_with_datetime_fallback`, `Time#utc_time` and
+  `Time#local_time` in favor of `Time#utc` and `Time#local`.
+
+* Removed deprecated `Hash#diff` with no replacement.
+
+* Removed deprecated `Date#to_time_in_current_zone` in favor of `Date#in_time_zone`.
+
+* Removed deprecated `Proc#bind` with no replacement.
+
+* Removed deprecated `Array#uniq_by` and `Array#uniq_by!`, use native
+  `Array#uniq` and `Array#uniq!` instead.
+
+* Removed deprecated `ActiveSupport::BasicObject`, use
+  `ActiveSupport::ProxyObject` instead.
+
+* Removed deprecated `BufferedLogger`, use `ActiveSupport::Logger` instead.
+
+* Removed deprecated `assert_present` and `assert_blank` methods, use `assert
+  object.blank?` and `assert object.present?` instead.
+
+### Deprecations
+
+* Deprecated `Numeric#{ago,until,since,from_now}`, the user is expected to
+  explicitly convert the value into an AS::Duration, i.e. `5.ago` => `5.seconds.ago`
+  ([Pull Request](https://github.com/rails/rails/pull/12389))
+
+* Deprecated the require path `active_support/core_ext/object/to_json`. Require
+  `active_support/core_ext/object/json` instead. ([Pull Request](https://github.com/rails/rails/pull/12203))
+
+* Deprecated `ActiveSupport::JSON::Encoding::CircularReferenceError`. This feature
+  has been extracted into the [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder)
+  gem.
+  ([Pull Request](https://github.com/rails/rails/pull/12785) /
+  [More Details](upgrading_ruby_on_rails.html#changes-in-json-handling))
+
+* Deprecated `ActiveSupport.encode_big_decimal_as_string` option. This feature has
+  been extracetd into the [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder)
+  gem.
+  ([Pull Request](https://github.com/rails/rails/pull/13060) /
+  [More Details](upgrading_ruby_on_rails.html#changes-in-json-handling))
+
+### Notable changes
+
+* `ActiveSupport`'s JSON encoder has been rewritten to take advantage of the
+  JSON gem rather than doing custom encoding in pure-Ruby.
+  ([Pull Request](https://github.com/rails/rails/pull/12183) /
+  [More Details](upgrading_ruby_on_rails.html#changes-in-json-handling))
+
+* Improved compatibility with the JSON gem.
+  ([Pull Request](https://github.com/rails/rails/pull/12862) /
+  [More Details](upgrading_ruby_on_rails.html#changes-in-json-handling))
+
+* Added `ActiveSupport::Testing::TimeHelpers#travel` and `#travel_to`. These
+  methods change current time to the given time or time difference by stubbing
+  `Time.now` and
+  `Date.today`. ([Pull Request](https://github.com/rails/rails/pull/12824))
+
+* Added `Numeric#in_milliseconds`, like `1.hour.in_milliseconds`, so we can feed
+  them to JavaScript functions like
+  `getTime()`. ([Commit](https://github.com/rails/rails/commit/423249504a2b468d7a273cbe6accf4f21cb0e643))
+
+* Added `Date#middle_of_day`, `DateTime#middle_of_day` and `Time#middle_of_day`
+  methods. Also added `midday`, `noon`, `at_midday`, `at_noon` and
+  `at_middle_of_day` as
+  aliases. ([Pull Request](https://github.com/rails/rails/pull/10879))
+
+* Added `String#remove(pattern)` as a short-hand for the common pattern of
+  `String#gsub(pattern,'')`. ([Commit](https://github.com/rails/rails/commit/5da23a3f921f0a4a3139495d2779ab0d3bd4cb5f))
+
+* Removed 'cow' => 'kine' irregular inflection from default
+  inflections. ([Commit](https://github.com/rails/rails/commit/c300dca9963bda78b8f358dbcb59cabcdc5e1dc9))
 
 Credits
 -------

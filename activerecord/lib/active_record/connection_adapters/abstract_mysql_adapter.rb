@@ -303,12 +303,6 @@ module ActiveRecord
         else
           log(sql, name) { @connection.query(sql) }
         end
-      rescue ActiveRecord::StatementInvalid => exception
-        if exception.message.split(":").first =~ /Packets out of order/
-          raise ActiveRecord::StatementInvalid.new("'Packets out of order' error was received from the database. Please update your mysql bindings (gem install mysql) and read http://dev.mysql.com/doc/mysql/en/password-hashing.html for more information. If you're on Windows, use the Instant Rails installer to get the updated mysql bindings.", exception.original_exception)
-        else
-          raise
-        end
       end
 
       # MysqlAdapter has to free a result after using it, so we use this method to write
@@ -490,6 +484,10 @@ module ActiveRecord
       def rename_table(table_name, new_name)
         execute "RENAME TABLE #{quote_table_name(table_name)} TO #{quote_table_name(new_name)}"
         rename_table_indexes(table_name, new_name)
+      end
+
+      def drop_table(table_name, options = {})
+        execute "DROP#{' TEMPORARY' if options[:temporary]} TABLE #{quote_table_name(table_name)}"
       end
 
       def rename_index(table_name, old_name, new_name)

@@ -117,7 +117,26 @@ module TestHelpers
         end
       end
 
+      File.open("#{app_path}/config/database.yml", "w") do |f|
+        f.puts <<-YAML
+        default: &default
+          adapter: sqlite3
+          pool: 5
+          timeout: 5000
+        development:
+          <<: *default
+          database: db/development.sqlite3
+        test:
+          <<: *default
+          database: db/test.sqlite3
+        production:
+          <<: *default
+          database: db/production.sqlite3
+        YAML
+      end
+
       add_to_config <<-RUBY
+        secrets.secret_key_base = "3b7cd727ee24e8444053437c36cc66c4"
         config.eager_load = false
         config.session_store :cookie_store, key: "_myapp_session"
         config.active_support.deprecation = :log
@@ -137,8 +156,8 @@ module TestHelpers
       require "action_view/railtie"
 
       app = Class.new(Rails::Application)
-      app.config.eager_load = false
       app.secrets.secret_key_base = "3b7cd727ee24e8444053437c36cc66c4"
+      app.config.eager_load = false
       app.config.session_store :cookie_store, key: "_myapp_session"
       app.config.active_support.deprecation = :log
 
