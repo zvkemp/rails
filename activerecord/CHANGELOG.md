@@ -1,3 +1,68 @@
+*   Since the `test_help.rb` in Railties now automatically maintains
+    your test schema, the `rake db:test:*` tasks are deprecated. This
+    doesn't stop you manually running other tasks on your test database
+    if needed:
+
+        rake db:schema:load RAILS_ENV=test
+
+    *Jon Leighton*
+
+*   Fix presence validator for association when the associated record responds to `to_a`.
+
+    *gmarik*
+
+*   Fixed regression on preload/includes with multiple arguments failing in certain conditions,
+    raising a NoMethodError internally by calling `reflect_on_association` for `NilClass:Class`.
+
+    Fixes #13437.
+
+    *Vipul A M*, *khustochka*
+
+*   Add the ability to nullify the `enum` column.
+
+     Example:
+
+         class Conversation < ActiveRecord::Base
+           enum gender: [:female, :male]
+         end
+
+         Conversation::GENDER # => { female: 0, male: 1 }
+
+         # conversation.update! gender: 0
+         conversation.female!
+         conversation.female? # => true
+         conversation.gender  # => "female"
+
+         # conversation.update! gender: nil
+         conversation.gender = nil
+         conversation.gender.nil? # => true
+         conversation.gender      # => nil
+
+     *Amr Tamimi*
+
+*   Connection specification now accepts a "url" key. The value of this
+    key is expected to contain a database URL. The database URL will be
+    expanded into a hash and merged.
+
+    *Richard Schneeman*
+
+*   An `ArgumentError` is now raised on a call to `Relation#where.not(nil)`.
+
+    Example:
+
+        User.where.not(nil)
+
+        # Before
+        # => 'SELECT `users`.* FROM `users`  WHERE (NOT (NULL))'
+
+        # After
+        # => ArgumentError, 'Invalid argument for .where.not(), got nil.'
+
+    *Kuldeep Aggarwal*
+
+*   Deprecated use of string argument as a configuration lookup in
+    `ActiveRecord::Base.establish_connection`. Instead, a symbol must be given.
+
 *   Deprecated use of string argument as a configuration lookup in `ActiveRecord::Base.establish_connection`. Instead, a symbol must be given.
 
     *José Valim*
@@ -34,10 +99,10 @@
 
     *Richard Schneeman*
 
-*   Do not raise `'can not touch on a new record object'` exception on destroying already destroyed
-    `belongs_to` association with `touch: true` option
+*   Do not raise `'can not touch on a new record object'` exception on destroying
+    already destroyed `belongs_to` association with `touch: true` option.
 
-    Fixes: #13445
+    Fixes #13445.
 
     Example:
 

@@ -16,7 +16,7 @@ class EnumTest < ActiveRecord::TestCase
     assert @book.unread?
   end
 
-  test "query state with symbol" do
+  test "query state with strings" do
     assert_equal "proposed", @book.status
     assert_equal "unread", @book.read_status
   end
@@ -58,9 +58,33 @@ class EnumTest < ActiveRecord::TestCase
     assert_equal "'unknown' is not a valid status", e.message
   end
 
+  test "assign nil value" do
+    @book.status = nil
+    assert @book.status.nil?
+  end
+
+  test "assign empty string value" do
+    @book.status = ''
+    assert @book.status.nil?
+  end
+
+  test "assign long empty string value" do
+    @book.status = '   '
+    assert @book.status.nil?
+  end
+
   test "constant to access the mapping" do
     assert_equal 0, Book::STATUS[:proposed]
     assert_equal 1, Book::STATUS["written"]
     assert_equal 2, Book::STATUS[:published]
+  end
+
+  test "first_or_initialize with enums' scopes" do
+    class Issue < ActiveRecord::Base
+      enum status: [:open, :closed]
+    end
+
+    assert Issue.open.empty?
+    assert Issue.open.first_or_initialize
   end
 end

@@ -1,3 +1,14 @@
+*   Don't lazy load the `tzinfo` library as it causes problems on Windows.
+
+    Fixes #13553
+
+    *Andrew White*
+
+*   Use `remove_possible_method` instead of `remove_method` to avoid
+    a `NameError` to be thrown on FreeBSD with the `Date` object.
+
+    *Rafael Mendonça França*, *Robin Dupret*
+
 *   `blank?` and `present?` commit to return singletons.
 
     *Xavier Noria*, *Pavel Pravosud*
