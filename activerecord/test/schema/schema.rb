@@ -45,6 +45,7 @@ ActiveRecord::Schema.define do
     t.string :preferences, null: true, default: '', limit: 1024
     t.string :json_data, null: true, limit: 1024
     t.string :json_data_empty, null: true, default: "", limit: 1024
+    t.text :params
     t.references :account
   end
 
@@ -325,10 +326,6 @@ ActiveRecord::Schema.define do
   create_table :iris, force: true do |t|
     t.references :eye
     t.string     :color
-  end
-
-  create_table :issues, force: true do |t|
-    t.integer :status
   end
 
   create_table :items, force: true do |t|

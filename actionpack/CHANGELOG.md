@@ -1,3 +1,39 @@
+*   Allow an absolute controller path inside a module scope. Fixes #12777.
+
+    Example:
+
+        namespace :foo do
+          # will route to BarController without the namespace.
+          get '/special', to: '/bar#index'
+        end
+
+
+*   Unique the segment keys array for non-optimized url helpers
+
+    In Rails 3.2 you only needed pass an argument for dynamic segment once so
+    unique the segment keys array to match the number of args. Since the number
+    of args is less than required parts the non-optimized code path is selected.
+    This means to benefit from optimized url generation the arg needs to be
+    specified as many times as it appears in the path.
+
+    Fixes #12808.
+
+    *Andrew White*
+
+*   Show full route constraints in error message
+
+    When an optimized helper fails to generate, show the full route constraints
+    in the error message. Previously it would only show the contraints that were
+    required as part of the path.
+
+    Fixes #13592.
+
+    *Andrew White*
+
+*   Use a custom route visitor for optimized url generation. Fixes #13349.
+
+    *Andrew White*
+
 *   Allow engine root relative redirects using an empty string.
 
     Example:
@@ -14,7 +50,7 @@
     absolute. Similarly for option redirects, if the options hash returned
     contains a `:host` or `:domain` key then the path is treated as absolute.
 
-    Fixes #7977
+    Fixes #7977.
 
     *Andrew White*
 
@@ -29,7 +65,7 @@
     it has been unescaped. If it is not valid then we can return early since it will
     not match any file anyway.
 
-    Fixes #13518
+    Fixes #13518.
 
     *Andrew White*
 
@@ -39,7 +75,7 @@
 
 *   Converts hashes in arrays of unfiltered params to unpermitted params.
 
-    Fixes #13382
+    Fixes #13382.
 
     *Xavier Noria*
 

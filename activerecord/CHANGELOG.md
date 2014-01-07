@@ -1,3 +1,29 @@
+*   Initialize version on Migration objects so that it can be used in a migration,
+    and it will be included in the announce message.
+
+    *Dylan Thacker-Smith*
+
+*   `change_table` now uses the current adapter's `update_table_definition`
+    method to retrieve a specific table definition.
+    This ensures that `change_table` and `create_table` will use
+    similar objects.
+
+    Fixes #13577 and #13503.
+
+    *Nishant Modak*, *Prathamesh Sonpatki*, *Rafael Mendonça França*
+
+*   Fixed ActiveRecord::Store nil conversion TypeError when using YAML coder.
+    In case the YAML passed as paramter is nil, uses an empty string.
+
+    Fixes #13570.
+
+    *Thales Oliveira*
+
+*   Deprecate unused `ActiveRecord::Base.symbolized_base_class`
+    and `ActiveRecord::Base.symbolized_sti_name` without replacement.
+
+    *Yves Senn*
+
 *   Since the `test_help.rb` in Railties now automatically maintains
     your test schema, the `rake db:test:*` tasks are deprecated. This
     doesn't stop you manually running other tasks on your test database
@@ -63,8 +89,6 @@
 *   Deprecated use of string argument as a configuration lookup in
     `ActiveRecord::Base.establish_connection`. Instead, a symbol must be given.
 
-*   Deprecated use of string argument as a configuration lookup in `ActiveRecord::Base.establish_connection`. Instead, a symbol must be given.
-
     *José Valim*
 
 *   Fixed `update_column`, `update_columns`, and `update_all` to correctly serialize
@@ -99,7 +123,7 @@
 
     *Richard Schneeman*
 
-*   Do not raise `'can not touch on a new record object'` exception on destroying
+*   Do not raise `'cannot touch on a new record object'` exception on destroying
     already destroyed `belongs_to` association with `touch: true` option.
 
     Fixes #13445.
@@ -1243,7 +1267,7 @@
 
     *John Wang*
 
-*   Fix `add_column` with `array` option when using PostgreSQL. Fixes #10432
+*   Fix `add_column` with `array` option when using PostgreSQL. Fixes #10432.
 
     *Adam Anderson*
 
