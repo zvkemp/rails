@@ -2,7 +2,7 @@ require 'active_record'
 
 db_namespace = namespace :db do
   task :load_config do
-    ActiveRecord::Base.configurations = ActiveRecord::Tasks::DatabaseTasks.database_configuration || {}
+    ActiveRecord::Base.configurations       = ActiveRecord::Tasks::DatabaseTasks.database_configuration || {}
     ActiveRecord::Migrator.migrations_paths = ActiveRecord::Tasks::DatabaseTasks.migrations_paths
   end
 
@@ -12,7 +12,7 @@ db_namespace = namespace :db do
     end
   end
 
-  desc 'Create the database from DATABASE_URL or config/database.yml for the current Rails.env (use db:create:all to create all databases in the config)'
+  desc 'Creates the database from DATABASE_URL or config/database.yml for the current RAILS_ENV (use db:create:all to create all databases in the config). Without RAILS_ENV it defaults to creating the development and test databases.'
   task :create => [:load_config] do
     ActiveRecord::Tasks::DatabaseTasks.create_current
   end
@@ -23,7 +23,7 @@ db_namespace = namespace :db do
     end
   end
 
-  desc 'Drops the database using DATABASE_URL or the current Rails.env (use db:drop:all to drop all databases)'
+  desc 'Drops the database from DATABASE_URL or config/database.yml for the current RAILS_ENV (use db:drop:all to drop all databases in the config). Without RAILS_ENV it defaults to dropping the development and test databases.'
   task :drop => [:load_config] do
     ActiveRecord::Tasks::DatabaseTasks.drop_current
   end
