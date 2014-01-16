@@ -54,7 +54,7 @@ module ActionDispatch
       end
 
       def call(env)
-        env[StringPool::PATH_INFO] = normalize_path(env[StringPool::PATH_INFO])
+        env[StringPool::PATH_INFO] = Utils.normalize_path(env[StringPool::PATH_INFO])
 
         find_routes(env).each do |match, parameters, route|
           script_name, path_info, set_params = env.values_at(StringPool::SCRIPT_NAME,
@@ -103,12 +103,15 @@ module ActionDispatch
 
       private
 
+<<<<<<< HEAD
         def normalize_path(path)
           path = "/#{path}"
           path.squeeze!(StringPool::SLASH)
           path
         end
 
+=======
+>>>>>>> master
         def partitioned_routes
           routes.partitioned_routes
         end

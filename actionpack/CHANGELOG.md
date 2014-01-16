@@ -1,3 +1,9 @@
+*   Fix stream closing when sending file with `ActionController::Live` included.
+
+    Fixes #12381
+
+    *Alessandro Diaferia*
+
 *   Allow an absolute controller path inside a module scope. Fixes #12777.
 
     Example:
@@ -424,11 +430,5 @@
 *   Action View extracted from Action Pack.
 
     *Piotr Sarnacki*, *Łukasz Strzałkowski*
-
-*   Fix removing trailing slash for mounted apps.
-
-    Fixes #3215.
-
-    *Piotr Sarnacki*
 
 Please check [4-0-stable](https://github.com/rails/rails/blob/4-0-stable/actionpack/CHANGELOG.md) for previous changes.

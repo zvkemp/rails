@@ -58,8 +58,8 @@ class AppGeneratorTest < Rails::Generators::TestCase
   def test_assets
     run_generator
 
-    assert_file("app/views/layouts/application.html.erb", /stylesheet_link_tag\s+"application", media: "all", "data-turbolinks-track" => true/)
-    assert_file("app/views/layouts/application.html.erb", /javascript_include_tag\s+"application", "data-turbolinks-track" => true/)
+    assert_file("app/views/layouts/application.html.erb", /stylesheet_link_tag\s+'application', media: 'all', 'data-turbolinks-track' => true/)
+    assert_file("app/views/layouts/application.html.erb", /javascript_include_tag\s+'application', 'data-turbolinks-track' => true/)
     assert_file("app/assets/stylesheets/application.css")
     assert_file("app/assets/javascripts/application.js")
   end
@@ -364,8 +364,8 @@ class AppGeneratorTest < Rails::Generators::TestCase
     assert_no_file "vendor/assets/javascripts"
 
     assert_file "app/views/layouts/application.html.erb" do |contents|
-      assert_match(/stylesheet_link_tag\s+"application", media: "all" %>/, contents)
-      assert_no_match(/javascript_include_tag\s+"application" \%>/, contents)
+      assert_match(/stylesheet_link_tag\s+'application', media: 'all' %>/, contents)
+      assert_no_match(/javascript_include_tag\s+'application' \%>/, contents)
     end
 
     assert_file "Gemfile" do |content|
@@ -390,9 +390,9 @@ class AppGeneratorTest < Rails::Generators::TestCase
     end
   end
 
-  def test_inclusion_of_lazy_loaded_sdoc
+  def test_inclusion_of_doc
     run_generator
-    assert_file 'Gemfile', /gem 'sdoc', \s+group: :doc, require: false/
+    assert_file 'Gemfile', /gem 'sdoc',\s+'~> 0.4.0',\s+group: :doc/
   end
 
   def test_template_from_dir_pwd
@@ -458,12 +458,14 @@ class AppGeneratorTest < Rails::Generators::TestCase
   end
 
   def test_spring_binstubs
+    jruby_skip "spring doesn't run on JRuby"
     generator.stubs(:bundle_command).with('install')
     generator.expects(:bundle_command).with('exec spring binstub --all').once
     quietly { generator.invoke_all }
   end
 
   def test_spring_no_fork
+    jruby_skip "spring doesn't run on JRuby"
     Process.stubs(:respond_to?).with(:fork).returns(false)
     run_generator
 

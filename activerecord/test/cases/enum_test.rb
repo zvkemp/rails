@@ -74,9 +74,9 @@ class EnumTest < ActiveRecord::TestCase
   end
 
   test "constant to access the mapping" do
-    assert_equal 0, Book::STATUS[:proposed]
-    assert_equal 1, Book::STATUS["written"]
-    assert_equal 2, Book::STATUS[:published]
+    assert_equal 0, Book.statuses[:proposed]
+    assert_equal 1, Book.statuses["written"]
+    assert_equal 2, Book.statuses[:published]
   end
 
   test "building new objects with enum scopes" do
@@ -87,5 +87,9 @@ class EnumTest < ActiveRecord::TestCase
   test "creating new objects with enum scopes" do
     assert Book.written.create.written?
     assert Book.read.create.read?
+  end
+
+  test "_before_type_cast returns the enum label (required for form fields)" do
+    assert_equal "proposed", @book.status_before_type_cast
   end
 end
