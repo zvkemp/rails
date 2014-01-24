@@ -2912,6 +2912,26 @@ class TestRoutingMapper < ActionDispatch::IntegrationTest
     assert @response.ok?, 'route with trailing slash and with QUERY_STRING should work'
   end
 
+  def test_route_with_dashes_in_path
+    draw do
+      get '/contact-us', to: 'pages#contact_us'
+    end
+
+    get '/contact-us'
+    assert_equal 'pages#contact_us', @response.body
+    assert_equal '/contact-us', contact_us_path
+  end
+
+  def test_shorthand_route_with_dashes_in_path
+    draw do
+      get '/about-us/index'
+    end
+
+    get '/about-us/index'
+    assert_equal 'about_us#index', @response.body
+    assert_equal '/about-us/index', about_us_index_path
+  end
+
 private
 
   def draw(&block)

@@ -54,6 +54,27 @@ module ActionDispatch
         ], output
       end
 
+      def test_displaying_routes_for_engines_without_routes
+        engine = Class.new(Rails::Engine) do
+          def self.inspect
+            "Blog::Engine"
+          end
+        end
+        engine.routes.draw do
+        end
+
+        output = draw do
+          mount engine => "/blog", as: "blog"
+        end
+
+        assert_equal [
+          "Prefix Verb URI Pattern Controller#Action",
+          "  blog      /blog       Blog::Engine",
+          "",
+          "Routes for Blog::Engine:"
+        ], output
+      end
+
       def test_cart_inspect
         output = draw do
           get '/cart', :to => 'cart#show'
@@ -157,6 +178,19 @@ module ActionDispatch
         assert_equal [
           "Prefix Verb URI Pattern           Controller#Action",
           "       GET  /photos/:id(.:format) photos#show {:id=>/[A-Z]\\d{5}/}"
+        ], output
+      end
+
+      def test_rake_routes_shows_routes_with_dashes
+        output = draw do
+          get 'about-us' => 'pages#about_us'
+          get 'our-work/latest'
+        end
+
+        assert_equal [
+          "         Prefix Verb URI Pattern                Controller#Action",
+          "       about_us GET  /about-us(.:format)        pages#about_us",
+          "our_work_latest GET  /our-work/latest(.:format) our_work#latest"
         ], output
       end
 

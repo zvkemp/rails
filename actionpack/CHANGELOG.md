@@ -1,3 +1,33 @@
+*   Fix `rake routes` error when `Rails::Engine` with empty routes is mounted.
+
+    Fixes #13810.
+
+    *Maurizio De Santis*
+
+*   Automatically convert dashes to underscores for shorthand routes, e.g:
+
+        get '/our-work/latest'
+
+    When running `rake routes` you will get the following output:
+
+                 Prefix Verb URI Pattern                Controller#Action
+        our_work_latest GET  /our-work/latest(.:format) our_work#latest
+
+    *Mikko Johansson*
+
+*   Automatically convert dashes to underscores for url helpers, e.g:
+
+        get '/contact-us' => 'pages#contact'
+        get '/about-us'   => 'pages#about_us'
+
+    When running `rake routes` you will get the following output:
+
+            Prefix Verb URI Pattern           Controller#Action
+        contact_us GET  /contact-us(.:format) pages#contact
+          about_us GET  /about-us(.:format)   pages#about_us
+
+    *Amr Tamimi*
+
 *   Fix stream closing when sending file with `ActionController::Live` included.
 
     Fixes #12381

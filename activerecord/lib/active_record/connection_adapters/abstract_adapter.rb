@@ -349,6 +349,14 @@ module ActiveRecord
 
       protected
 
+      def translate_exception_class(e, sql)
+        message = "#{e.class.name}: #{e.message}: #{sql}"
+        @logger.error message if @logger
+        exception = translate_exception(e, message)
+        exception.set_backtrace e.backtrace
+        exception
+      end
+
       def log(sql, name = StringPool::SQL, binds = [], statement_name = nil)
         @instrumenter.instrument(
           "sql.active_record",
@@ -358,11 +366,7 @@ module ActiveRecord
           :statement_name => statement_name,
           :binds          => binds) { yield }
       rescue => e
-        message = "#{e.class.name}: #{e.message}: #{sql}"
-        @logger.error message if @logger
-        exception = translate_exception(e, message)
-        exception.set_backtrace e.backtrace
-        raise exception
+        raise translate_exception_class(e, sql)
       end
 
       def translate_exception(exception, message)

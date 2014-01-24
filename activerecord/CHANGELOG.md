@@ -1,3 +1,108 @@
+*   Reset the collection association when calling `reset` on it.
+
+    Before:
+
+        post.comments.loaded? # => true
+        post.comments.reset
+        post.comments.loaded? # => true
+
+    After:
+
+        post.comments.loaded? # => true
+        post.comments.reset
+        post.comments.loaded? # => false
+
+    Fixes #13777.
+
+    *Kelsey Schlarman*
+
+*   Make enum fields work as expected with the `ActiveModel::Dirty` API.
+
+    Before this change, using the dirty API would have surprising results:
+
+        conversation = Conversation.new
+        conversation.status = :active
+        conversation.status = :archived
+        conversation.status_was # => 0
+
+    After this change, the same code would result in:
+
+        conversation = Conversation.new
+        conversation.status = :active
+        conversation.status = :archived
+        conversation.status_was # => "active"
+
+    *Rafael Mendonça França*
+
+*   `has_one` and `belongs_to` accessors don't add ORDER BY to the queries anymore.
+
+    Since Rails 4.0, we add an ORDER BY in the `first` method to ensure consistent results
+    among different database engines. But for singular associations this behavior is not needed
+    since we will have one record to return. As this ORDER BY option can lead some performance
+    issues we are removing it for singular associations accessors.
+
+    Fixes #12623.
+
+    *Rafael Mendonça França*
+
+*   Prepend table name for column names passed to `Relation#select`.
+
+    Example:
+
+        Post.select(:id)
+        # Before: => SELECT id FROM "posts"
+        # After: => SELECT "posts"."id" FROM "posts"
+
+    *Yves Senn*
+
+*   Fail early with "Primary key not included in the custom select clause"
+    in `find_in_batches`.
+
+    Before this patch, the exception was raised after the first batch was
+    yielded to the block. This means that you only get it, when you hit the
+    `batch_size` treshold. This could shadow the issue in development.
+
+    *Alexander Balashov*
+
+*   Ensure `second` through `fifth` methods act like the `first` finder.
+
+    The famous ordinal Array instance methods defined in ActiveSupport
+    (`first`, `second`, `third`, `fourth`, and `fifth`) are now available as
+    full-fledged finders in ActiveRecord. The biggest benefit of this is ordering
+    of the records returned now defaults to the table's primary key in ascending order.
+
+    Fixes #13743.
+
+    Example:
+
+        User.all.second
+
+        # Before
+        # => 'SELECT  "users".* FROM "users"'
+
+        # After
+        # => SELECT  "users".* FROM "users"   ORDER BY "users"."id" ASC LIMIT 1 OFFSET 1'
+
+        User.offset(3).second
+
+        # Before
+        # => 'SELECT "users".* FROM "users"  LIMIT -1 OFFSET 3' # sqlite3 gem
+        # => 'SELECT "users".* FROM "users"  OFFSET 3' # pg gem
+        # => 'SELECT `users`.* FROM `users`  LIMIT 18446744073709551615 OFFSET 3' # mysql2 gem
+
+        # After
+        # => SELECT  "users".* FROM "users"   ORDER BY "users"."id" ASC LIMIT 1 OFFSET 4'
+
+    *Jason Meller*
+
+*   ActiveRecord states are now correctly restored after a rollback for
+    models that did not define any transactional callbacks (i.e.
+    `after_commit`, `after_rollback` or `after_create`).
+
+    Fixes #13744.
+
+    *Godfrey Chan*
+
 *   Make `touch` fire the `after_commit` and `after_rollback` callbacks.
 
     *Harry Brundage*

@@ -1410,6 +1410,7 @@ module ActionDispatch
             path_without_format = _path.to_s.sub(/\(\.:format\)$/, StringPool::EMPTY)
             if using_match_shorthand?(path_without_format, route_options)
               route_options[:to] ||= path_without_format.gsub(%r{^/}, StringPool::EMPTY).sub(%r{/([^/]*)$}, '#\1')
+              route_options[:to].tr!("-", "_")
             end
 
             decomposed_match(_path, route_options)
@@ -1440,7 +1441,7 @@ module ActionDispatch
           path = path_for_action(action, options.delete(:path))
           action = action.to_s.dup
 
-          if action =~ /^[\w\/]+$/
+          if action =~ /^[\w\-\/]+$/
             options[:action] ||= action unless action.include?(StringPool::SLASH)
           else
             action = nil
@@ -1636,6 +1637,7 @@ module ActionDispatch
             when :root
               [name_prefix, collection_name, prefix]
             else
+              prefix.gsub!(/\-/, '_') if prefix.is_a?(String)
               [name_prefix, member_name, prefix]
             end
 

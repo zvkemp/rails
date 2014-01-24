@@ -64,7 +64,7 @@ Spring is running:
 ```
 
 Have a look at the
-[Spring README](https://github.com/jonleighton/spring/blob/master/README.md) to
+[Spring README](https://github.com/rails/spring/blob/master/README.md) to
 see all available features.
 
 See the [Upgrading Ruby on Rails](upgrading_ruby_on_rails.html#spring)
@@ -267,7 +267,7 @@ for detailed changes.
 ### Notable changes
 
 * The [Spring application
-  preloader](https://github.com/jonleighton/spring) is now installed
+  preloader](https://github.com/rails/spring) is now installed
   by default for new applications. It uses the development group of
   the Gemfile, so will not be installed in
   production. ([Pull Request](https://github.com/rails/rails/pull/12958))
@@ -411,6 +411,8 @@ for detailed changes.
 * Remove implicit join references that were deprecated in 4.0.
 
 * Removed `activerecord-deprecated_finders` as a dependency.
+  Please see [the gem README](https://github.com/rails/activerecord-deprecated_finders#active-record-deprecated-finders)
+  for more info.
 
 * Removed usage of `implicit_readonly`. Please use `readonly` method
   explicitly to mark records as

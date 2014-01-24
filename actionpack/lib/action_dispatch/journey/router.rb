@@ -103,15 +103,6 @@ module ActionDispatch
 
       private
 
-<<<<<<< HEAD
-        def normalize_path(path)
-          path = "/#{path}"
-          path.squeeze!(StringPool::SLASH)
-          path
-        end
-
-=======
->>>>>>> master
         def partitioned_routes
           routes.partitioned_routes
         end
