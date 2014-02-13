@@ -76,6 +76,15 @@ module ActiveRecord
       mattr_accessor :timestamped_migrations, instance_writer: false
       self.timestamped_migrations = true
 
+      ##
+      # :singleton-method:
+      # Specify whether schema dump should happen at the end of the
+      # db:migrate rake task. This is true by default, which is useful for the
+      # development environment. This should ideally be false in the production
+      # environment where dumping schema is rarely needed.
+      mattr_accessor :dump_schema_after_migration, instance_writer: false
+      self.dump_schema_after_migration = true
+
       # :nodoc:
       mattr_accessor :maintain_test_schema, instance_accessor: false
 
@@ -138,12 +147,12 @@ module ActiveRecord
       #   class Post < ActiveRecord::Base
       #     scope :published_and_commented, -> { published.and(self.arel_table[:comments_count].gt(0)) }
       #   end
-      def arel_table
+      def arel_table # :nodoc:
         @arel_table ||= Arel::Table.new(table_name, arel_engine)
       end
 
       # Returns the Arel engine.
-      def arel_engine
+      def arel_engine # :nodoc:
         @arel_engine ||=
           if Base == self || connection_handler.retrieve_connection_pool(self)
             self
@@ -275,7 +284,7 @@ module ActiveRecord
     #   Post.new.encode_with(coder)
     #   coder # => {"attributes" => {"id" => nil, ... }}
     def encode_with(coder)
-      coder[StringPool::ATTRIBUTES] = attributes
+      coder[StringPool::ATTRIBUTES] = attributes_for_coder
     end
 
     # Returns true if +comparison_object+ is the same exact object, or +comparison_object+

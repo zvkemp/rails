@@ -22,6 +22,8 @@ require 'models/engine'
 require 'models/categorization'
 require 'models/minivan'
 require 'models/speedometer'
+require 'models/pirate'
+require 'models/ship'
 
 class HasManyAssociationsTestForReorderWithJoinDependency < ActiveRecord::TestCase
   fixtures :authors, :posts, :comments
@@ -487,9 +489,9 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
     assert_equal [1], posts(:welcome).comments.select { |c| c.id == 1 }.map(&:id)
   end
 
-   def test_select_without_foreign_key
+  def test_select_without_foreign_key
     assert_equal companies(:first_firm).accounts.first.credit_limit, companies(:first_firm).accounts.select(:credit_limit).first.credit_limit
-   end
+  end
 
   def test_adding
     force_signal37_to_load_all_clients_of_firm
@@ -1819,5 +1821,23 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
     assert_difference "topic.reload.replies_count", 1 do
       topic.approved_replies.create!
     end
+  end
+
+  test 'dangerous association name raises ArgumentError' do
+    [:errors, 'errors', :save, 'save'].each do |name|
+      assert_raises(ArgumentError, "Association #{name} should not be allowed") do
+        Class.new(ActiveRecord::Base) do
+          has_many name
+        end
+      end
+    end
+  end
+
+  test 'has_many_association passes context validation to validate children' do
+    pirate = FamousPirate.new
+    pirate.famous_ships << ship = FamousShip.new
+    assert_equal true, pirate.valid?
+    assert_equal false, pirate.valid?(:conference)
+    assert_equal "can't be blank", ship.errors[:name].first
   end
 end
