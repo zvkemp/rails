@@ -38,6 +38,31 @@ module ActiveSupport
     include ActiveSupport::Testing::TimeHelpers
     extend ActiveSupport::Testing::Declarative
 
+    # Fails if the block raises an exception.
+    #
+    #   assert_nothing_raised do
+    #     ...
+    #   end
+    def assert_nothing_raised(*args)
+      yield
+    end
+
+    def assert_equal(a, b, msg = nil)
+      eq = (a == b)
+      assert true == eq, "Expected #{a.inspect} == #{b.inspect} to be `true` but got `#{eq.inspect}`"
+
+      neq = (a != b)
+      assert false == (a != b), "Expected #{a.inspect} != #{b.inspect} to be `false` but got #{neq.inspect}"
+    end
+
+    def refute_equal(a, b, msg = nil)
+      eq = (a == b)
+      assert false == eq, "Expected #{a.inspect} == #{b.inspect} to be `false` but got `#{eq.inspect}`"
+
+      neq = (a != b)
+      assert true == (a != b), "Expected #{a.inspect} != #{b.inspect} to be `true` but got #{neq.inspect}"
+    end
+
     # test/unit backwards compatibility methods
     alias :assert_raise :assert_raises
     alias :assert_not_empty :refute_empty
@@ -53,14 +78,5 @@ module ActiveSupport
     alias :assert_not_predicate :refute_predicate
     alias :assert_not_respond_to :refute_respond_to
     alias :assert_not_same :refute_same
-
-    # Fails if the block raises an exception.
-    #
-    #   assert_nothing_raised do
-    #     ...
-    #   end
-    def assert_nothing_raised(*args)
-      yield
-    end
   end
 end
