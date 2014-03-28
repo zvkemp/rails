@@ -48,6 +48,8 @@ module ActiveSupport
     end
 
     def assert_equal(a, b, msg = nil)
+      super
+
       eq = (a == b)
       assert true == eq, "Expected #{a.inspect} == #{b.inspect} to be `true` but got `#{eq.inspect}`"
 
@@ -56,6 +58,8 @@ module ActiveSupport
     end
 
     def refute_equal(a, b, msg = nil)
+      super
+
       eq = (a == b)
       assert false == eq, "Expected #{a.inspect} == #{b.inspect} to be `false` but got `#{eq.inspect}`"
 
