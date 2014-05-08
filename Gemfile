@@ -5,6 +5,8 @@ gemspec
 gem "rake",  ">= 0.8.7"
 gem 'mocha', '>= 0.13.0', :require => false
 
+gem 'i18n', :github => 'svenfuchs/i18n', :branch => 'cherry-pick-missing-0.5-commits'
+
 group :doc do
   gem "rdoc",  "~> 3.4"
   gem "horo",  "= 1.0.3"
@@ -33,7 +35,7 @@ end
 platforms :ruby do
   gem 'json'
   gem 'yajl-ruby'
-  gem "nokogiri", ">= 1.4.4"
+  gem "nokogiri", ">= 1.4.4", "< 1.6"
 
   # AR
   gem "sqlite3", "~> 1.3.3"
