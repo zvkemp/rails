@@ -15,6 +15,9 @@ gem 'jquery-rails', '~> 4.0.0.beta2'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'turbolinks'
 
+gem 'sprockets-rails', github: 'rails/sprockets-rails'
+gem 'sprockets', '>= 3.0.0.beta2'
+
 # require: false so bcrypt is loaded only when has_secure_password is used.
 # This is to avoid ActiveModel (and by extension the entire framework)
 # being dependent on a binary library.
