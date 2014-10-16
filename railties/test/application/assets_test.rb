@@ -190,15 +190,6 @@ module ApplicationTests
       assert_file_exists("#{app_path}/public/assets/another-*.js")
     end
 
-    test "asset pipeline should use a Sprockets::Index when config.assets.digest is true" do
-      add_to_config "config.action_controller.perform_caching = false"
-
-      ENV["RAILS_ENV"] = "production"
-      require "#{app_path}/config/environment"
-
-      assert_equal Sprockets::Index, Rails.application.assets.class
-    end
-
     test "precompile creates a manifest file with all the assets listed" do
       app_file "app/assets/images/rails.png", "notactuallyapng"
       app_file "app/assets/stylesheets/application.css.erb", "<%= asset_path('rails.png') %>"
