@@ -1,3 +1,4 @@
+require 'yaml'
 require 'active_support/core_ext/kernel/reporting'
 require 'active_support/file_update_checker'
 require 'rails/engine/configuration'
@@ -97,7 +98,6 @@ module Rails
         yaml = Pathname.new(path) if path
 
         config = if yaml && yaml.exist?
-          require "yaml"
           require "erb"
           YAML.load(ERB.new(yaml.read).result) || {}
         elsif ENV['DATABASE_URL']
