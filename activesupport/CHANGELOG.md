@@ -1,3 +1,9 @@
+*   Encoding ActiveSupport::TimeWithZone to YAML now preserves the timezone information.
+
+    Fixes #9183.
+
+    *Andrew White*
+
 *   Corrected Inflector#underscore handling of multiple successive acroynms.
 
     *James Le Cuirot*

@@ -417,6 +417,15 @@ module ActiveSupport
       tzinfo.periods_for_local(time)
     end
 
+    def init_with(coder) #:nodoc:
+      initialize(coder['name'])
+    end
+
+    def encode_with(coder) #:nodoc:
+      coder.tag ="!ruby/object:#{self.class}"
+      coder.map = { 'name' => tzinfo.name }
+    end
+
     private
       def time_now
         Time.now
