@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
+require "delegate"
 require "active_support/core_ext/regexp"
 
 module ActiveSupport
   class Deprecation
-    class DeprecationProxy #:nodoc:
+    class OldDeprecationProxy
       def self.new(*args, &block)
         object = args.first
 
@@ -26,6 +27,37 @@ module ActiveSupport
           target.__send__(called, *args, &block)
         end
     end
+    class DeprecationProxy < Delegator #:nodoc:
+      def self.new(object, *)
+        return object unless object
+        super
+      end
+
+      def initialize(object)
+        super
+        @_deprecated_object = object
+      end
+
+      def __getobj__
+        @_deprecated_object
+      end
+
+      def __setobj__(obj)
+        @_deprecated_object = obj
+      end
+
+      # Don't give a deprecation warning on inspect since test/unit and error
+      # logs rely on it for diagnostics.
+      def inspect
+        __getobj__.inspect
+      end
+
+      private
+        def method_missing(called, *args)
+          warn Kernel.caller_locations, called, args
+          super
+        end
+    end
 
     # DeprecatedObjectProxy transforms an object into a deprecated one. It
     # takes an object, a deprecation message and optionally a deprecator. The
@@ -40,18 +72,15 @@ module ActiveSupport
     #   # => "#<Object:0x007fb9b34c34b0>"
     class DeprecatedObjectProxy < DeprecationProxy
       def initialize(object, message, deprecator = ActiveSupport::Deprecation.instance)
-        @object = object
+        super(object)
         @message = message
         @deprecator = deprecator
       end
 
       private
-        def target
-          @object
-        end
 
         def warn(callstack, called, args)
-          @deprecator.warn(@message, callstack)
+          @deprecator.warn("called: #{called} #{@message}", callstack)
         end
     end
 
@@ -88,20 +117,24 @@ module ActiveSupport
     #   example.request.to_s
     #   # => "special_request"
     class DeprecatedInstanceVariableProxy < DeprecationProxy
-      def initialize(instance, method, var = "@#{method}", deprecator = ActiveSupport::Deprecation.instance)
-        @instance = instance
-        @method = method
-        @var = var
+      def initialize(owner, accessor_method, variable_name = "@#{accessor_method}", deprecator = ActiveSupport::Deprecation.instance)
+        super(owner) # TODO - is this right?
+        @owner = owner
+        @accessor_method = accessor_method
+        @variable_name = variable_name
         @deprecator = deprecator
       end
 
+      # any methods called on this object should delegate to @owner.__send__(@method)
+
+      def __getobj__
+        @owner.__send__(@accessor_method)
+      end
+
       private
-        def target
-          @instance.__send__(@method)
-        end
 
         def warn(callstack, called, args)
-          @deprecator.warn("#{@var} is deprecated! Call #{@method}.#{called} instead of #{@var}.#{called}. Args: #{args.inspect}", callstack)
+          @deprecator.warn("#{@variable_name} is deprecated! Call #{@accessor_method}.#{called} instead of #{@variable_name}.#{called}. Args: #{args.inspect}", callstack)
         end
     end
 
@@ -122,7 +155,7 @@ module ActiveSupport
     #   # => DEPRECATION WARNING: PLANETS is deprecated! Use PLANETS_POST_2006 instead.
     #        (Backtrace information…)
     #        ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"]
-    class DeprecatedConstantProxy < DeprecationProxy
+    class DeprecatedConstantProxy < OldDeprecationProxy
       def initialize(old_const, new_const, deprecator = ActiveSupport::Deprecation.instance, message: "#{old_const} is deprecated! Use #{new_const} instead.")
         require "active_support/inflector/methods"
 
