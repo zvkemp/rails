@@ -46,6 +46,7 @@ module ActionCable
     @server ||= ActionCable::Server::Base.new
   end
 
+  autoload :Metal, 'action_cable/metal'
   autoload :Server
   autoload :Connection
   autoload :Channel
