@@ -63,6 +63,21 @@ class AVLogSubscriberTest < ActiveSupport::TestCase
     end
   end
 
+  def test_render_template_with_layout
+    Rails.stub(:root, File.expand_path(FIXTURE_LOAD_PATH)) do
+      @view.render(template: "test/hello_world", layout: "layouts/yield")
+      wait
+
+      assert_equal 2, @logger.logged(:debug).size
+      assert_equal 2, @logger.logged(:info).size
+
+      assert_match(/Rendering layouts\/yield\.erb/, @logger.logged(:debug).first)
+      assert_match(/Rendering test\/hello_world\.erb/, @logger.logged(:debug).last)
+      assert_match(/Rendered test\/hello_world\.erb/, @logger.logged(:info).first)
+      assert_match(/Rendered layouts\/yield\.erb/, @logger.logged(:info).last)
+    end
+  end
+
   def test_render_file_template
     Rails.stub(:root, File.expand_path(FIXTURE_LOAD_PATH)) do
       @view.render(file: "#{FIXTURE_LOAD_PATH}/test/hello_world.erb")

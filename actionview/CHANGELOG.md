@@ -1,3 +1,7 @@
+*   Instrument `TemplateRenderer#render_with_layout`
+
+    *Zach Kemp*
+
 *   Deprecate template names with `.`
 
     *John Hawthorn*
