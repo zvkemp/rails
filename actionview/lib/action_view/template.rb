@@ -179,8 +179,8 @@ module ActionView
     # This method is instrumented as "!render_template.action_view". Notice that
     # we use a bang in this instrumentation because you don't want to
     # consume this in production. This is only slow if it's being listened to.
-    def render(view, locals, buffer = ActionView::OutputBuffer.new, &block)
-      instrument_render_template do
+    def render(view, locals, buffer = ActionView::OutputBuffer.new, **opts, &block)
+      instrument_render_template(**opts) do
         compile!(view)
         view._run(method_name, self, locals, buffer, &block)
       end
@@ -378,12 +378,14 @@ module ActionView
         short_identifier.tr("^a-z_", "_")
       end
 
-      def instrument(action, &block) # :doc:
+      def instrument(action, **opts, &block) # :doc:
         ActiveSupport::Notifications.instrument("#{action}.action_view", instrument_payload, &block)
       end
 
-      def instrument_render_template(&block)
-        ActiveSupport::Notifications.instrument("!render_template.action_view", instrument_payload, &block)
+      def instrument_render_template(**opts, &block)
+        key = opts[:instrument_key] || "!render_template.action_view"
+
+        ActiveSupport::Notifications.instrument(key, instrument_payload, &block)
       end
 
       def instrument_payload
