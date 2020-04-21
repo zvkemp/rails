@@ -285,7 +285,7 @@ module ActionView
             view._layout_for(*name, &block)
           end
 
-          content = layout.render(view, locals) { content } if layout
+          content = layout.render(view, locals, instrumentation_key: "render_layout.action_view") { content } if layout
           payload[:cache_hit] = view.view_renderer.cache_hits[template.virtual_path]
           build_rendered_template(content, template)
         end

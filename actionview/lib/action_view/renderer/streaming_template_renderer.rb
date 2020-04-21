@@ -71,7 +71,7 @@ module ActionView
           fiber = Fiber.new do
             I18n.config = outer_config
             if layout
-              layout.render(view, locals, output, &yielder)
+              layout.render(view, locals, output, instrumentation_key: "render_layout.action_view", &yielder)
             else
               # If you don't have a layout, just render the thing
               # and concatenate the final result. This is the same

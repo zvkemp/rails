@@ -64,14 +64,13 @@ module ActionView
 
       def render_with_layout(view, template, path, locals)
         layout  = path && find_layout(path, locals.keys, [formats.first])
+        content = yield(layout)
 
         body = if layout
-          ActiveSupport::Notifications.instrument("render_template.action_view", identifier: layout.identifier) do
-            view.view_flow.set(:layout, yield(layout))
-            layout.render(view, locals) { |*name| view._layout_for(*name) }
-          end
+          view.view_flow.set(:layout, content)
+          layout.render(view, locals, instrument_key: "render_layout.action_view") { |*name| view._layout_for(*name) }
         else
-          yield(layout)
+          content
         end
         build_rendered_template(body, template)
       end
