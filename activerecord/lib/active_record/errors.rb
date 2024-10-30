@@ -609,6 +609,28 @@ module ActiveRecord
   # the database version cannot be determined.
   class DatabaseVersionError < ActiveRecordError
   end
+
+  # Marker that can be applied to a blanket rescue, distinguishing that error
+  # from others arising in the same context, and indicating that the inner error should
+  # later be re-raised.
+  class UnwrapException < StandardError
+    attr_reader :inner
+
+    def initialize(inner)
+      @inner = inner
+    end
+  end
+
+  # Marker that can be applied to any error; intended to be caught and unwrapped
+  # by the error translation methods (avoid wrapping non-database-related exceptions in
+  # ActiveRecord errors).
+  class PreserveException < StandardError
+    attr_reader :inner
+
+    def initialize(inner)
+      @inner = inner
+    end
+  end
 end
 
 require "active_record/associations/errors"

@@ -1125,7 +1125,7 @@ module ActiveRecord
           active_record_error
         end
 
-        def log(sql, name = "SQL", binds = [], type_casted_binds = [], async: false, &block) # :doc:
+        def log(sql, name = "SQL", binds = [], type_casted_binds = [], async: false) # :doc:
           @instrumenter.instrument(
             "sql.active_record",
             sql:               sql,
@@ -1135,11 +1135,16 @@ module ActiveRecord
             async:             async,
             connection:        self,
             transaction:       current_transaction.user_transaction.presence,
-            row_count:         0,
-            &block
-          )
-        rescue ActiveRecord::StatementInvalid => ex
-          raise ex.set_query(sql, binds)
+            row_count:         0
+          ) do |payload|
+            yield payload
+          rescue => e
+            raise ActiveRecord::UnwrapException.new(e)
+          end
+        rescue ActiveRecord::UnwrapException => e
+          raise e.inner
+        rescue => e
+          raise ActiveRecord::PreserveException.new(e)
         end
 
         def translate_exception(exception, message:, sql:, binds:)
@@ -1147,6 +1152,8 @@ module ActiveRecord
           case exception
           when RuntimeError, ActiveRecord::ActiveRecordError
             exception
+          when ActiveRecord::PreserveException
+            exception.inner
           else
             ActiveRecord::StatementInvalid.new(message, sql: sql, binds: binds, connection_pool: @pool)
           end
